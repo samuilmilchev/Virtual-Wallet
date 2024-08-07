@@ -1,0 +1,103 @@
+﻿@{
+    var isAuthenticated = User.Identity.Name;
+}
+
+<head>
+    <title>Card</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="~/css/common.css">
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .body-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        header, footer {
+            background: none; /* Example background color */
+            color: black; /* Example text color */
+            padding: 5px 5px;
+            text-align: center;
+            width: 100%;
+        }
+
+            header h3, footer small {
+                font-size: 14px; /* Adjust font size as needed */
+                margin: 0;
+            }
+
+        .nav {
+            color: black;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div>
+            <div class="button-container">
+                <h3>
+                    <button style="font-size: 17px; border: 1px solid #6d6d6d; " class="button">
+                        <a asp-controller="Home" asp-action="Index" class="nav">Home</a>
+                    </button>
+                    <button class="button">
+                        <a asp-controller="Home" asp-action="About" class="nav">About</a>
+                    </button>
+                    @{
+                        if (isAuthenticated != null)
+                        {
+                            <button class="button">
+                                <a href="/swagger" class="nav">Developer API</a>
+                            </button>
+                        }
+                    }
+                    @{
+                        if (isAuthenticated != null)
+                        {
+                            <button style="font-size: 17px; background: #fd8080; border: 1px solid #6d6d6d; " class="button">
+                                <a asp-controller="User" asp-action="Logout" class="nav">Logout</a>
+                            </button>
+                        }
+                        else
+                        {
+                            <button style="font-size: 17px; border: 1px solid #6d6d6d; " class="button">
+                                <a asp-controller="User" asp-action="Index" class="nav">Login</a>
+                            </button>
+                        }
+                    }
+                    @{
+                        if (isAuthenticated != null)
+                        {
+                            <button class="button">
+                                <a asp-controller="User" asp-action="UserDetails" asp-route-username="@User.Identity.Name" class="nav">
+                                    <i class="fas fa-user"></i>
+                                </a>
+                            </button>
+                        }
+                    }
+                </h3>
+            </div>
+        </div>
+    </header>
+
+    <div class="body-content">
+        @RenderBody()
+    </div>
+
+    <footer>
+        <small>©️ Copyright @DateTime.Now.Year, Card</small>
+    </footer>
+</body>
+</html>
