@@ -1,16 +1,18 @@
-﻿using Virtual_Wallet.DTOs.UserDTOs;
+﻿using Microsoft.EntityFrameworkCore;
+using Virtual_Wallet.DTOs.UserDTOs;
 using Virtual_Wallet.Exceptions;
 using Virtual_Wallet.Models.Entities;
 using Virtual_Wallet.Repository;
 using Virtual_Wallet.Repository.Contracts;
+using Virtual_Wallet.Services.Contracts;
 
-namespace Virtual_Wallet.Service
+namespace Virtual_Wallet.Services
 {
-    public class UserService
+    public class UsersService : IUsersService
     {
         private readonly IUserRepository _userRepository;
 
-        public UserService(IUserRepository userRepository)
+        public UsersService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
@@ -20,43 +22,42 @@ namespace Virtual_Wallet.Service
             return _userRepository.BlockUser(userId, user);
         }
 
-        public User Create(User user)  
+        public User Create(User user)
         {
-            if (this._userRepository.UserEmailExists(user.Email))
+            if (_userRepository.UserEmailExists(user.Email))
             {
                 throw new DuplicateEntityException($"A user with e-mail: {user.Email} already exists !");
             }
 
-            User createdUser = this._userRepository.Create(user);
+            User createdUser = _userRepository.Create(user);
             return createdUser;
 
         }
 
         public bool Delete(int id, User user)
         {
-            User userToDelete = this._userRepository.GetById(id);
+            User userToDelete = _userRepository.GetById(id);
 
             if (userToDelete.Id != user.Id && user.IsAdmin == false)
             {
                 throw new NotAuthorizedException("You are not authorised to delete. Only admin or the owner of this user can delete!");
             }
 
-            return this._userRepository.Delete(id);
+            return _userRepository.Delete(id);
         }
 
         public List<User> GetAll()
         {
-            return this._userRepository.GetAll();
+            return _userRepository.GetAll();
         }
 
         public User GetByEmail(string email)
         {
-            return this._userRepository.GetByEmail(email);
+            return _userRepository.GetByEmail(email);
         }
-
-        public User GetByFirstname(string firstname)
+        public bool UserEmailExists(string email)
         {
-            return _userRepository.GetByFirstname(firstname);
+            return GetAll().Any(u => u.Email == email);
         }
 
         public User GetByUsername(string username)
@@ -66,7 +67,7 @@ namespace Virtual_Wallet.Service
 
         public bool UnblockUser(int userId, User user)
         {
-            return this._userRepository.UnblockUser(userId, user);
+            return _userRepository.UnblockUser(userId, user);
         }
 
         public User Update(int id, User userUpdate /*User user*/)
@@ -78,13 +79,14 @@ namespace Virtual_Wallet.Service
             //    throw new NotAuthorizedException("You are not authorised to edit. Only admin or the owner of the user can edit!");
             //}
 
-            User updatedUser = this._userRepository.Update(id, userUpdate);
+            User updatedUser = _userRepository.Update(id, userUpdate);
             return updatedUser;
         }
 
         public List<User> FilterBy(UserQueryParameters filterParameters)
         {
-            return this._userRepository.FilterBy(filterParameters);
+            return _userRepository.FilterBy(filterParameters);
         }
+
     }
 }

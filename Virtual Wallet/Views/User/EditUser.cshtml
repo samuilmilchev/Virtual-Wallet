@@ -1,0 +1,30 @@
+﻿@model UserViewModel
+
+<div class="container">
+    <form asp-action="EditUser" method="post" enctype="multipart/form-data">
+        <div style="text-align: center;" class="form-title">
+            <h2 style="padding-left: 20px; color:black;">Edit User</h2>
+            <hr>
+        </div>
+
+        <div class="input-box">
+            <label asp-for="Username" style="font-size: 20px;" class="form-label"></label>
+            <input asp-for="Username" style="color:black;" class="input-field" readonly />
+            <span asp-validation-for="Username"></span>
+        </div>
+
+        <div class="input-box">
+            <label asp-for="Email" style="font-size: 20px;" class="form-label"></label>
+            <input asp-for="Email" style="color:black;" class="input-field" />
+            <span asp-validation-for="Email"></span>
+        </div>
+
+        <div class="input-box">
+            <label asp-for="PhoneNumber" style="font-size: 20px;" class="form-label"></label>
+            <input asp-for="PhoneNumber" class="input-field" />
+            <span asp-validation-for="PhoneNumber"></span>
+        </div>
+
+        <button type="submit" style="font-size: 20px; color:black;" class="input-submit">Save</button>
+    </form>
+</div>

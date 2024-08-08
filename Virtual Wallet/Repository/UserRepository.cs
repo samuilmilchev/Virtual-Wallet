@@ -46,17 +46,6 @@ namespace Virtual_Wallet.Repository
             }
             return user;
         }
-
-        public User GetByFirstname(string firstname)
-        {
-            User user = this.GetUsers().FirstOrDefault(x => x.FirstName == firstname);
-            if (user == null)
-            {
-                throw new EntityNotFoundException($"User with first name: {firstname} does not exist!");
-            }
-            return user;
-        }
-
         public User GetByUsername(string username)
         {
             User user = this.GetUsers().FirstOrDefault(x => x.Username == username);
@@ -75,8 +64,6 @@ namespace Virtual_Wallet.Repository
                 throw new EntityNotFoundException($"User with id {id} does not exist!");
             }
 
-            user.FirstName = userToUpdate.FirstName;
-            user.LastName = userToUpdate.LastName;
             user.Email = userToUpdate.Email;
             //user.Password = userToUpdate.Password; //TODO: logika za update na parola na veche lognat user
 
@@ -175,11 +162,11 @@ namespace Virtual_Wallet.Repository
             }
         }
 
-        private static IQueryable<User> FilterByFirstName(IQueryable<User> users, string firstname)
+        private static IQueryable<User> FilterByUsername(IQueryable<User> users, string username)
         {
-            if (!string.IsNullOrEmpty(firstname))
+            if (!string.IsNullOrEmpty(username))
             {
-                return users.Where(u => u.FirstName.Contains(firstname));
+                return users.Where(u => u.Username.Contains(username));
             }
             else
             {
@@ -192,10 +179,6 @@ namespace Virtual_Wallet.Repository
             {
                 case "username":
                     return users.OrderBy(u => u.Username);
-                case "firstname":
-                    return users.OrderBy(u => u.FirstName);
-                case "lastname":
-                    return users.OrderBy(u => u.LastName);
                 default:
                     return users;
             }
@@ -217,7 +200,7 @@ namespace Virtual_Wallet.Repository
         {
             IQueryable<User> res = this.GetUsers();
 
-            res = FilterByFirstName(res, filterParameters.Firstname);
+            res = FilterByUsername(res, filterParameters.Firstname);
             res = FilterByEmail(res, filterParameters.Email);
             res = FilterByUserName(res, filterParameters.Username);
             res = SortBy(res, filterParameters.SortBy);

@@ -8,22 +8,20 @@ using Virtual_Wallet.Exceptions;
 using Virtual_Wallet.Helpers.Contracts;
 using Virtual_Wallet.Models.Entities;
 using Virtual_Wallet.Models.ViewModels;
-using Virtual_Wallet.Service.Contracts;
+using Virtual_Wallet.Services.Contracts;
 
 namespace Virtual_Wallet.Controllers.MVC
 {
     public class UserController : Controller
     {
-        private readonly IUserService _usersService;
+        private readonly IUsersService _usersService;
         private readonly IConfiguration _configuration;
-        private readonly IPhotoService _photoService;
         private readonly IModelMapper _modelMapper;
 
-        public UserController(IUserService usersService, IConfiguration configuration, IPhotoService photoService, IModelMapper modelMapper)
+        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper)
         {
             _usersService = usersService;
             _configuration = configuration;
-            _photoService = photoService;
             _modelMapper = modelMapper;
         }
 
@@ -52,6 +50,7 @@ namespace Virtual_Wallet.Controllers.MVC
                 {
                     Email = registerModel.Email,
                     Username = registerModel.Username,
+                    PhoneNumber = registerModel.PhoneNumber,
                     PasswordHash = passwordHash,
                     PasswordSalt = passwordSalt,
                 };
@@ -141,6 +140,54 @@ namespace Virtual_Wallet.Controllers.MVC
                 PhoneNumber = user.PhoneNumber
             };
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Edit(string username)
+        {
+            var user = _usersService.GetByUsername(username);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var mappedUser = _modelMapper.Map(user);
+
+            // Return the view directly with the mapped user
+            return View("EditUser", mappedUser);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditUser(UserViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var username = User.Identity.Name;
+                    var user = _usersService.GetByUsername(username);
+
+                    if (user != null)
+                    {
+                        if (_usersService.UserEmailExists(model.Email) && user.Email != model.Email)
+                        {
+                            throw new DuplicateEntityException("User with this email already exists.");
+                        }
+                        user.Email = model.Email;
+                        user.PhoneNumber = model.PhoneNumber;
+                    }
+
+                    var userToEdit = _modelMapper.MapUserViewModel(model);
+                    var editedUser = _usersService.Update(user.Id, userToEdit);
+                    return RedirectToAction("UserDetails", new { username = editedUser.Username });
+                }
+                return View(model);
+            }
+            catch (DuplicateEntityException x)
+            {
+                return Json(new { success = false, message = x.Message });
+            }
         }
         private string CreateToken(User user)
         {

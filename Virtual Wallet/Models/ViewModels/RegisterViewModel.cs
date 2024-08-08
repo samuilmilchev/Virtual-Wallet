@@ -23,8 +23,8 @@ namespace Virtual_Wallet.Models.ViewModels
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", ErrorMessage = "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.")]
         public string Password { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Phone number is required and cannot be empty.")]
-        [RegularExpression(@"add regex", ErrorMessage = "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.")]
+        //[Required(AllowEmptyStrings = false, ErrorMessage = "Phone number is required and cannot be empty.")]
+        //[RegularExpression(@"add regex", ErrorMessage = "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.")]
         public string PhoneNumber { get; set; }
     }
 }

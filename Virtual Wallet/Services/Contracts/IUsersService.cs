@@ -1,14 +1,14 @@
 ﻿using Virtual_Wallet.DTOs.UserDTOs;
 using Virtual_Wallet.Models.Entities;
 
-namespace Virtual_Wallet.Service.Contracts
+namespace Virtual_Wallet.Services.Contracts
 {
-    public interface IUserService
+    public interface IUsersService
     {
         List<User> GetAll();
         User GetByUsername(string username);
         User GetByEmail(string email);
-        User GetByFirstname(string firstname);
+        bool UserEmailExists(string email);
         User Create(User user);
         User Update(int id, User userUpdate/*, User user*/);
         bool Delete(int id, User user);

@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Virtual_Wallet</RootNamespace>
+    <GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,11 +29,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.7.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.7.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.7.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Controllers\API\" />
-    <Folder Include="Views\Home\" />
     <Folder Include="wwwroot\image\" />
     <Folder Include="wwwroot\js\" />
     <Folder Include="wwwroot\css\" />

@@ -8,7 +8,6 @@ namespace Virtual_Wallet.Repository.Contracts
         List<User> GetAll();
         User GetByUsername(string username);
         User GetByEmail(string email);
-        User GetByFirstname(string firstname);
         User Create(User user);
         User Update(int id, User user);
         bool Delete(int id);

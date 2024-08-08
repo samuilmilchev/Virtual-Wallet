@@ -1,10 +1,13 @@
-﻿using Virtual_Wallet.DTOs.UserDTOs;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
+using Virtual_Wallet.DTOs.UserDTOs;
+using Virtual_Wallet.Helpers.Contracts;
 using Virtual_Wallet.Models.Entities;
+using Virtual_Wallet.Models.ViewModels;
 using Virtual_Wallet.Repository.Contracts;
 
 namespace Virtual_Wallet.Helpers
 {
-    public class ModelMapper
+    public class ModelMapper : IModelMapper
     {
         private readonly IUserRepository _usersRepository;
 
@@ -22,6 +25,27 @@ namespace Virtual_Wallet.Helpers
             udto.IsBlocked = user.IsBlocked;
 
             return udto;
+        }
+
+        public UserViewModel Map(User user)
+        {
+            UserViewModel newUser = new UserViewModel();
+
+            newUser.Username = user.Username;
+            newUser.Email = user.Email;
+            newUser.PhoneNumber = user.PhoneNumber;
+
+            return newUser;
+        }
+
+        public User MapUserViewModel(UserViewModel urd)
+        {
+            return new User
+            {
+                Email = urd.Email,
+                Username = urd.Username,
+                PhoneNumber = urd.PhoneNumber
+            };
         }
     }
 }

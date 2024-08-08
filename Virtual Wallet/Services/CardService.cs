@@ -1,10 +1,11 @@
 ﻿using Virtual_Wallet.Exceptions;
 using Virtual_Wallet.Models.Entities;
 using Virtual_Wallet.Repository.Contracts;
+using Virtual_Wallet.Services.Contracts;
 
-namespace Virtual_Wallet.Service
+namespace Virtual_Wallet.Services
 {
-    public class CardService
+    public class CardService : ICardService
     {
         private readonly ICardRepository _cardRepository;
 
@@ -15,42 +16,40 @@ namespace Virtual_Wallet.Service
 
         public Card Create(Card card)
         {
-            if (this._cardRepository.GetByCardNumber(card.CardNumber) != null)
+            if (_cardRepository.GetByCardNumber(card.CardNumber) != null)
             {
                 throw new DuplicateEntityException($"A card with the same number already exists !");
             }
 
-            Card createdCard = this._cardRepository.Create(card);
+            Card createdCard = _cardRepository.Create(card);
             return createdCard;
         }
 
         public bool Delete(int id, User user)
         {
-            Card cardToDelete = this._cardRepository.GetById(id);
+            Card cardToDelete = _cardRepository.GetById(id);
 
-            var userNames = $"{user.FirstName} + {user.LastName}";
-
-            if (userNames != cardToDelete.CardHolder)
+            if (user.Username != cardToDelete.CardHolder)
             {
                 throw new NotAuthorizedException("You are not authorised to delete. Only admin or the owner of this user can delete!");
             }
 
-            return this._cardRepository.Delete(id);
+            return _cardRepository.Delete(id);
         }
 
         public List<Card> GetAll()
         {
-            return this._cardRepository.GetAll();
+            return _cardRepository.GetAll();
         }
 
         public Card GetByCardHoler(string cardHolder)
         {
-            return this._cardRepository.GetByCardHoler(cardHolder);
+            return _cardRepository.GetByCardHoler(cardHolder);
         }
 
         public Card GetById(int id)
         {
-            return this._cardRepository.GetById(id);
+            return _cardRepository.GetById(id);
         }
     }
 }
