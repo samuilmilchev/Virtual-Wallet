@@ -12,5 +12,7 @@
         public List<Card> Card { get; set; } // List?
         public bool IsAdmin { get; set; }
         public bool IsBlocked { get; set; } = false;
+
+        public double VirtualWalletBallance { get; set; } //може би ще подлежи на промяна, като местоположение
     }
 }
