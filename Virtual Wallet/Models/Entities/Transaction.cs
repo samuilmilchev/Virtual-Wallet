@@ -1,6 +1,6 @@
 ﻿namespace Virtual_Wallet.Models.Entities
 {
-	public class Transaction
+	public class Transaction : ITransaction
 	{
 		public DateTime Timestamp { get; private set; }
 		public string Currency { get; private set; }

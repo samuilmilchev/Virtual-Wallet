@@ -1,6 +1,6 @@
 ﻿namespace Virtual_Wallet.Models.Entities
 {
-	public class Wallet
+	public class Wallet : IWallet
 	{
 		// Properties
 		public string WalletId { get; private set; }
@@ -8,7 +8,7 @@
 		public Dictionary<string, decimal> Balances { get; private set; }
 		public Dictionary<string, Dictionary<string, decimal>> ExchangeRates { get; private set; }
 		public string CurrentCurrency { get; private set; }
-		public Stack<Transaction> TransactionHistory { get; private set; }
+		public List<Transaction> TransactionHistory { get; private set; }
 
 		// Constructor
 		public Wallet(string walletId, string ownerId, string ownerName, Dictionary<string, decimal> initialBalances, string currentCurrency)
@@ -33,7 +33,7 @@
 
 			Balances = initialBalances;
 			CurrentCurrency = currentCurrency;
-			TransactionHistory = new Stack<Transaction>();
+			TransactionHistory = new List<Transaction>();
 
 			ExchangeRates = new Dictionary<string, Dictionary<string, decimal>>();
 		}
