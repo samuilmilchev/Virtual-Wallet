@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Virtual_Wallet.Models.Entities;
 
 namespace Virtual_Wallet.Models.ViewModels
 {
@@ -19,5 +20,7 @@ namespace Virtual_Wallet.Models.ViewModels
         [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Invalid email address format!")]
         public string Email { get; set; }
         public string? PhoneNumber { get; set; }
+        public string Role { get; set; }
+        public bool IsBlocked { get; set; }
     }
 }

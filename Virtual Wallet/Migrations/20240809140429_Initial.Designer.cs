@@ -12,7 +12,7 @@ using Virtual_Wallet.Db;
 namespace Virtual_Wallet.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240807203435_Initial")]
+    [Migration("20240809140429_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -123,6 +123,9 @@ namespace Virtual_Wallet.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -139,6 +142,7 @@ namespace Virtual_Wallet.Migrations
                             IsAdmin = true,
                             IsBlocked = false,
                             PhoneNumber = "0845965847",
+                            Role = 1,
                             Username = "Samuil"
                         },
                         new
@@ -148,6 +152,7 @@ namespace Virtual_Wallet.Migrations
                             IsAdmin = true,
                             IsBlocked = false,
                             PhoneNumber = "0865214587",
+                            Role = 1,
                             Username = "Violin"
                         },
                         new
@@ -157,6 +162,7 @@ namespace Virtual_Wallet.Migrations
                             IsAdmin = true,
                             IsBlocked = false,
                             PhoneNumber = "0826541254",
+                            Role = 1,
                             Username = "Alex"
                         });
                 });

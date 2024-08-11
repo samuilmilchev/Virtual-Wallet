@@ -12,5 +12,6 @@
         public List<Card> Card { get; set; } // List?
         public bool IsAdmin { get; set; }
         public bool IsBlocked { get; set; } = false;
+        public UserRole Role { get; set; }
     }
 }
