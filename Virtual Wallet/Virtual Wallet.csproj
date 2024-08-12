@@ -33,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\API\" />
     <Folder Include="wwwroot\image\" />
     <Folder Include="wwwroot\css\" />
   </ItemGroup>
