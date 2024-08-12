@@ -53,6 +53,7 @@ namespace Virtual_Wallet.Controllers.MVC
                     PhoneNumber = registerModel.PhoneNumber,
                     PasswordHash = passwordHash,
                     PasswordSalt = passwordSalt,
+                    Role = UserRole.User
                 };
 
                 //if (registerModel.Image != null)
@@ -137,11 +138,55 @@ namespace Virtual_Wallet.Controllers.MVC
                 Username = user.Username,
                 Email = user.Email,
                 //Image = user.Image,
-                PhoneNumber = user.PhoneNumber
+                PhoneNumber = user.PhoneNumber,
+                Role = user.Role.ToString(),
+                IsBlocked = user.IsBlocked
             };
             return View(model);
         }
 
+        [HttpGet]
+        public IActionResult AssignRole()
+        {
+            return View(new AssignRoleViewModel());
+        }
+
+
+        [HttpPost]
+        //[Authorize(Roles = "Admin")]
+        public IActionResult AssignRole(AssignRoleViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+
+                var user = _usersService.GetByUsername(model.Username);
+
+                if (user == null)
+                {
+                    ViewData["ErrorMessage"] = $"User with username {model.Username} not found";
+                    return View(model);
+                }
+
+                user.Role = model.Role;
+
+                var userRole = user.Role;
+                _usersService.Update(user.Id, user);
+
+                ViewData["Message"] = "Role assigned successfully";
+                return View(new AssignRoleViewModel());
+            }
+            catch (EntityNotFoundException x)
+            {
+
+                ViewData["ErrorMessage"] = x.Message;
+                return View(model);
+            }
+
+        }
         [HttpGet]
         public IActionResult Edit(string username)
         {
@@ -189,11 +234,100 @@ namespace Virtual_Wallet.Controllers.MVC
                 return Json(new { success = false, message = x.Message });
             }
         }
+
+        [HttpGet]
+        public IActionResult ListUsers()
+        {
+            var users = _usersService.GetAll();
+
+            if (users == null)
+            {
+                return NotFound();
+            }
+
+            List<UserViewModel> usersList = new List<UserViewModel>();
+
+            foreach (var user in users)
+            {
+                var model = new UserViewModel
+                {
+                    Username = user.Username,
+                    Email = user.Email,
+                    //Image = user.Image,
+                    PhoneNumber = user.PhoneNumber,
+                    Role = user.Role.ToString(),
+                    IsBlocked = user.IsBlocked
+                };
+
+                usersList.Add(model);
+            }
+
+            return View(usersList);
+        }
+
+        [HttpPost]
+        public IActionResult SearchByUsername([FromForm] string text)
+        {
+            UserQueryParameters userQueryParameters = new UserQueryParameters();
+            userQueryParameters.Username = text;
+
+            var users = _usersService.FilterBy(userQueryParameters).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(users);
+        }
+
+        [HttpPost]
+        public IActionResult SearchByEmail([FromForm] string text)
+        {
+            UserQueryParameters userQueryParameters = new UserQueryParameters();
+            userQueryParameters.Email = text;
+
+            var users = _usersService.FilterBy(userQueryParameters).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(users);
+        }
+
+        [HttpPost]
+        public IActionResult SearchByNumber([FromForm] string text)
+        {
+            UserQueryParameters userQueryParameters = new UserQueryParameters();
+            userQueryParameters.PhoneNumber = text;
+
+            var users = _usersService.FilterBy(userQueryParameters).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(users);
+        }
+
+        public IActionResult BlockUser(string username)
+        {
+            var user = _usersService.GetByUsername(username);
+
+            var updatedUser = _usersService.BlockUser(user.Id, user);
+
+            var blockedUser = _modelMapper.Map(user);
+
+            return View("UserDetails", blockedUser);
+        }
+
+        public IActionResult UnblockUser(string username)
+        {
+            var user = _usersService.GetByUsername(username);
+
+            var updatedUser = _usersService.UnblockUser(user.Id, user);
+
+            var blockedUser = _modelMapper.Map(user);
+
+            return View("UserDetails", blockedUser);
+        }
+
+
         private string CreateToken(User user)
         {
             List<Claim> claims = new List<Claim>() //delete some rows for the claims.
             {
                 new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role , user.Role.ToString())
+
             };
 
 

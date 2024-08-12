@@ -1,4 +1,6 @@
-﻿using Virtual_Wallet.Db;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
+using Virtual_Wallet.Db;
 using Virtual_Wallet.DTOs.UserDTOs;
 using Virtual_Wallet.Exceptions;
 using Virtual_Wallet.Models.Entities;
@@ -116,14 +118,6 @@ namespace Virtual_Wallet.Repository
         private IQueryable<User> GetUsers()
         {
             return this._context.Users;
-
-            /*Include(u => u.Id).*/
-            //Include(u => u.Username)      //moje i da ne sa nujni tezi include-ove
-            //.Include(u => u.FirstName)
-            //.Include(u => u.LastName)
-            //.Include(u=>u.Email)
-            //.Include(u => u.IsAdmin)
-            //.Include(u => u.IsBlocked); 
         }
 
         public User GetById(int id)
@@ -162,17 +156,18 @@ namespace Virtual_Wallet.Repository
             }
         }
 
-        private static IQueryable<User> FilterByUsername(IQueryable<User> users, string username)
+        private static IQueryable<User> FilterByNumber(IQueryable<User> users, string phoneNumber)
         {
-            if (!string.IsNullOrEmpty(username))
+            if (!string.IsNullOrEmpty(phoneNumber))
             {
-                return users.Where(u => u.Username.Contains(username));
+                return users.Where(u => u.PhoneNumber.Contains(phoneNumber));
             }
             else
             {
                 return users;
             }
         }
+
         private static IQueryable<User> SortBy(IQueryable<User> users, string sortCriteria)
         {
             switch (sortCriteria)
@@ -200,9 +195,9 @@ namespace Virtual_Wallet.Repository
         {
             IQueryable<User> res = this.GetUsers();
 
-            res = FilterByUsername(res, filterParameters.Firstname);
             res = FilterByEmail(res, filterParameters.Email);
             res = FilterByUserName(res, filterParameters.Username);
+            res = FilterByNumber(res, filterParameters.PhoneNumber);
             res = SortBy(res, filterParameters.SortBy);
             res = OrderBy(res, filterParameters.OrderBy);
 

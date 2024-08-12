@@ -68,6 +68,17 @@
                             <button class="button">
                                 <a asp-controller="Card" asp-action="Register" class="nav">RegisterCard</a>
                             </button>
+
+                            if (User.IsInRole("Admin"))
+                            {
+                                <button class="button">
+                                    <a asp-controller="User" asp-action="AssignRole" class="nav">Assign Roles</a>
+                                </button>
+
+                                <button class="button">
+                                    <a asp-controller="User" asp-action="ListUsers" class="nav">All Users</a>
+                                </button>
+                            }
                         }
                         else
                         {

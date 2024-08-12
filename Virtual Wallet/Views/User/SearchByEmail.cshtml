@@ -1,0 +1,36 @@
+﻿@model List<UserViewModel>
+
+@{
+    foreach (var user in Model)
+    {
+        <div class="container">
+            <div class="form-title">
+                <h1>User Details</h1>
+                <hr>
+            </div>
+
+            <div class="form-inputs">
+                <div class="input-box">
+                    <p style="text-align: left; font-size: 20px;"><strong>Username:</strong> <span id="user-username">@user.Username</span></p>
+                </div>
+                <br>
+                <div class="input-box">
+                    <p style="text-align: left; font-size: 20px;"><strong>Email:</strong> <span id="user-lastname">@user.Email</span></p>
+                </div>
+                <br>
+                <div class="input-box">
+                    <p style="text-align: left; font-size: 20px;"><strong>Phone Number:</strong> <span id="user-phonenumber">@user.PhoneNumber</span></p>
+                </div>
+                <br>
+                <div class="input-box">
+                    <p style="text-align: left; font-size: 20px;"><strong>Role:</strong> <span id="user-phonenumber">@user.Role</span></p>
+                </div>
+                <div style="display: flex;" class="input-box">
+                    <button style="width: 80px; height: 50px; margin-left: 20px;" class="input-submit">
+                        <a style="text-decoration: none; font-size: 20px; color: black;" asp-controller="User" asp-action="Edit" asp-route-username="@user.Username">Edit</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+}
