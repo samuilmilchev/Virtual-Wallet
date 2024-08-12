@@ -15,8 +15,8 @@
 
         public UserRole Role { get; set; }
 
-
-        public double VirtualWalletBallance { get; set; } //може би ще подлежи на промяна, като местоположение
+        public int WalletId { get; set; }
+        public Wallet UserWallet  { get; set; } //може би ще подлежи на промяна, като местоположение
 
     }
 }

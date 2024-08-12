@@ -42,6 +42,11 @@ namespace Virtual_Wallet.Services
             return _cardRepository.GetAll();
         }
 
+        public double GetBalance(string cardNumber)
+        {
+            return this._cardRepository.GetBalance(cardNumber);
+        }
+
         public Card GetByCardHoler(string cardHolder)
         {
             return _cardRepository.GetByCardHoler(cardHolder);

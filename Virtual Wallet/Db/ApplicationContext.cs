@@ -13,6 +13,7 @@ namespace Virtual_Wallet.Db
 
         public DbSet<User> Users { get; set; }
         public DbSet<Card> Cards { get; set; }
+        public DbSet<Wallet> Wallets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,6 +36,15 @@ namespace Virtual_Wallet.Db
             };
 
             modelBuilder.Entity<Card>().HasData(cards);
+
+            var wallets = new List<Wallet>
+            {
+                new Wallet {Id = 1,WalletName = "Violin's wallet" , Balance = 0.00},
+                new Wallet {Id = 2, WalletName = "Sami's wallet" , Balance = 0.00},
+                new Wallet {Id = 3, WalletName = "Alex's wallet" , Balance = 0.00}
+            };
+
+            modelBuilder.Entity<Wallet>().HasData(wallets);
         }
     }
 }

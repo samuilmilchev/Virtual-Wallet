@@ -74,6 +74,11 @@ namespace Virtual_Wallet.Repository
             return card;
         }
 
+        public double GetBalance(string cardNumber)
+        {
+            Card card = this.GetByCardNumber(cardNumber);
+            return card.Balance;
+        }
         //public bool BlockCard(int userId, Card card)
         //{
         //}
