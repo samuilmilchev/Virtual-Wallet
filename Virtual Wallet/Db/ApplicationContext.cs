@@ -20,9 +20,9 @@ namespace Virtual_Wallet.Db
 
             var users = new List<User>
             {
-            new User { Id = 1, Email = "samuil@example.com", Username = "Samuil", /*Password = ""*/ PhoneNumber = "0845965847", IsAdmin = true, IsBlocked = false},
-            new User { Id = 2, Email = "violin@example.com", Username = "Violin", /*Password = ""*/PhoneNumber = "0865214587", IsAdmin = true, IsBlocked = false},
-            new User { Id = 3, Email = "alex@example.com", Username = "Alex", /*Password = ""*/ PhoneNumber = "0826541254", IsAdmin = true, IsBlocked = false},
+            new User { Id = 1, Email = "samuil@example.com", Username = "Samuil", /*Password = ""*/ PhoneNumber = "0845965847", IsAdmin = true, IsBlocked = false, Role = UserRole.User},
+            new User { Id = 2, Email = "violin@example.com", Username = "Violin", /*Password = ""*/PhoneNumber = "0865214587", IsAdmin = true, IsBlocked = false, Role = UserRole.User},
+            new User { Id = 3, Email = "alex@example.com", Username = "Alex", /*Password = ""*/ PhoneNumber = "0826541254", IsAdmin = true, IsBlocked = false, Role = UserRole.User},
             };
 
             modelBuilder.Entity<User>().HasData(users);

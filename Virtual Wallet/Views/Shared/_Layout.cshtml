@@ -59,27 +59,31 @@
                             <button class="button">
                                 <a href="/swagger" class="nav">Developer API</a>
                             </button>
-                        }
-                    }
-                    @{
-                        if (isAuthenticated != null)
-                        {
+                            <button class="button">
+                                <a asp-controller="User" asp-action="UserDetails" asp-route-username="@User.Identity.Name" class="nav">Details</a>
+                            </button>
                             <button style="font-size: 17px; background: #fd8080; border: 1px solid #6d6d6d; " class="button">
                                 <a asp-controller="User" asp-action="Logout" class="nav">Logout</a>
                             </button>
+                            <button class="button">
+                                <a asp-controller="Card" asp-action="Register" class="nav">RegisterCard</a>
+                            </button>
+
+                            if (User.IsInRole("Admin"))
+                            {
+                                <button class="button">
+                                    <a asp-controller="User" asp-action="AssignRole" class="nav">Assign Roles</a>
+                                </button>
+
+                                <button class="button">
+                                    <a asp-controller="User" asp-action="ListUsers" class="nav">All Users</a>
+                                </button>
+                            }
                         }
                         else
                         {
                             <button style="font-size: 17px; border: 1px solid #6d6d6d; " class="button">
                                 <a asp-controller="User" asp-action="Index" class="nav">Login</a>
-                            </button>
-                        }
-                    }
-                    @{
-                        if (isAuthenticated != null)
-                        {
-                            <button class="button">
-                                <a asp-controller="User" asp-action="UserDetails" asp-route-username="@User.Identity.Name" class="nav">Details</a>
                             </button>
                         }
                     }

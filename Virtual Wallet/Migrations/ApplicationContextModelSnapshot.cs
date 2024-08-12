@@ -121,6 +121,9 @@ namespace Virtual_Wallet.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -137,6 +140,7 @@ namespace Virtual_Wallet.Migrations
                             IsAdmin = true,
                             IsBlocked = false,
                             PhoneNumber = "0845965847",
+                            Role = 1,
                             Username = "Samuil"
                         },
                         new
@@ -146,6 +150,7 @@ namespace Virtual_Wallet.Migrations
                             IsAdmin = true,
                             IsBlocked = false,
                             PhoneNumber = "0865214587",
+                            Role = 1,
                             Username = "Violin"
                         },
                         new
@@ -155,6 +160,7 @@ namespace Virtual_Wallet.Migrations
                             IsAdmin = true,
                             IsBlocked = false,
                             PhoneNumber = "0826541254",
+                            Role = 1,
                             Username = "Alex"
                         });
                 });
