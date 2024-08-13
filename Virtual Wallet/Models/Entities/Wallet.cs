@@ -10,5 +10,12 @@
         public string WalletName { get; set; }
 
         public double Balance { get; set; }
+
+        public List<Transaction> TransactionHistory { get; set; }
+
+        public Wallet() //инициализиране на списъка с трансакции в конструктора за да се избегне null reference
+        {
+            TransactionHistory = new List<Transaction>(); // Initialize the transaction list
+        }
     }
 }

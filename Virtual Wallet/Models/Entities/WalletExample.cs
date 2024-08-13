@@ -62,7 +62,7 @@
 			}
 
 			// Record the transaction
-			TransactionHistory.Add(new Transaction(DateTime.Now, currency, amount, TransactionType.Add));
+			//TransactionHistory.Add(new Transaction(DateTime.Now, currency, amount, TransactionType.Add));
 		}
 
 		// Method to withdraw funds in the current currency
@@ -84,7 +84,7 @@
 			Balances[currency] -= amount;
 
 			// Record the transaction
-			TransactionHistory.Add(new Transaction(DateTime.Now, currency, amount, TransactionType.Withdraw));
+			//TransactionHistory.Add(new Transaction(DateTime.Now, currency, amount, TransactionType.Withdraw));
 		}
 
 		// Method to get the balance for the current currency
@@ -147,7 +147,7 @@
 			AddFunds(toCurrency, convertedAmount);
 
 			// Record the transaction
-			TransactionHistory.Add(new Transaction(DateTime.Now, toCurrency, convertedAmount, TransactionType.Convert));
+			//TransactionHistory.Add(new Transaction(DateTime.Now, toCurrency, convertedAmount, TransactionType.Convert));
 		}
 
 		// Method to set the current currency

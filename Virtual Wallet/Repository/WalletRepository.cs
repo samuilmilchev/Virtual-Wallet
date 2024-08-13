@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 using Virtual_Wallet.Db;
 using Virtual_Wallet.Exceptions;
 using Virtual_Wallet.Models.Entities;
@@ -21,7 +22,17 @@ namespace Virtual_Wallet.Repository
             {
                 throw new ArgumentException("Amount to add must be greater than zero", nameof(amount));
             }
+
+            var currentWallet = _context.Wallets.Include(w => w.TransactionHistory).FirstOrDefault(w => w.Id == wallet.Id);
+            if (currentWallet == null)
+            {
+                throw new ArgumentException("Wallet not found", nameof(wallet));
+            }
+
             wallet.Balance += amount;
+
+            var transaction = new Transaction(DateTime.Now , amount , TransactionType.Add , currentWallet.Id);
+            currentWallet.TransactionHistory.Add(transaction);
             _context.SaveChanges();
         }
 
@@ -54,7 +65,16 @@ namespace Virtual_Wallet.Repository
                 throw new InsufficientFundsException("Insufficient funds to execute the withdrawal!");
             }
 
+            var currentWallet = _context.Wallets.Include(w => w.TransactionHistory).FirstOrDefault(w => w.Id == wallet.Id);
+            if (currentWallet == null)
+            {
+                throw new ArgumentException("Wallet not found", nameof(wallet));
+            }
+
             wallet.Balance -= amount;
+
+            var transaction = new Transaction(DateTime.Now , amount , TransactionType.Withdraw , currentWallet.Id);
+            currentWallet.TransactionHistory.Add(transaction);
             _context.SaveChanges();
         }
 

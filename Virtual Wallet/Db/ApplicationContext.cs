@@ -14,6 +14,7 @@ namespace Virtual_Wallet.Db
         public DbSet<User> Users { get; set; }
         public DbSet<Card> Cards { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -45,6 +46,13 @@ namespace Virtual_Wallet.Db
             };
 
             modelBuilder.Entity<Wallet>().HasData(wallets);
+
+            //Wallet-Transaction relationship
+            modelBuilder.Entity<Wallet>()
+                .HasMany(w => w.TransactionHistory)
+                .WithOne(t => t.Wallet)
+                .HasForeignKey(t => t.WalletId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
