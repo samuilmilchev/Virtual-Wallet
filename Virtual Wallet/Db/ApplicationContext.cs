@@ -40,9 +40,9 @@ namespace Virtual_Wallet.Db
 
             var wallets = new List<Wallet>
             {
-                new Wallet {Id = 1,WalletName = "Violin's wallet" , Balance = 0.00},
-                new Wallet {Id = 2, WalletName = "Sami's wallet" , Balance = 0.00},
-                new Wallet {Id = 3, WalletName = "Alex's wallet" , Balance = 0.00}
+                new Wallet {Id = 1,OwnerId = 1,WalletName = "Violin's wallet" , Balance = 0.00},
+                new Wallet {Id = 2, OwnerId = 2,WalletName = "Sami's wallet" , Balance = 0.00},
+                new Wallet {Id = 3, OwnerId = 3,WalletName = "Alex's wallet" , Balance = 0.00}
             };
 
             modelBuilder.Entity<Wallet>().HasData(wallets);
