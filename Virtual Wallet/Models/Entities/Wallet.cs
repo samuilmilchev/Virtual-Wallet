@@ -11,11 +11,11 @@
 
         public double Balance { get; set; }
 
-        public List<Transaction> TransactionHistory { get; set; }
+        public List<Transaction> TransactionHistory { get; set; } = new List<Transaction>();//инициализиране на списъка с трансакции за да се избегне null reference;
 
-        public Wallet() //инициализиране на списъка с трансакции в конструктора за да се избегне null reference
-        {
-            TransactionHistory = new List<Transaction>(); // Initialize the transaction list
-        }
+        //public Wallet() //инициализиране на списъка с трансакции в конструктора за да се избегне null reference
+        //{
+        //    TransactionHistory = new List<Transaction>(); // Initialize the transaction list
+        //}
     }
 }

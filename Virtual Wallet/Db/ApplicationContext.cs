@@ -20,6 +20,11 @@ namespace Virtual_Wallet.Db
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<User>()
+            .HasOne(u => u.UserWallet) // Navigation property on User
+            .WithOne(w => w.Owner) // Navigation property on Wallet
+            .HasForeignKey<Wallet>(w => w.OwnerId); // Specify the foreign key on Wallet
+
             var users = new List<User>
             {
             new User { Id = 1, Email = "samuil@example.com", Username = "Samuil", /*Password = ""*/ PhoneNumber = "0845965847", IsAdmin = true, IsBlocked = false, Role = UserRole.User},
@@ -29,7 +34,7 @@ namespace Virtual_Wallet.Db
 
             modelBuilder.Entity<User>().HasData(users);
 
-            var cards = new List<Card> 
+            var cards = new List<Card>
             {
                 new Card {Id = 1, CardHolder = "Samuil Milchev", CardNumber = "359039739152721", CheckNumber = 111, ExpirationData = "10/28"},
                 new Card {Id = 2, CardHolder = "Violin Filev", CardNumber = "379221059046032", CheckNumber = 112, ExpirationData = "04/28"},
