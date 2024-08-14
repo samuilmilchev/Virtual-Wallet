@@ -40,5 +40,6 @@
     <Folder Include="wwwroot\image\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="Controllers\API\" />
-    
+    </ItemGroup>
+
 </Project>
