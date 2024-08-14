@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Virtual_Wallet</RootNamespace>
     <GenerateProgramFile>false</GenerateProgramFile>
@@ -37,7 +37,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\image\" />
+    <Folder Include="wwwroot\css\" />
     <Folder Include="Controllers\API\" />
-  </ItemGroup>
-
+    
 </Project>
