@@ -5,6 +5,6 @@
         //тук трябва да имам променлива която да свързвам крадит/дебит картата с виртуалния портфейл
         //примерно WalletID
 
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
     }
 }

@@ -74,7 +74,7 @@ namespace Virtual_Wallet.Repository
             return card;
         }
 
-        public double GetBalance(string cardNumber)
+        public decimal GetBalance(string cardNumber)
         {
             Card card = this.GetByCardNumber(cardNumber);
             return card.Balance;

@@ -45,8 +45,8 @@ namespace Virtual_Wallet.Migrations
                     b.Property<int>("CardType")
                         .HasColumnType("int");
 
-                    b.Property<int>("CheckNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("CheckNumber")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ExpirationData")
                         .HasColumnType("nvarchar(max)");
@@ -69,7 +69,7 @@ namespace Virtual_Wallet.Migrations
                             CardHolderId = 0,
                             CardNumber = "359039739152721",
                             CardType = 0,
-                            CheckNumber = 111,
+                            CheckNumber = "111",
                             ExpirationData = "10/28"
                         },
                         new
@@ -80,7 +80,7 @@ namespace Virtual_Wallet.Migrations
                             CardHolderId = 0,
                             CardNumber = "379221059046032",
                             CardType = 0,
-                            CheckNumber = 112,
+                            CheckNumber = "112",
                             ExpirationData = "04/28"
                         },
                         new
@@ -91,7 +91,7 @@ namespace Virtual_Wallet.Migrations
                             CardHolderId = 0,
                             CardNumber = "345849306009469",
                             CardType = 0,
-                            CheckNumber = 121,
+                            CheckNumber = "121",
                             ExpirationData = "02/28"
                         });
                 });

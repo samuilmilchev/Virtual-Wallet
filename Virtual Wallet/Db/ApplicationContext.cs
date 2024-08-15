@@ -36,18 +36,18 @@ namespace Virtual_Wallet.Db
 
             var cards = new List<Card>
             {
-                new Card {Id = 1, CardHolder = "Samuil Milchev", CardNumber = "359039739152721", CheckNumber = 111, ExpirationData = "10/28"},
-                new Card {Id = 2, CardHolder = "Violin Filev", CardNumber = "379221059046032", CheckNumber = 112, ExpirationData = "04/28"},
-                new Card {Id = 3, CardHolder = "Alexander Georgiev", CardNumber = "345849306009469", CheckNumber = 121, ExpirationData = "02/28"}
+                new Card {Id = 1, CardHolder = "Samuil Milchev", CardNumber = "359039739152721", CheckNumber = "111", ExpirationData = "10/28"},
+                new Card {Id = 2, CardHolder = "Violin Filev", CardNumber = "379221059046032", CheckNumber = "112", ExpirationData = "04/28"},
+                new Card {Id = 3, CardHolder = "Alexander Georgiev", CardNumber = "345849306009469", CheckNumber = "121", ExpirationData = "02/28"}
             };
 
             modelBuilder.Entity<Card>().HasData(cards);
 
             var wallets = new List<Wallet>
             {
-                new Wallet {Id = 1,OwnerId = 1,WalletName = "Violin's wallet" , Balance = 0.00},
-                new Wallet {Id = 2, OwnerId = 2,WalletName = "Sami's wallet" , Balance = 0.00},
-                new Wallet {Id = 3, OwnerId = 3,WalletName = "Alex's wallet" , Balance = 0.00}
+                new Wallet {Id = 1,OwnerId = 1,WalletName = "Violin's wallet" , Balance = 0.00m},
+                new Wallet {Id = 2, OwnerId = 2,WalletName = "Sami's wallet" , Balance = 0.00m},
+                new Wallet {Id = 3, OwnerId = 3,WalletName = "Alex's wallet" , Balance = 0.00m}
             };
 
             modelBuilder.Entity<Wallet>().HasData(wallets);

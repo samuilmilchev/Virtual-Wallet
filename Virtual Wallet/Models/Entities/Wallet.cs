@@ -9,7 +9,7 @@
 
         public string WalletName { get; set; }
 
-        public double Balance { get; set; }
+        public decimal Balance { get; set; }
 
         public List<Transaction> TransactionHistory { get; set; } = new List<Transaction>();//инициализиране на списъка с трансакции за да се избегне null reference;
 

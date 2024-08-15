@@ -42,7 +42,7 @@ namespace Virtual_Wallet.Services
             return _cardRepository.GetAll();
         }
 
-        public double GetBalance(string cardNumber)
+        public decimal GetBalance(string cardNumber)
         {
             return this._cardRepository.GetBalance(cardNumber);
         }
