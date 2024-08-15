@@ -9,6 +9,6 @@ namespace Virtual_Wallet.Services.Contracts
         public List<Card> GetAll();
         public Card GetByCardHoler(string cardHolder);
         public Card GetById(int id);
-        double GetBalance(string cardNumber);
+        decimal GetBalance(string cardNumber);
     }
 }

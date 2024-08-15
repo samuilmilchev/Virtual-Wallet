@@ -16,7 +16,7 @@ namespace Virtual_Wallet.Repository
             this._context = context;
         }
 
-        public void AddFunds(double amount, Wallet wallet)
+        public void AddFunds(decimal amount, Wallet wallet)
         {
             if (amount <= 0)
             {
@@ -36,7 +36,7 @@ namespace Virtual_Wallet.Repository
             _context.SaveChanges();
         }
 
-        public double ConvertFunds()
+        public decimal ConvertFunds()
         {
             throw new NotImplementedException();
         }
@@ -49,12 +49,12 @@ namespace Virtual_Wallet.Repository
             return wallet;
         }
 
-        public double GetBalance(Wallet wallet)
+        public decimal GetBalance(Wallet wallet)
         {
             return wallet.Balance;
         }
 
-        public void WithdrawFunds(double amount, Wallet wallet)
+        public void WithdrawFunds(decimal amount, Wallet wallet)
         {
             if (amount <= 0)
             {

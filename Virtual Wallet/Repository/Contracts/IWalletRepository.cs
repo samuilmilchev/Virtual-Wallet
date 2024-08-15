@@ -5,9 +5,9 @@ namespace Virtual_Wallet.Repository.Contracts
     public interface IWalletRepository
     {
         Wallet Create(Wallet wallet);
-        void AddFunds(double amount, Wallet wallet);
-        void WithdrawFunds(double amount, Wallet wallet);
-        double GetBalance(Wallet wallet);
-        double ConvertFunds();
+        void AddFunds(decimal amount, Wallet wallet);
+        void WithdrawFunds(decimal amount, Wallet wallet);
+        decimal GetBalance(Wallet wallet);
+        decimal ConvertFunds();
     }
 }

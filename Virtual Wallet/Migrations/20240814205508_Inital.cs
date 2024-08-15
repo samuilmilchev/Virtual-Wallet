@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Virtual_Wallet.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Inital : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,7 +40,7 @@ namespace Virtual_Wallet.Migrations
                     ExpirationData = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CardHolderId = table.Column<int>(type: "int", nullable: false),
                     CardHolder = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CheckNumber = table.Column<int>(type: "int", nullable: false),
+                    CheckNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CardType = table.Column<int>(type: "int", nullable: false),
                     Balance = table.Column<double>(type: "float", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: true)
@@ -102,9 +102,9 @@ namespace Virtual_Wallet.Migrations
                 columns: new[] { "Id", "Balance", "CardHolder", "CardHolderId", "CardNumber", "CardType", "CheckNumber", "ExpirationData", "UserId" },
                 values: new object[,]
                 {
-                    { 1, 0.0, "Samuil Milchev", 0, "359039739152721", 0, 111, "10/28", null },
-                    { 2, 0.0, "Violin Filev", 0, "379221059046032", 0, 112, "04/28", null },
-                    { 3, 0.0, "Alexander Georgiev", 0, "345849306009469", 0, 121, "02/28", null }
+                    { 1, 0.0, "Samuil Milchev", 0, "359039739152721", 0, "111", "10/28", null },
+                    { 2, 0.0, "Violin Filev", 0, "379221059046032", 0, "112", "04/28", null },
+                    { 3, 0.0, "Alexander Georgiev", 0, "345849306009469", 0, "121", "02/28", null }
                 });
 
             migrationBuilder.InsertData(

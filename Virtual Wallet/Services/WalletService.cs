@@ -16,7 +16,7 @@ namespace Virtual_Wallet.Services
             this.cardService = cardService;
         }
 
-        public void AddFunds(double amount, Wallet wallet , Card card) //from card to wallet
+        public void AddFunds(decimal amount, Wallet wallet , Card card) //from card to wallet
         {
             if (card.Balance < amount)
             {
@@ -26,7 +26,7 @@ namespace Virtual_Wallet.Services
             this.walletRepository.AddFunds(amount, wallet);
         }
 
-        public double ConvertFunds()
+        public decimal ConvertFunds()
         {
             throw new NotImplementedException();
         }
@@ -36,12 +36,12 @@ namespace Virtual_Wallet.Services
             return walletRepository.Create(wallet); 
         }
 
-        public double GetBalance(Wallet wallet)
+        public decimal GetBalance(Wallet wallet)
         {
             return this.walletRepository.GetBalance(wallet);
         }
 
-        public void WithdrawFunds(double amount, Wallet wallet, Card card) //from wallet to card
+        public void WithdrawFunds(decimal amount, Wallet wallet, Card card) //from wallet to card
         {
             this.walletRepository.WithdrawFunds(amount , wallet);
             card.Balance += amount;

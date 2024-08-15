@@ -7,8 +7,8 @@
         public string ExpirationData { get; set; }
         public int CardHolderId { get; set; }
         public string CardHolder { get; set; }
-        public int CheckNumber {  get; set; }
+        public string CheckNumber {  get; set; }
         public CardType CardType { get; set; }
-        public double Balance { get; set; }
+        public decimal Balance { get; set; } = 100000;
     }
 }

@@ -10,14 +10,32 @@
             </div>
             <div class="field">
                 <label>Card Number</label>
-                <input asp-for="CardNumber" type="text" id="cardholder-name" class="input empty" placeholder="4584 5214 2451 6548" />
+                <input asp-for="CardNumber" type="text" id="cardholder-name" class="input empty" placeholder="1234 1234 1234 1234" />
                 <span asp-validation-for="CardNumber" class="text-danger"></span>
             </div>
             <div class="field">
                 <label>Expiration Date</label>
-                <input asp-for="ExpirationDate" type="text" class="input empty" placeholder="05 / 27" required>
+                <input asp-for="ExpirationDate" type="text" class="input empty" placeholder="05/27" required>
                 <span asp-validation-for="ExpirationDate" class="text-danger"></span>
             </div>
+            <div class="field">
+                <label>CVV</label>
+                <input asp-for="CheckNumber" type="text" class="input empty" placeholder="123" required>
+                <span asp-validation-for="ExpirationDate" class="text-danger"></span>
+            </div>
+            <div class="field">
+                <label for="cardType">Card Type</label>
+                <select id="cardType" name="CardType">
+                    @foreach (var cardType in Enum.GetValues(typeof(Virtual_Wallet.Models.Entities.CardType)))
+                    {
+                        <option value="@cardType">
+                            @cardType
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="CardType"></span>
+            </div>
+
             <button type="submit" id="pay_button">Register card</button>
         </form>
     </div>

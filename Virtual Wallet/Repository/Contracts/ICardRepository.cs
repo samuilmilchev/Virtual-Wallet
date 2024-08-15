@@ -11,8 +11,7 @@ namespace Virtual_Wallet.Repository.Contracts
         bool Delete(int id);
         Card GetById(int id);
         Card GetByCardNumber(string cardNumber);
-
-        double GetBalance(string cardNumber);
+        decimal GetBalance(string cardNumber);
         //bool BlockCard(int userId, User user);
         //bool UnblockCard(int userId, User user);
         //List<User> FilterBy(UserQueryParameters filterParameters);
