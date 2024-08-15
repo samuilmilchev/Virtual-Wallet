@@ -85,9 +85,11 @@ public class Program
 
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<ICardRepository, CardRepository>();
+        builder.Services.AddScoped<IWalletRepository, WalletRepository>();
 
         builder.Services.AddScoped<IUsersService, UsersService>();
         builder.Services.AddScoped<ICardService, CardService>();
+        builder.Services.AddScoped<IWalletService, WalletService>();
 
         builder.Services.AddScoped<IModelMapper, ModelMapper>();
 

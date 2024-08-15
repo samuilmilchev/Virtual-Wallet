@@ -68,6 +68,10 @@
                             <button class="button">
                                 <a asp-controller="Card" asp-action="Register" class="nav">RegisterCard</a>
                             </button>
+                            <button class="button">
+                                 @*<a asp-controller="api/transfer" asp-action="transferFunds" class="nav">Add/Withdraw</a>*@
+                                <a asp-page="/Transfer" class="nav">Transfer Funds</a>
+                            </button>
 
                             if (User.IsInRole("Admin"))
                             {
