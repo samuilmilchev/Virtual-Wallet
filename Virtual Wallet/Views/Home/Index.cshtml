@@ -15,6 +15,11 @@
 <!-- responsive style -->
 <link href="css/responsive.css" rel="stylesheet" />
 
+@{
+    var isAuthenticated = User.Identity.IsAuthenticated;
+    var walletName = ViewBag.WalletName;
+    var walletBalance = ViewBag.WalletBalance;
+}
 
 <div class="hero_area">
 
@@ -40,6 +45,14 @@
                                     <p style="font-size: 20px;">
                                         Transfer, save money easy and free with <strong style="font-size: 50px;">NIMBLE</strong> wallet!
                                     </p>
+                                    @{
+                                        if (isAuthenticated && walletName != null)
+                                        {
+                                            <p style="font-size: 20px;">
+                                                Money in @walletName : @walletBalance 
+                                            </p>
+                                        }
+                                    }
                                     <div class="btn-box">
                                         <a href="" class="btn1">
                                             Read More

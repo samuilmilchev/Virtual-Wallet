@@ -46,8 +46,8 @@
                                 <a asp-controller="Card" asp-action="Register" class="nav">RegisterCard</a>
                             </button>
                             <button class="button">
-                                 @*<a asp-controller="api/transfer" asp-action="transferFunds" class="nav">Add/Withdraw</a>*@
-                                <a asp-page="/Transfer" class="nav">Transfer Funds</a>
+                                <a asp-controller="Transfer" asp-action="Transfer" class="nav">Transfer Funds</a>
+                                @*<a asp-page="/Transfer" class="nav">Transfer Funds</a>*@
                             </button>
 
                             if (User.IsInRole("Admin"))
@@ -80,5 +80,6 @@
     <footer>
         <small>©️ Copyright @DateTime.Now.Year, Card</small>
     </footer>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

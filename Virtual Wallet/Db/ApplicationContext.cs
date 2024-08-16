@@ -36,9 +36,9 @@ namespace Virtual_Wallet.Db
 
             var cards = new List<Card>
             {
-                new Card {Id = 1, CardHolder = "Samuil Milchev", CardNumber = "359039739152721", CheckNumber = "111", ExpirationData = "10/28"},
-                new Card {Id = 2, CardHolder = "Violin Filev", CardNumber = "379221059046032", CheckNumber = "112", ExpirationData = "04/28"},
-                new Card {Id = 3, CardHolder = "Alexander Georgiev", CardNumber = "345849306009469", CheckNumber = "121", ExpirationData = "02/28"}
+                new Card {Id = 1,UserId = 1 ,/* CardHolder = "Samuil Milchev",*/ CardNumber = "359039739152721", CheckNumber = "111", ExpirationData = "10/28"},
+                new Card {Id = 2, UserId = 2 ,/*CardHolder = "Violin Filev",*/ CardNumber = "379221059046032", CheckNumber = "112", ExpirationData = "04/28"},
+                new Card {Id = 3, UserId = 3 ,/*CardHolder = "Alexander Georgiev",*/ CardNumber = "345849306009469", CheckNumber = "121", ExpirationData = "02/28"}
             };
 
             modelBuilder.Entity<Card>().HasData(cards);

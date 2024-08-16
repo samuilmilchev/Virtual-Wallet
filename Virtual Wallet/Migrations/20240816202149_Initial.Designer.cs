@@ -12,8 +12,8 @@ using Virtual_Wallet.Db;
 namespace Virtual_Wallet.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240814205508_Inital")]
-    partial class Inital
+    [Migration("20240816202149_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,14 +32,8 @@ namespace Virtual_Wallet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<double>("Balance")
-                        .HasColumnType("float");
-
-                    b.Property<string>("CardHolder")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CardHolderId")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("CardNumber")
                         .HasColumnType("nvarchar(max)");
@@ -53,7 +47,7 @@ namespace Virtual_Wallet.Migrations
                     b.Property<string>("ExpirationData")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -66,35 +60,32 @@ namespace Virtual_Wallet.Migrations
                         new
                         {
                             Id = 1,
-                            Balance = 0.0,
-                            CardHolder = "Samuil Milchev",
-                            CardHolderId = 0,
+                            Balance = 100000m,
                             CardNumber = "359039739152721",
                             CardType = 0,
                             CheckNumber = "111",
-                            ExpirationData = "10/28"
+                            ExpirationData = "10/28",
+                            UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            Balance = 0.0,
-                            CardHolder = "Violin Filev",
-                            CardHolderId = 0,
+                            Balance = 100000m,
                             CardNumber = "379221059046032",
                             CardType = 0,
                             CheckNumber = "112",
-                            ExpirationData = "04/28"
+                            ExpirationData = "04/28",
+                            UserId = 2
                         },
                         new
                         {
                             Id = 3,
-                            Balance = 0.0,
-                            CardHolder = "Alexander Georgiev",
-                            CardHolderId = 0,
+                            Balance = 100000m,
                             CardNumber = "345849306009469",
                             CardType = 0,
                             CheckNumber = "121",
-                            ExpirationData = "02/28"
+                            ExpirationData = "02/28",
+                            UserId = 3
                         });
                 });
 
@@ -104,8 +95,8 @@ namespace Virtual_Wallet.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
@@ -206,8 +197,8 @@ namespace Virtual_Wallet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<double>("Balance")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("OwnerId")
                         .HasColumnType("int");
@@ -226,21 +217,21 @@ namespace Virtual_Wallet.Migrations
                         new
                         {
                             Id = 1,
-                            Balance = 0.0,
+                            Balance = 0.00m,
                             OwnerId = 1,
                             WalletName = "Violin's wallet"
                         },
                         new
                         {
                             Id = 2,
-                            Balance = 0.0,
+                            Balance = 0.00m,
                             OwnerId = 2,
                             WalletName = "Sami's wallet"
                         },
                         new
                         {
                             Id = 3,
-                            Balance = 0.0,
+                            Balance = 0.00m,
                             OwnerId = 3,
                             WalletName = "Alex's wallet"
                         });
@@ -248,9 +239,13 @@ namespace Virtual_Wallet.Migrations
 
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Card", b =>
                 {
-                    b.HasOne("Virtual_Wallet.Models.Entities.User", null)
+                    b.HasOne("Virtual_Wallet.Models.Entities.User", "CardHolder")
                         .WithMany("Cards")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CardHolder");
                 });
 
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Transaction", b =>

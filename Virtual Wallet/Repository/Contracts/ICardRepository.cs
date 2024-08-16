@@ -12,6 +12,8 @@ namespace Virtual_Wallet.Repository.Contracts
         Card GetById(int id);
         Card GetByCardNumber(string cardNumber);
         decimal GetBalance(string cardNumber);
+
+        Card GetByUserId(int userId);
         //bool BlockCard(int userId, User user);
         //bool UnblockCard(int userId, User user);
         //List<User> FilterBy(UserQueryParameters filterParameters);

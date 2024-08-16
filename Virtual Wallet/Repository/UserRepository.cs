@@ -50,7 +50,7 @@ namespace Virtual_Wallet.Repository
         }
         public User GetByUsername(string username)
         {
-            User user = this.GetUsers().FirstOrDefault(x => x.Username == username);
+            User user = this.GetUsers().Include(u => u.UserWallet).FirstOrDefault(x => x.Username == username);
             if (user == null)
             {
                 throw new EntityNotFoundException($"User with username {username} does not exist!");

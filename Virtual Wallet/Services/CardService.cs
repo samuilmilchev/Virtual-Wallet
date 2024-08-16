@@ -29,7 +29,7 @@ namespace Virtual_Wallet.Services
         {
             Card cardToDelete = _cardRepository.GetById(id);
 
-            if (user.Username != cardToDelete.CardHolder)
+            if (user.Username != cardToDelete.CardHolder.Username)
             {
                 throw new NotAuthorizedException("You are not authorised to delete. Only admin or the owner of this user can delete!");
             }
@@ -55,6 +55,11 @@ namespace Virtual_Wallet.Services
         public Card GetById(int id)
         {
             return _cardRepository.GetById(id);
+        }
+
+        public Card GetByUserId(int userId)
+        {
+            return _cardRepository.GetByUserId(userId);
         }
     }
 }
