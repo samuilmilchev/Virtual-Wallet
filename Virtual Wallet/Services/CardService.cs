@@ -61,5 +61,10 @@ namespace Virtual_Wallet.Services
         {
             return _cardRepository.GetByUserId(userId);
         }
+
+        public Card UpdateCardBalance(int id, Card card)
+        {
+            return _cardRepository.UpdateCardBalance(id, card);
+        }
     }
 }

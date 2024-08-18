@@ -22,7 +22,7 @@ namespace Virtual_Wallet.Controllers.API
         }
 
         [HttpPost("transferFunds")]
-        public IActionResult TransferToCard([FromBody] TransferRequestDTO transferRequest, [FromForm] string transferType)
+        public IActionResult TransferToCard([FromBody] TransferRequestDTO transferRequest, [FromQuery] string transferType)
         {
             if (!ModelState.IsValid)
             {

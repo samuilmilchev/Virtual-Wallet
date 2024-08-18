@@ -12,7 +12,7 @@ namespace Virtual_Wallet.Repository.Contracts
         Card GetById(int id);
         Card GetByCardNumber(string cardNumber);
         decimal GetBalance(string cardNumber);
-
+        Card UpdateCardBalance(int id, Card card);
         Card GetByUserId(int userId);
         //bool BlockCard(int userId, User user);
         //bool UnblockCard(int userId, User user);

@@ -3,7 +3,7 @@
     var amount = document.getElementById("amount").value;
 
     var transferRequest = {
-        TransferType = transferType
+        
         Amount: parseFloat(amount)
 
     };

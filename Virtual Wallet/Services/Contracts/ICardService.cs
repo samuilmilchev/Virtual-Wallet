@@ -11,5 +11,6 @@ namespace Virtual_Wallet.Services.Contracts
         Card GetByUserId(int userId); //needed for transfers between card and wallet
         public Card GetById(int id);
         decimal GetBalance(string cardNumber);
+        Card UpdateCardBalance(int id, Card card);
     }
 }

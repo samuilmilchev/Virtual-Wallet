@@ -1,4 +1,6 @@
-﻿namespace Virtual_Wallet.Models.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Virtual_Wallet.Models.Entities
 {
     public class Wallet
     {
@@ -12,6 +14,11 @@
         public decimal Balance { get; set; } = 0;
 
         public List<Transaction> TransactionHistory { get; set; } = new List<Transaction>();//инициализиране на списъка с трансакции за да се избегне null reference;
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }  // Concurrency token , нужен токен за контрол на
+                                                // версията на самото ентити(EF Core проверява това проперти за да провери дали
+                                                // ентито е имало предишни промени когато извикаме context.SaveChanges())
 
         //public Wallet() //инициализиране на списъка с трансакции в конструктора за да се избегне null reference
         //{

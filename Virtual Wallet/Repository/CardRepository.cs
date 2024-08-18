@@ -23,6 +23,19 @@ namespace Virtual_Wallet.Repository
             return card;
         }
 
+        public Card UpdateCardBalance(int id ,Card card)
+        {
+            Card cardToUpdate = this.GetById(id);
+            if (cardToUpdate == null)
+            {
+                throw new EntityNotFoundException("Card does not exist!");
+            }
+
+            card.Balance = cardToUpdate.Balance;
+            _context.SaveChanges();
+            return cardToUpdate;
+        }
+
         public bool Delete(int id)
         {
             Card card = this.GetById(id);
