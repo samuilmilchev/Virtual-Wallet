@@ -9,13 +9,13 @@ namespace Virtual_Wallet.Services
 	{
 		private readonly IWalletRepository walletRepository;
 		private readonly ICardService cardService;
-		private readonly IExchangeRateService exchangeRateService; // Assuming you have this service for currency conversion
+		//private readonly IExchangeRateService exchangeRateService; // Assuming you have this service for currency conversion
 
-		public WalletService(IWalletRepository walletRepository, ICardService cardService, IExchangeRateService exchangeRateService)
+		public WalletService(IWalletRepository walletRepository, ICardService cardService/*, IExchangeRateService exchangeRateService*/)
 		{
 			this.walletRepository = walletRepository;
 			this.cardService = cardService;
-			this.exchangeRateService = exchangeRateService;
+			//this.exchangeRateService = exchangeRateService;
 		}
 
 		public void AddFunds(decimal amount, string currency, Wallet wallet, Card card) // From card to wallet
@@ -28,7 +28,7 @@ namespace Virtual_Wallet.Services
 			this.walletRepository.AddFunds(amount, currency, wallet);
 		}
 
-		public decimal ConvertFunds(decimal amount, string fromCurrency, string toCurrency, Wallet wallet)
+		/*public decimal ConvertFunds(decimal amount, string fromCurrency, string toCurrency, Wallet wallet)
 		{
 			if (fromCurrency == toCurrency)
 			{
@@ -53,7 +53,7 @@ namespace Virtual_Wallet.Services
 			walletRepository.AddFunds(convertedAmount, toCurrency, wallet);
 
 			return convertedAmount;
-		}
+		}*/
 
 		public Wallet Create(Wallet wallet)
 		{
@@ -75,6 +75,7 @@ namespace Virtual_Wallet.Services
 
 			this.walletRepository.WithdrawFunds(amount, currency, wallet);
 			card.Balance += amount;
+			this.cardService.UpdateCardBalance(card.Id, card);
 		}
 
 		// New method: Transfer funds from one wallet to another

@@ -8,6 +8,6 @@ namespace Virtual_Wallet.Services.Contracts
         void AddFunds(decimal amount, string currency, Wallet wallet, Card card);
         void WithdrawFunds(decimal amount, string currency, Wallet wallet, Card card);
         decimal GetBalance(Wallet wallet, string currency);
-        decimal ConvertFunds(decimal amount, string fromCurrency, string toCurrency, Wallet wallet);
+        //decimal ConvertFunds(decimal amount, string fromCurrency, string toCurrency, Wallet wallet);
     }
 }

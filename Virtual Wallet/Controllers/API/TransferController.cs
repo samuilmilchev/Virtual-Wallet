@@ -36,11 +36,11 @@ namespace Virtual_Wallet.Controllers.API
 
             if (transferType == "toWallet")
             {
-                this._walletService.AddFunds(transferRequest.Amount, sender.UserWallet, sendersCard);
+                this._walletService.AddFunds(transferRequest.Amount, "BGN", sender.UserWallet, sendersCard);
             }
             else if (transferType == "toCard")
             {
-                this._walletService.WithdrawFunds(transferRequest.Amount, sender.UserWallet, sendersCard);
+                this._walletService.WithdrawFunds(transferRequest.Amount, "BGN", sender.UserWallet, sendersCard);
             }
             else
             {

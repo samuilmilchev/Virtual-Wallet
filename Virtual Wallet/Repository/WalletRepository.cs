@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Virtual_Wallet.Db;
 using Virtual_Wallet.Exceptions;
@@ -17,38 +18,51 @@ namespace Virtual_Wallet.Repository
 			_context = context;
 		}
 
-		public void AddFunds(decimal amount, string currency, Wallet wallet)
-		{
-			if (amount <= 0)
-			{
-				throw new ArgumentException("Amount to add must be greater than zero", nameof(amount));
-			}
+        public void AddFunds(decimal amount, string currency, Wallet wallet)
+        {
+            if (amount <= 0)
+            {
+                throw new ArgumentException("Amount to add must be greater than zero", nameof(amount));
+            }
 
-			var currentWallet = _context.Wallets.Include(w => w.Owner).FirstOrDefault(w => w.Id == wallet.Id);
-			if (currentWallet == null)
-			{
-				throw new ArgumentException("Wallet not found", nameof(wallet));
-			}
+            var currentWallet = _context.Wallets.Include(w => w.Owner).FirstOrDefault(w => w.Id == wallet.Id);
+            if (currentWallet == null)
+            {
+                throw new ArgumentException("Wallet not found", nameof(wallet));
+            }
 
-			if (currentWallet.Balances == null)
-			{
-				currentWallet.Balances = new Dictionary<string, decimal>();
-			}
+            // Initialize the dictionary if it's null
+            if (currentWallet.Balances.Count() == 0)
+            {
+				var dicitonary = new Dictionary<string, decimal>();
+				dicitonary.Add(currency,amount);
+                currentWallet.Balances = dicitonary;
+            }
 
-			if (!currentWallet.Balances.ContainsKey(currency))
-			{
-				currentWallet.Balances[currency] = 0;
-			}
+            // Add the currency to the dictionary if it doesn't exist
+            if (currentWallet.Balances.ContainsKey(currency))
+            {
+                var dicitonary = new Dictionary<string, decimal>();
+				dicitonary.Add(currency, currentWallet.Balances[currency]);
+				dicitonary[currency] += amount;
+                currentWallet.Balances = dicitonary;
+            }
 
-			currentWallet.Balances[currency] += amount;
+            // Add the amount to the specified currency
+            //currentWallet.Balances[currency] = amount;
 
-			var transaction = new Transaction(DateTime.Now, currency, amount, TransactionType.Add, currentWallet.Id);
-			_context.Transactions.Add(transaction);
+            // Create a transaction record
+            var transaction = new Transaction(DateTime.Now, currency, amount, TransactionType.Add, currentWallet.Id);
+            _context.Transactions.Add(transaction);
 
-			_context.SaveChanges();
-		}
+            // Update the JSON column before saving
+            currentWallet.BalancesJson = JsonSerializer.Serialize(currentWallet.Balances);
 
-		public void WithdrawFunds(decimal amount, string currency, Wallet wallet)
+            // Save changes to the database
+            _context.SaveChanges();
+        }
+
+        public void WithdrawFunds(decimal amount, string currency, Wallet wallet)
 		{
 			if (amount <= 0)
 			{
@@ -61,12 +75,18 @@ namespace Virtual_Wallet.Repository
 				throw new ArgumentException("Wallet not found", nameof(wallet));
 			}
 
-			if (currentWallet.Balances == null || !currentWallet.Balances.ContainsKey(currency) || currentWallet.Balances[currency] < (decimal)amount)
+			if (currentWallet.Balances.Count() == 0 || !currentWallet.Balances.ContainsKey(currency) || currentWallet.Balances[currency] < amount)
 			{
 				throw new InsufficientFundsException("Insufficient funds to execute the withdrawal!");
 			}
 
-			currentWallet.Balances[currency] -= (decimal)amount;
+            if (currentWallet.Balances.ContainsKey(currency))
+            {
+                var dicitonary = new Dictionary<string, decimal>();
+                dicitonary.Add(currency, currentWallet.Balances[currency]);
+                dicitonary[currency] -= amount;
+                currentWallet.Balances = dicitonary;
+            }
 
 			var transaction = new Transaction(DateTime.Now, currency, amount, TransactionType.Withdraw, currentWallet.Id);
 			_context.Transactions.Add(transaction);
@@ -97,7 +117,7 @@ namespace Virtual_Wallet.Repository
 			return wallet.Balances[currency];
 		}
 
-		public void ConvertFunds(Wallet wallet, string fromCurrency, string toCurrency, decimal amount)
+		/*public void ConvertFunds(Wallet wallet, string fromCurrency, string toCurrency, decimal amount)
 		{
 			if (amount <= 0)
 			{
@@ -133,7 +153,7 @@ namespace Virtual_Wallet.Repository
 			_context.Transactions.Add(transaction);
 
 			_context.SaveChanges();
-		}
+		}*/
 		public async Task<Wallet> GetById(int id)
 		{
 			return await _context.Wallets

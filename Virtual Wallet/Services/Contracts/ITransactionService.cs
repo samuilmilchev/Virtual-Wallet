@@ -6,7 +6,7 @@ namespace Virtual_Wallet.Services.Contracts
     {
         Task CreateTransaction(DateTime timestamp, string currency, decimal amount, TransactionType type, int walletId);
         Task<IEnumerable<Transaction>> GetAllTransactions();
-        Task<Transaction> GetTransactionById(Guid id);
+        Task<Transaction> GetTransactionById(int id);
         Task<IEnumerable<Transaction>> GetTransactionsByDateRange(DateTime startDate, DateTime endDate);
         Task<IEnumerable<Transaction>> GetTransactionsByType(TransactionType type);
         Task<IEnumerable<Transaction>> GetTransactionsByWalletId(int walletId);

@@ -92,11 +92,15 @@ namespace Virtual_Wallet.Db
            .Property(w => w.RowVersion)
            .IsRowVersion();  // Configure RowVersion as a concurrency token
 
-            //Wallet-Transaction relationship
-            modelBuilder.Entity<Wallet>()
-                .WithOne(t => t.Wallet)
-                .HasForeignKey(t => t.WalletId)
-                .OnDelete(DeleteBehavior.Cascade);
-        }
-    }
+			// Transaction entity configuration
+			modelBuilder.Entity<Transaction>()
+				.HasKey(t => t.Id); // Ensure Id is the primary key
+
+			modelBuilder.Entity<Transaction>()
+				.Property(t => t.Timestamp)
+				.IsRequired(); // Ensure Timestamp is required
+
+			// Any other Transaction-specific configuration goes here
+		}
+	}
 }

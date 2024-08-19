@@ -31,7 +31,7 @@ namespace Virtual_Wallet.Repository
 		}
 
 		// Get a transaction by its ID
-		public async Task<Models.Entities.Transaction> GetById(Guid id)
+		public async Task<Models.Entities.Transaction> GetById(int id)
 		{
 			return await _context.Transactions
 				.Include(t => t.Wallet)

@@ -31,7 +31,7 @@ namespace Virtual_Wallet.Services
 			await _transactionRepository.Create(transaction);
 		}
 
-		public async Task<Transaction> GetTransactionById(Guid id)
+		public async Task<Transaction> GetTransactionById(int id)
 		{
 			return await _transactionRepository.GetById(id);
 		}

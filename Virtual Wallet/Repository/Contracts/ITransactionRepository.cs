@@ -7,7 +7,7 @@ namespace Virtual_Wallet.Repository.Contracts
         Task Create(Transaction transaction);
         Task<IEnumerable<Transaction>> GetAll();
         Task<IEnumerable<Transaction>> GetByDateRange(DateTime startDate, DateTime endDate);
-        Task<Transaction> GetById(Guid id);
+        Task<Transaction> GetById(int id);
         Task<IEnumerable<Transaction>> GetByType(TransactionType type);
         Task<IEnumerable<Transaction>> GetByWalletId(int walletId);
     }
