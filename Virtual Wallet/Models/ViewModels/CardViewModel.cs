@@ -17,7 +17,7 @@ namespace Virtual_Wallet.Models.ViewModels
         public string ExpirationDate { get; set; }
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "CVV is required and must not be empty.")]
-        [RegularExpression(@"^(0[1-9]|1[0-2])([0-9])$", ErrorMessage = "Invalid CVV format! Must be XXX.")]
+        [RegularExpression(@"^\d{3}$", ErrorMessage = "Invalid CVV format! Must be XXX.")]
         public string CheckNumber { get; set; }
         public CardType CardType { get; set; }
     }

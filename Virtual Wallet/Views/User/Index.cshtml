@@ -1,10 +1,13 @@
 ﻿@model Virtual_Wallet.DTOs.UserDTOs.CombinedUserDTO
 
 @{
-    Layout = "_Layout";
+    Layout = null;
 }
 
+
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="~/css/login.css?v=3.0">
 
     <style>
         input[type="file"]::file-selector-button {
@@ -23,7 +26,9 @@
 <body>
     <div class="form-container">
         <div class="col col-1">
-            <p class="featured-words">Register now </p>
+            <div class="image-layer">
+                <img src="~/images/clip-man-putting-a-euro-coin-into-a-piggy-box.png" class="form-image-main">
+            </div>
         </div>
         <div class="col col-2">
             <div class="btn-box">
@@ -39,8 +44,8 @@
                     </div>
                     <div class="form-inputs">
                         <div class="input-box">
-                            <input asp-for="Login.Username" type="text" class="input-field" placeholder="Username" required>
-                            <span asp-validation-for="Login.Username" class="text-danger"></span>
+                            <input asp-for="Login.Username" type="text" style="height: 60px;"  class="input-field" placeholder="Username" required>
+                            <span asp-validation-for="Login.Username" style="height: 60px;" class="text-danger"></span>
                             <i class="bx bx-user icon"></i>
                         </div>
                         <div class="input-box">
@@ -50,7 +55,7 @@
                         </div>
                         <div class="input-box">
                             <button type="submit" class="input-submit">
-                                <span>Sign In</span>
+                                <span style="font-size: 15px; font-weight:500;">Sign In</span>
                                 <i class="bx bx-right-arrow-alt"></i>
                             </button>
                         </div>
@@ -66,29 +71,31 @@
                     </div>
 
                     <div class="form-inputs">
+
                         <div class="input-box">
-                            <input asp-for="Register.Username" type="text" style="height: 50px;" class="input-field" placeholder="Username" required>
+                            <input asp-for="Register.Username" type="text" style="height: 60px;" class="input-field" placeholder="Username" required>
                             <span asp-validation-for="Register.Username" class="text-danger"></span>
                             <i class="bx bx-user icon"></i>
                         </div>
                         <div class="input-box">
-                            <input asp-for="Register.Email" type="text" style="height: 50px;" class="input-field" placeholder="Email" required>
+                            <input asp-for="Register.Email" type="text" style="height: 60px;" class="input-field" placeholder="Email" required>
                             <span asp-validation-for="Register.Email" class="text-danger"></span>
                             <i class="bx bx-user icon"></i>
                         </div>
                         <div class="input-box">
-                            <input asp-for="Register.PhoneNumber" type="text" style="height: 50px;" class="input-field" placeholder="PhoneNumber" required>
+                            <input asp-for="Register.PhoneNumber" type="text" style="height: 60px;" class="input-field" placeholder="PhoneNumber" required>
                             <span asp-validation-for="Register.PhoneNumber" class="text-danger"></span>
                             <i class="bx bx-user icon"></i>
                         </div>
                         <div class="input-box">
-                            <input asp-for="Register.Password" type="password" style="height: 50px;" class="input-field" placeholder="Password" required>
+                            <input asp-for="Register.Password" type="password" style="height: 60px;" class="input-field" placeholder="Password" required>
                             <span asp-validation-for="Register.Password" class="text-danger"></span>
                             <i class="bx bx-lock-alt icon"></i>
                         </div>
+
                         <div class="input-box">
-                            <button type="submit" style="height: 40px;" class="input-submit">
-                                <span>Sign Up</span>
+                            <button type="submit" class="input-submit">
+                                <span style="font-size: 15px; font-weight:500;">Sign Up</span>
                                 <i class="bx bx-right-arrow-alt"></i>
                             </button>
                         </div>
@@ -98,5 +105,5 @@
         </div>
     </div>
 
-    <script src="~/js/login.js?v=1.0"></script>
+    <script src="~/js/login.js?v=2.0"></script>
 </body>

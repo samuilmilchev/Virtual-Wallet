@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Virtual_Wallet.Migrations
 {
-    public partial class Inital : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -38,12 +38,11 @@ namespace Virtual_Wallet.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CardNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ExpirationData = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CardHolderId = table.Column<int>(type: "int", nullable: false),
                     CardHolder = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CheckNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CardType = table.Column<int>(type: "int", nullable: false),
-                    Balance = table.Column<double>(type: "float", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: true)
+                    Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,7 +51,8 @@ namespace Virtual_Wallet.Migrations
                         name: "FK_Cards_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -63,7 +63,7 @@ namespace Virtual_Wallet.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OwnerId = table.Column<int>(type: "int", nullable: false),
                     WalletName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Balance = table.Column<double>(type: "float", nullable: false)
+                    Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -82,7 +82,7 @@ namespace Virtual_Wallet.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Amount = table.Column<double>(type: "float", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
                     WalletId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -98,39 +98,39 @@ namespace Virtual_Wallet.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Cards",
-                columns: new[] { "Id", "Balance", "CardHolder", "CardHolderId", "CardNumber", "CardType", "CheckNumber", "ExpirationData", "UserId" },
-                values: new object[,]
-                {
-                    { 1, 0.0, "Samuil Milchev", 0, "359039739152721", 0, "111", "10/28", null },
-                    { 2, 0.0, "Violin Filev", 0, "379221059046032", 0, "112", "04/28", null },
-                    { 3, 0.0, "Alexander Georgiev", 0, "345849306009469", 0, "121", "02/28", null }
-                });
+                table: "Users",
+                columns: new[] { "Id", "Email", "IsAdmin", "IsBlocked", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Username", "WalletId" },
+                values: new object[] { 1, "samuil@example.com", true, false, null, null, "0845965847", 1, "Samuil", 0 });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "Email", "IsAdmin", "IsBlocked", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Username", "WalletId" },
+                values: new object[] { 2, "violin@example.com", true, false, null, null, "0865214587", 1, "Violin", 0 });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Email", "IsAdmin", "IsBlocked", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Username", "WalletId" },
+                values: new object[] { 3, "alex@example.com", true, false, null, null, "0826541254", 1, "Alex", 0 });
+
+            migrationBuilder.InsertData(
+                table: "Cards",
+                columns: new[] { "Id", "Balance", "CardHolder", "CardNumber", "CardType", "CheckNumber", "ExpirationData", "UserId" },
                 values: new object[,]
                 {
-                    { 1, "samuil@example.com", true, false, null, null, "0845965847", 1, "Samuil", 0 },
-                    { 2, "violin@example.com", true, false, null, null, "0865214587", 1, "Violin", 0 },
-                    { 3, "alex@example.com", true, false, null, null, "0826541254", 1, "Alex", 0 }
+                    { 1, 100000m, "Samuil Milchev", "359039739152721", 0, "111", "10/28", 1 },
+                    { 2, 100000m, "Violin Filev", "379221059046032", 0, "112", "04/28", 1 },
+                    { 3, 100000m, "Alexander Georgiev", "345849306009469", 0, "121", "02/28", 1 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Wallets",
                 columns: new[] { "Id", "Balance", "OwnerId", "WalletName" },
-                values: new object[] { 1, 0.0, 1, "Violin's wallet" });
-
-            migrationBuilder.InsertData(
-                table: "Wallets",
-                columns: new[] { "Id", "Balance", "OwnerId", "WalletName" },
-                values: new object[] { 2, 0.0, 2, "Sami's wallet" });
-
-            migrationBuilder.InsertData(
-                table: "Wallets",
-                columns: new[] { "Id", "Balance", "OwnerId", "WalletName" },
-                values: new object[] { 3, 0.0, 3, "Alex's wallet" });
+                values: new object[,]
+                {
+                    { 1, 0.00m, 1, "Violin's wallet" },
+                    { 2, 0.00m, 2, "Sami's wallet" },
+                    { 3, 0.00m, 3, "Alex's wallet" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cards_UserId",
