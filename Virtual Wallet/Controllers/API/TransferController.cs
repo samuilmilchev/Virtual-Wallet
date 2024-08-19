@@ -21,28 +21,40 @@ namespace Virtual_Wallet.Controllers.API
             _usersService = usersService;
         }
 
-        [HttpPost("transferToCard")]
-        public IActionResult TransferToCard([FromBody] TransferRequest transferRequest)
+        [HttpPost("transferFunds")]
+        public IActionResult TransferToCard([FromBody] TransferRequest transferRequest, [FromForm] string transferType)
         {
             var senderUsername = User.Identity.Name;
             var sender = this._usersService.GetByUsername(senderUsername);
             var sendersCard = this._cardService.GetByCardHoler(senderUsername);
 
-            this._walletService.WithdrawFunds(transferRequest.Amount , sender.UserWallet , sendersCard);
+            if (transferType == "toWallet")
+            {
+                this._walletService.AddFunds(transferRequest.Amount, sender.UserWallet, sendersCard);
+            }
+            else if (transferType == "toCard")
+            {
+                this._walletService.WithdrawFunds(transferRequest.Amount, sender.UserWallet, sendersCard);
+            }
+            else
+            {
+                return BadRequest("Invalid transfer type.");
+            }
+            
 
             return StatusCode(StatusCodes.Status200OK , transferRequest);     //подлежи на промяна след като изясним логиката по виртуалния портфейл
         }
 
-        [HttpPost("transferToWallet")]
-        public IActionResult TransferToWallet([FromBody] TransferRequest transferRequest)
-        {
-            var senderUsername = User.Identity.Name;
-            var sender = this._usersService.GetByUsername(senderUsername);
-            var sendersCard = this._cardService.GetByCardHoler(senderUsername);
+        //[HttpPost("transferToWallet")]
+        //public IActionResult TransferToWallet([FromBody] TransferRequest transferRequest)
+        //{
+        //    var senderUsername = User.Identity.Name;
+        //    var sender = this._usersService.GetByUsername(senderUsername);
+        //    var sendersCard = this._cardService.GetByCardHoler(senderUsername);
 
-            this._walletService.AddFunds(transferRequest.Amount , sender.UserWallet , sendersCard);
+           
 
-            return StatusCode(StatusCodes.Status200OK, transferRequest);     //подлежи на промяна след като изясним логиката по виртуалния портфейл
-        }
+        //    return StatusCode(StatusCodes.Status200OK, transferRequest);     //подлежи на промяна след като изясним логиката по виртуалния портфейл
+        //}
     }
 }
