@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Text.RegularExpressions;
 using Virtual_Wallet.Db;
 using Virtual_Wallet.Exceptions;
@@ -29,11 +30,31 @@ namespace Virtual_Wallet.Repository
                 throw new ArgumentException("Wallet not found", nameof(wallet));
             }
 
-            wallet.Balance += amount;
+            currentWallet.Balance += amount;
 
             var transaction = new Transaction(DateTime.Now , amount , TransactionType.Add , currentWallet.Id);
+            transaction.Wallet = wallet; //просвоявамае на кой уолет принадлежи трансакцията защото иначе е null;
+
             currentWallet.TransactionHistory.Add(transaction);
-            _context.SaveChanges();
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {    // Handle concurrency conflict: Store Wins approach
+                var databaseEntry = _context.Entry(currentWallet).GetDatabaseValues();
+
+                if (databaseEntry == null)
+                {
+                    throw new ArgumentException("Wallet no longer exists in the database.");
+                }
+
+                // Reload the entity from the database
+                _context.Entry(currentWallet).Reload();
+
+                // Retry the operation or notify the user
+                _context.SaveChanges();
+            }
         }
 
         public decimal ConvertFunds()
@@ -71,16 +92,34 @@ namespace Virtual_Wallet.Repository
                 throw new ArgumentException("Wallet not found", nameof(wallet));
             }
 
-            wallet.Balance -= amount;
+            currentWallet.Balance -= amount;
 
             var transaction = new Transaction(DateTime.Now , amount , TransactionType.Withdraw , currentWallet.Id);
             currentWallet.TransactionHistory.Add(transaction);
-            _context.SaveChanges();
+
+            //Handle exception when a concurency failure occurs
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+
+                // Handle concurrency conflict: Store Wins approach
+                var databaseEntry = _context.Entry(currentWallet).GetDatabaseValues();
+
+                if (databaseEntry == null)
+                {
+                    throw new ArgumentException("Wallet no longer exists in the database.");
+                }
+
+                // Reload the entity from the database
+                _context.Entry(currentWallet).Reload();
+
+                // Retry the operation or notify the user
+                _context.SaveChanges();
+            }
         }
 
-        //public bool UserHasWallet(string username)   може и да е нужен подобен метод, но на този етап не ни трябва
-        //{
-            
-        //}
     }
 }

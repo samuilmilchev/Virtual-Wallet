@@ -18,12 +18,14 @@ namespace Virtual_Wallet.Controllers.MVC
         private readonly IUsersService _usersService;
         private readonly IConfiguration _configuration;
         private readonly IModelMapper _modelMapper;
+        private readonly IWalletService _walletService;
 
-        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper)
+        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService)
         {
             _usersService = usersService;
             _configuration = configuration;
             _modelMapper = modelMapper;
+            _walletService = walletService;
         }
 
         [HttpGet]
@@ -44,6 +46,7 @@ namespace Virtual_Wallet.Controllers.MVC
             {
 
                 var registerModel = model.Register;
+                var walletModel = model.Wallet;
 
                 CreatePasswordHash(registerModel.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -57,6 +60,18 @@ namespace Virtual_Wallet.Controllers.MVC
                     Role = UserRole.User
                 };
 
+                //при създаване на акаунт се създава и първия(може би и единствен) уолет на юзъра
+                Wallet wallet = new Wallet
+                {
+                    
+                    WalletName = walletModel.WalletName,
+                    Owner = user
+                };
+
+                //тук добавяме новосъздадения уолет към юзъра
+                user.UserWallet = wallet;
+
+
                 //if (registerModel.Image != null)
                 //{
                 //    var result = await _photoService.AddPhotoAsync(registerModel.Image);
@@ -65,7 +80,9 @@ namespace Virtual_Wallet.Controllers.MVC
                 //}
 
                 User createdUser = _usersService.Create(user);
+                //Wallet createdWallet = _walletService.Create(wallet); // не знам дали е нужно за сега 
                 UserResponseDTO responseDTO = _modelMapper.MapUser(createdUser);
+
 
                 string token = CreateToken(user);
                 HttpContext.Response.Cookies.Append("jwt", token, new CookieOptions

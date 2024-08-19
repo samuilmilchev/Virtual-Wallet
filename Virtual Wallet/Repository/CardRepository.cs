@@ -23,6 +23,19 @@ namespace Virtual_Wallet.Repository
             return card;
         }
 
+        public Card UpdateCardBalance(int id ,Card card)
+        {
+            Card cardToUpdate = this.GetById(id);
+            if (cardToUpdate == null)
+            {
+                throw new EntityNotFoundException("Card does not exist!");
+            }
+
+            card.Balance = cardToUpdate.Balance;
+            _context.SaveChanges();
+            return cardToUpdate;
+        }
+
         public bool Delete(int id)
         {
             Card card = this.GetById(id);
@@ -39,11 +52,22 @@ namespace Virtual_Wallet.Repository
 
         public Card GetByCardHoler(string cardHolder)
         {
-            Card card = this.GetCards().FirstOrDefault(x => x.CardHolder == cardHolder);
+            Card card = this.GetCards().FirstOrDefault(x => x.User.Username == cardHolder);
             if (card == null)
             {
                 throw new EntityNotFoundException($"User with first name: {card.CardHolder} does not exist!");
             }
+            return card;
+        }
+
+        public Card GetByUserId(int userId)
+        {
+            Card card = this.GetCards().FirstOrDefault(c => c.UserId == userId);
+            if (card == null)
+            {
+                throw new EntityNotFoundException($"This user does not have a card with number: {card.CardNumber} !");
+            }
+
             return card;
         }
 

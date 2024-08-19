@@ -45,6 +45,7 @@ namespace Virtual_Wallet.Services
         {
             this.walletRepository.WithdrawFunds(amount , wallet);
             card.Balance += amount;
+            this.cardService.UpdateCardBalance(card.Id,card); //нужно за да се запази стойността в базата 
         }
     }
 }

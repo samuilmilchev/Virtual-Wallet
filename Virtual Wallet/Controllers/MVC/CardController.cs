@@ -43,9 +43,10 @@ namespace Virtual_Wallet.Controllers.MVC
             var user = _usersService.GetByUsername(username);
 
             Card card = new Card();
+            
 
-            card.CardHolder = cardViewModel.CardHolder;
-            card.CardNumber = cardViewModel.CardNumber;
+           // card.CardHolder.Username = cardViewModel.CardHolder; //закоментирано за момента тъй като модела Карта няма вече string CardHolder 
+            card.CardNumber = cardViewModel.CardNumber;             // a е User CardHolder
             card.ExpirationData = cardViewModel.ExpirationDate;
             card.CardType = cardViewModel.CardType;
             card.CheckNumber = HashCVV(cardViewModel.CheckNumber, GenerateSalt());

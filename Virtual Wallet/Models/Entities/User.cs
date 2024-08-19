@@ -1,4 +1,6 @@
-﻿namespace Virtual_Wallet.Models.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Virtual_Wallet.Models.Entities
 {
     public class User
     {
@@ -17,6 +19,9 @@
 
         public int WalletId { get; set; }
         public Wallet UserWallet  { get; set; } //може би ще подлежи на промяна, като местоположение
+
+        
+
 
     }
 }

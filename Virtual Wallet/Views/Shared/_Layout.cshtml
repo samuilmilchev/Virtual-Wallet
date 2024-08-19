@@ -100,7 +100,7 @@
                             </a>
                         </li>
                         <li class="navbar-item">
-                            <a class="navbar-item-inner" asp-page="/Transfer">
+                            <a class="navbar-item-inner" asp-controller="Transfer" asp-action="Transfer">
                                 <div class="navbar-item-inner-icon-wrapper">
                                     <ion-icon name="swap-horizontal-outline"></ion-icon>
                                 </div>
@@ -145,7 +145,6 @@
     <footer>
         <small>©️ Copyright @DateTime.Now.Year, Card</small>
     </footer>
-
-
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

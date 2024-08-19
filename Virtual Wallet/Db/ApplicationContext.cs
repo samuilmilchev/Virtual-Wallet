@@ -58,6 +58,10 @@ namespace Virtual_Wallet.Db
 
             modelBuilder.Entity<Wallet>().HasData(wallets);
 
+            modelBuilder.Entity<Wallet>()
+           .Property(w => w.RowVersion)
+           .IsRowVersion();  // Configure RowVersion as a concurrency token
+
             //Wallet-Transaction relationship
             modelBuilder.Entity<Wallet>()
                 .HasMany(w => w.TransactionHistory)
