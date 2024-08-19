@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Text.RegularExpressions;
 using Virtual_Wallet.Db;
 using Virtual_Wallet.Exceptions;
@@ -39,7 +40,7 @@ namespace Virtual_Wallet.Repository
 				currentWallet.Balances[currency] = 0;
 			}
 
-			currentWallet.Balances[currency] += (decimal)amount;
+			currentWallet.Balances[currency] += amount;
 
 			var transaction = new Transaction(DateTime.Now, currency, amount, TransactionType.Add, currentWallet.Id);
 			_context.Transactions.Add(transaction);

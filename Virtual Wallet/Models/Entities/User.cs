@@ -1,4 +1,6 @@
-﻿namespace Virtual_Wallet.Models.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Virtual_Wallet.Models.Entities
 {
     public class User
     {
@@ -9,7 +11,7 @@
         public byte[]? PasswordSalt { get; set; }
         public string PhoneNumber { get; set; }
         //public string Image { get; set; }
-        public List<Card> Cards { get; set; } = new List<Card>(); // List?
+        public List<Card> Cards { get; set; } // List?
         public bool IsAdmin { get; set; }
         public bool IsBlocked { get; set; } = false;
 
@@ -17,6 +19,9 @@
 
         public int WalletId { get; set; }
         public Wallet UserWallet  { get; set; } //може би ще подлежи на промяна, като местоположение
+
+        
+
 
     }
 }

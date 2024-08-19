@@ -34,9 +34,9 @@ namespace Virtual_Wallet.Repository
             return true;
         }
 
-        public List<User> GetAll()
+        public IQueryable<User> GetAll()
         {
-            return this.GetUsers().ToList();
+            return _context.Users;
         }
 
         public User GetByEmail(string email)
@@ -50,7 +50,7 @@ namespace Virtual_Wallet.Repository
         }
         public User GetByUsername(string username)
         {
-            User user = this.GetUsers().FirstOrDefault(x => x.Username == username);
+            User user = this.GetUsers().Include(x => x.Cards).Include(u => u.UserWallet).FirstOrDefault(x => x.Username == username);
             if (user == null)
             {
                 throw new EntityNotFoundException($"User with username {username} does not exist!");
@@ -125,6 +125,38 @@ namespace Virtual_Wallet.Repository
             User user = this.GetUsers().FirstOrDefault(u => u.Id == id);
 
             return user ?? throw new EntityNotFoundException($"User with id={id} doesn't exist.");
+        }
+
+        public void AddUserCard(Card card, User user)
+        {
+            // Ensure the user entity is attached to the context
+            if (!_context.Users.Contains(user))
+            {
+                _context.Users.Attach(user);
+            }
+
+            // Load the user's cards if not already loaded
+            _context.Entry(user).Collection(u => u.Cards).Load();
+
+            // Add the card to the user's card list
+            if (user.Cards == null)
+            {
+                user.Cards = new List<Card>();
+            }
+            user.Cards.Add(card);
+
+            // Set the foreign key for the card
+            card.UserId = user.Id;
+
+            // Save changes and handle potential exceptions
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving changes: {ex.Message}");
+            }
         }
 
         public bool UserEmailExists(string email)

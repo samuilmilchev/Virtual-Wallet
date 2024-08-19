@@ -21,6 +21,7 @@ namespace Virtual_Wallet.Models.ViewModels
         public string Email { get; set; }
         public string? PhoneNumber { get; set; }
         public string Role { get; set; }
+        public List<Card> Cards { get; set; }
         public bool IsBlocked { get; set; }
     }
 }

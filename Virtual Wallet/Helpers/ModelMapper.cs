@@ -34,6 +34,8 @@ namespace Virtual_Wallet.Helpers
             newUser.Username = user.Username;
             newUser.Email = user.Email;
             newUser.PhoneNumber = user.PhoneNumber;
+            newUser.IsBlocked = user.IsBlocked;
+            newUser.Cards = user.Cards;
 
             return newUser;
         }

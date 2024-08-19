@@ -2,95 +2,141 @@
     var isAuthenticated = User.Identity.Name;
 }
 
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Card</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
 
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-        }
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
 
-        .body-content {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+    <!-- Fonts style -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 
-        header, footer {
-            background: none; /* Example background color */
-            color: black; /* Example text color */
-            padding: 5px 5px;
-            text-align: center;
-            width: 100%;
-        }
+    <!-- Owl slider stylesheet -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
 
-            header h3, footer small {
-                font-size: 14px; /* Adjust font size as needed */
-                margin: 0;
-            }
+    <!-- Font Awesome style -->
+    <link href="css/font-awesome.min.css" rel="stylesheet" />
 
-        .nav {
-            color: black;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-    </style>
+    <!-- Custom styles for this template -->
+    <link href="css/style.css" rel="stylesheet" />
+    <!-- Responsive style -->
+    <link href="css/responsive.css" rel="stylesheet" />
+
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://unpkg.com/ionicons@5.5.2/dist/ionicons.css">
+    <link rel="stylesheet" href="~/css/navbar.css?v=3.0">
+
 </head>
-
 <body>
     <header>
         <div>
-            <div class="button-container">
-                <h3>
-                    <button style="font-size: 17px; border: 1px solid #6d6d6d; " class="button">
-                        <a asp-controller="Home" asp-action="Index" class="nav">Home</a>
-                    </button>
-                    <button class="button">
-                        <a asp-controller="Home" asp-action="About" class="nav">About</a>
-                    </button>
-                    @{
-                        if (isAuthenticated != null)
-                        {
-                            <button class="button">
-                                <a href="/swagger" class="nav">Developer API</a>
-                            </button>
-                            <button class="button">
-                                <a asp-controller="User" asp-action="UserDetails" asp-route-username="@User.Identity.Name" class="nav">Details</a>
-                            </button>
-                            <button style="font-size: 17px; background: #fd8080; border: 1px solid #6d6d6d; " class="button">
-                                <a asp-controller="User" asp-action="Logout" class="nav">Logout</a>
-                            </button>
-                            <button class="button">
-                                <a asp-controller="Card" asp-action="Register" class="nav">RegisterCard</a>
-                            </button>
-
-                            if (User.IsInRole("Admin"))
-                            {
-                                <button class="button">
-                                    <a asp-controller="User" asp-action="AssignRole" class="nav">Assign Roles</a>
-                                </button>
-
-                                <button class="button">
-                                    <a asp-controller="User" asp-action="ListUsers" class="nav">All Users</a>
-                                </button>
-                            }
-                        }
-                        else
-                        {
-                            <button style="font-size: 17px; border: 1px solid #6d6d6d; " class="button">
-                                <a asp-controller="User" asp-action="Index" class="nav">Login</a>
-                            </button>
-                        }
+            <button class="toggle-btn">☰</button>
+            <nav id="navbar">
+                <ul class="navbar-items">
+                    <img style="height:35px; width:40px; padding-top:5px;" src="~/images/n-high-resolution-logo-transparent1.png"></img>
+                    <li class="navbar-item">
+                        <a class="navbar-item-inner" asp-controller="Home" asp-action="Index">
+                            <span style="font-size:18px;" sclass="link-text">Home</span>
+                        </a>
+                    </li>
+                    <li class="navbar-item">
+                        <a class="navbar-item-inner" asp-controller="Home" asp-action="About">
+                            <div class="navbar-item-inner-icon-wrapper">
+                                <ion-icon name="information-circle-outline"></ion-icon>
+                            </div>
+                            <span style="font-size:18px;" class="link-text">About</span>
+                        </a>
+                    </li>
+                    @if (isAuthenticated == null)
+                    {
+                        <li class="navbar-item">
+                            <a class="navbar-item-inner" asp-controller="User" asp-action="Index">
+                                <div class="navbar-item-inner-icon-wrapper">
+                                    <ion-icon name="person-outline"></ion-icon>
+                                </div>
+                                <span style="font-size:18px;" class="link-text">Login</span>
+                            </a>
+                        </li>
                     }
-                </h3>
-            </div>
+                    else
+                    {
+                        <li class="navbar-item">
+                            <a class="navbar-item-inner" asp-controller="User" asp-action="Logout">
+                                <div class="navbar-item-inner-icon-wrapper">
+                                    <ion-icon name="log-out-outline"></ion-icon>
+                                </div>
+                                <span style="font-size:18px;" class="link-text">Logout</span>
+                            </a>
+                        </li>
+                    }
+                    @if (isAuthenticated != null)
+                    {
+                        <li class="navbar-item">
+                            <a class="navbar-item-inner" href="/swagger">
+                                <div class="navbar-item-inner-icon-wrapper">
+                                    <ion-icon name="code-outline"></ion-icon>
+                                </div>
+                                <span style="font-size:18px;" class="link-text">Developer API</span>
+                            </a>
+                        </li>
+                        <li class="navbar-item">
+                            <a class="navbar-item-inner" asp-controller="User" asp-action="UserDetails" asp-route-username="@User.Identity.Name">
+                                <div class="navbar-item-inner-icon-wrapper">
+                                    <ion-icon name="person-circle-outline"></ion-icon>
+                                </div>
+                                <span style="font-size:18px;" class="link-text">User Details</span>
+                            </a>
+                        </li>
+                        <li class="navbar-item">
+                            <a class="navbar-item-inner" asp-controller="Card" asp-action="Register">
+                                <div class="navbar-item-inner-icon-wrapper">
+                                    <ion-icon name="card-outline"></ion-icon>
+                                </div>
+                                <span style="font-size:18px;" class="link-text">Register Card</span>
+                            </a>
+                        </li>
+                        <li class="navbar-item">
+                            <a class="navbar-item-inner" asp-controller="Transfer" asp-action="Transfer">
+                                <div class="navbar-item-inner-icon-wrapper">
+                                    <ion-icon name="swap-horizontal-outline"></ion-icon>
+                                </div>
+                                <span style="font-size:18px;" class="link-text">Transfer Funds</span>
+                            </a>
+                        </li>
+                    }
+                    <!-- Admin only items -->
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="navbar-item">
+                            <a class="navbar-item-inner" asp-controller="User" asp-action="AssignRole">
+                                <div class="navbar-item-inner-icon-wrapper">
+                                    <ion-icon name="key-outline"></ion-icon>
+                                </div>
+                                <span style="font-size:18px;" class="link-text">Assign Roles</span>
+                            </a>
+                        </li>
+                        <li class="navbar-item">
+                            <a class="navbar-item-inner" asp-controller="User" asp-action="ListUsers">
+                                <div class="navbar-item-inner-icon-wrapper">
+                                    <ion-icon name="people-outline"></ion-icon>
+                                </div>
+                                <span style="font-size:18px;" class="link-text">All Users</span>
+                            </a>
+                        </li>
+                    }
+
+                </ul>
+            </nav>
         </div>
     </header>
+
+
+
+    <!-- Additional header content if needed -->
 
     <div class="body-content">
         @RenderBody()
@@ -99,5 +145,6 @@
     <footer>
         <small>©️ Copyright @DateTime.Now.Year, Card</small>
     </footer>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

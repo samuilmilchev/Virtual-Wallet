@@ -2,7 +2,7 @@
 {
 	public class Transaction // : ITransaction  - не мисля че ни трябва интерфейс за модела на трансакция
 	{
-		public Guid Id { get; set; } // специално ИД на трансакцията
+		public int Id { get; set; } // специално ИД на трансакцията
 		public DateTime Timestamp { get; private set; }
 		public string Currency { get; private set; } //Закоментирано засега, докато измислим логиката за конвертиране - Няма да конвертираме, добавяме в currency wallet-a
 		public decimal Amount { get; private set; }
@@ -14,7 +14,7 @@
 
         public Transaction(DateTime timestamp, string currency, decimal amount, TransactionType type, int walletId)
         {
-            Id = Guid.NewGuid();
+           // Id = Guid.NewGuid();
             Timestamp = timestamp;
             Currency = currency;
             Amount = amount;
