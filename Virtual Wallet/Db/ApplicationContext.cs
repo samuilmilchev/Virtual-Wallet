@@ -16,14 +16,14 @@ namespace Virtual_Wallet.Db
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		{
+			base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>()
-            .HasOne(u => u.UserWallet) // Navigation property on User
-            .WithOne(w => w.Owner) // Navigation property on Wallet
-            .HasForeignKey<Wallet>(w => w.OwnerId); // Specify the foreign key on Wallet
+			modelBuilder.Entity<User>()
+			.HasOne(u => u.UserWallet) // Navigation property on User
+			.WithOne(w => w.Owner) // Navigation property on Wallet
+			.HasForeignKey<Wallet>(w => w.OwnerId); // Specify the foreign key on Wallet
 
             modelBuilder.Entity<User>()
            .HasMany(u => u.Cards)
@@ -49,12 +49,42 @@ namespace Virtual_Wallet.Db
 
             modelBuilder.Entity<Card>().HasData(cards);
 
-            var wallets = new List<Wallet>
-            {
-                new Wallet {Id = 1,OwnerId = 1,WalletName = "Violin's wallet" , Balance = 0.00m},
-                new Wallet {Id = 2, OwnerId = 2,WalletName = "Sami's wallet" , Balance = 0.00m},
-                new Wallet {Id = 3, OwnerId = 3,WalletName = "Alex's wallet" , Balance = 0.00m}
-            };
+			var wallets = new List<Wallet>
+			{
+				new Wallet
+				{
+					Id = 1,
+					OwnerId = 1,
+					WalletName = "Violin's wallet",
+					Balances = new Dictionary<string, decimal>
+					{
+						{ "USD", 100.00m },
+						{ "EUR", 50.00m }
+					}
+				},
+				new Wallet
+				{
+					Id = 2,
+					OwnerId = 2,
+					WalletName = "Sami's wallet",
+					Balances = new Dictionary<string, decimal>
+					{
+						{ "USD", 200.00m },
+						{ "GBP", 75.00m }
+					}
+				},
+				new Wallet
+				{
+					Id = 3,
+					OwnerId = 3,
+					WalletName = "Alex's wallet",
+					Balances = new Dictionary<string, decimal>
+					{
+						{ "USD", 150.00m },
+						{ "BGN", 10000.00m }
+					}
+				}
+			};
 
             modelBuilder.Entity<Wallet>().HasData(wallets);
 
@@ -62,12 +92,15 @@ namespace Virtual_Wallet.Db
            .Property(w => w.RowVersion)
            .IsRowVersion();  // Configure RowVersion as a concurrency token
 
-            //Wallet-Transaction relationship
-            modelBuilder.Entity<Wallet>()
-                .HasMany(w => w.TransactionHistory)
-                .WithOne(t => t.Wallet)
-                .HasForeignKey(t => t.WalletId)
-                .OnDelete(DeleteBehavior.Cascade);
-        }
-    }
+			// Transaction entity configuration
+			modelBuilder.Entity<Transaction>()
+				.HasKey(t => t.Id); // Ensure Id is the primary key
+
+			modelBuilder.Entity<Transaction>()
+				.Property(t => t.Timestamp)
+				.IsRequired(); // Ensure Timestamp is required
+
+			// Any other Transaction-specific configuration goes here
+		}
+	}
 }

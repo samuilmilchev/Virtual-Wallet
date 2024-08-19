@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Virtual_Wallet.Db;
 using Virtual_Wallet.Exceptions;
@@ -9,117 +10,154 @@ using Virtual_Wallet.Repository.Contracts;
 namespace Virtual_Wallet.Repository
 {
     public class WalletRepository : IWalletRepository
-    {
-        private readonly ApplicationContext _context;
+	{
+		private readonly ApplicationContext _context;
 
-        public WalletRepository(ApplicationContext context)
-        {
-            this._context = context;
-        }
+		public WalletRepository(ApplicationContext context)
+		{
+			_context = context;
+		}
 
-        public void AddFunds(decimal amount, Wallet wallet)
+        public void AddFunds(decimal amount, string currency, Wallet wallet)
         {
             if (amount <= 0)
             {
                 throw new ArgumentException("Amount to add must be greater than zero", nameof(amount));
             }
 
-            var currentWallet = _context.Wallets.Include(w => w.TransactionHistory).FirstOrDefault(w => w.Id == wallet.Id);
+            var currentWallet = _context.Wallets.Include(w => w.Owner).FirstOrDefault(w => w.Id == wallet.Id);
             if (currentWallet == null)
             {
                 throw new ArgumentException("Wallet not found", nameof(wallet));
             }
 
-            currentWallet.Balance += amount;
-
-            var transaction = new Transaction(DateTime.Now , amount , TransactionType.Add , currentWallet.Id);
-            transaction.Wallet = wallet; //просвоявамае на кой уолет принадлежи трансакцията защото иначе е null;
-
-            currentWallet.TransactionHistory.Add(transaction);
-            try
+            // Initialize the dictionary if it's null
+            if (currentWallet.Balances.Count() == 0)
             {
-                _context.SaveChanges();
+				var dicitonary = new Dictionary<string, decimal>();
+				dicitonary.Add(currency,amount);
+                currentWallet.Balances = dicitonary;
             }
-            catch (DbUpdateConcurrencyException)
-            {    // Handle concurrency conflict: Store Wins approach
-                var databaseEntry = _context.Entry(currentWallet).GetDatabaseValues();
 
-                if (databaseEntry == null)
-                {
-                    throw new ArgumentException("Wallet no longer exists in the database.");
-                }
-
-                // Reload the entity from the database
-                _context.Entry(currentWallet).Reload();
-
-                // Retry the operation or notify the user
-                _context.SaveChanges();
+            // Add the currency to the dictionary if it doesn't exist
+            if (currentWallet.Balances.ContainsKey(currency))
+            {
+                var dicitonary = new Dictionary<string, decimal>();
+				dicitonary.Add(currency, currentWallet.Balances[currency]);
+				dicitonary[currency] += amount;
+                currentWallet.Balances = dicitonary;
             }
-        }
 
-        public decimal ConvertFunds()
-        {
-            throw new NotImplementedException();
-        }
+            // Add the amount to the specified currency
+            //currentWallet.Balances[currency] = amount;
 
-        public Wallet Create(Wallet wallet)
-        {
-            _context.Wallets.Add(wallet);
+            // Create a transaction record
+            var transaction = new Transaction(DateTime.Now, currency, amount, TransactionType.Add, currentWallet.Id);
+            _context.Transactions.Add(transaction);
+
+            // Update the JSON column before saving
+            currentWallet.BalancesJson = JsonSerializer.Serialize(currentWallet.Balances);
+
+            // Save changes to the database
             _context.SaveChanges();
-
-            return wallet;
         }
 
-        public decimal GetBalance(Wallet wallet)
-        {
-            return wallet.Balance;
-        }
+        public void WithdrawFunds(decimal amount, string currency, Wallet wallet)
+		{
+			if (amount <= 0)
+			{
+				throw new ArgumentException("Amount to withdraw must be greater than zero", nameof(amount));
+			}
 
-        public void WithdrawFunds(decimal amount, Wallet wallet)
-        {
-            if (amount <= 0)
+			var currentWallet = _context.Wallets.Include(w => w.Owner).FirstOrDefault(w => w.Id == wallet.Id);
+			if (currentWallet == null)
+			{
+				throw new ArgumentException("Wallet not found", nameof(wallet));
+			}
+
+			if (currentWallet.Balances.Count() == 0 || !currentWallet.Balances.ContainsKey(currency) || currentWallet.Balances[currency] < amount)
+			{
+				throw new InsufficientFundsException("Insufficient funds to execute the withdrawal!");
+			}
+
+            if (currentWallet.Balances.ContainsKey(currency))
             {
-                throw new ArgumentException("Amount to add must be greater than zero", nameof(amount));
-            }
-            if (amount > wallet.Balance)
-            {
-                throw new InsufficientFundsException("Insufficient funds to execute the withdrawal!");
-            }
-
-            var currentWallet = _context.Wallets.Include(w => w.TransactionHistory).FirstOrDefault(w => w.Id == wallet.Id);
-            if (currentWallet == null)
-            {
-                throw new ArgumentException("Wallet not found", nameof(wallet));
+                var dicitonary = new Dictionary<string, decimal>();
+                dicitonary.Add(currency, currentWallet.Balances[currency]);
+                dicitonary[currency] -= amount;
+                currentWallet.Balances = dicitonary;
             }
 
-            currentWallet.Balance -= amount;
+			var transaction = new Transaction(DateTime.Now, currency, amount, TransactionType.Withdraw, currentWallet.Id);
+			_context.Transactions.Add(transaction);
 
-            var transaction = new Transaction(DateTime.Now , amount , TransactionType.Withdraw , currentWallet.Id);
-            currentWallet.TransactionHistory.Add(transaction);
+			_context.SaveChanges();
+		}
 
-            //Handle exception when a concurency failure occurs
-            try
-            {
-                _context.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
+		public Wallet Create(Wallet wallet)
+		{
+			if (wallet.Balances == null)
+			{
+				wallet.Balances = new Dictionary<string, decimal>();
+			}
 
-                // Handle concurrency conflict: Store Wins approach
-                var databaseEntry = _context.Entry(currentWallet).GetDatabaseValues();
+			_context.Wallets.Add(wallet);
+			_context.SaveChanges();
 
-                if (databaseEntry == null)
-                {
-                    throw new ArgumentException("Wallet no longer exists in the database.");
-                }
+			return wallet;
+		}
 
-                // Reload the entity from the database
-                _context.Entry(currentWallet).Reload();
+		public decimal GetBalance(Wallet wallet, string currency)
+		{
+			if (wallet.Balances == null || !wallet.Balances.ContainsKey(currency))
+			{
+				return 0;
+			}
 
-                // Retry the operation or notify the user
-                _context.SaveChanges();
-            }
-        }
+			return wallet.Balances[currency];
+		}
 
-    }
+		/*public void ConvertFunds(Wallet wallet, string fromCurrency, string toCurrency, decimal amount)
+		{
+			if (amount <= 0)
+			{
+				throw new ArgumentException("Amount to convert must be greater than zero", nameof(amount));
+			}
+
+			if (wallet.Balances == null || !wallet.Balances.ContainsKey(fromCurrency) || wallet.Balances[fromCurrency] < amount)
+			{
+				throw new InsufficientFundsException("Insufficient funds to execute the conversion!");
+			}
+
+			// Get the conversion rate
+			if (!ConversionRates.TryGetValue((fromCurrency, toCurrency), out var conversionRate)) // Conversion rates should be taken from ApplicationContext??
+			{
+				throw new InvalidOperationException($"Conversion rate from {fromCurrency} to {toCurrency} is not available.");
+			}
+
+			// Convert the amount
+			var convertedAmount = amount * conversionRate;
+
+			// Subtract the amount from the original currency balance
+			wallet.Balances[fromCurrency] -= amount;
+
+			// Add the converted amount to the target currency balance
+			if (!wallet.Balances.ContainsKey(toCurrency))
+			{
+				wallet.Balances[toCurrency] = 0;
+			}
+			wallet.Balances[toCurrency] += convertedAmount;
+
+			// Log the conversion transaction
+			var transaction = new Transaction(DateTime.Now, toCurrency, convertedAmount, TransactionType.Convert, wallet.Id);
+			_context.Transactions.Add(transaction);
+
+			_context.SaveChanges();
+		}*/
+		public async Task<Wallet> GetById(int id)
+		{
+			return await _context.Wallets
+				.FirstOrDefaultAsync(w => w.Id == id);
+		}
+	}
 }

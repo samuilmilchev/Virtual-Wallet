@@ -23,7 +23,7 @@ namespace Virtual_Wallet.Controllers.MVC
                 if (user?.UserWallet != null)
                 {
                     var walletName = user.UserWallet.WalletName;
-                    var walletBalance = user.UserWallet.Balance;
+                    var walletBalance = user.UserWallet.Balances;
 
                     ViewBag.WalletName = walletName;
                     ViewBag.WalletBalance = walletBalance;
