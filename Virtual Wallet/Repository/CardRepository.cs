@@ -52,7 +52,7 @@ namespace Virtual_Wallet.Repository
 
         public Card GetByCardHoler(string cardHolder)
         {
-            Card card = this.GetCards().FirstOrDefault(x => x.CardHolder.Username == cardHolder);
+            Card card = this.GetCards().FirstOrDefault(x => x.User.Username == cardHolder);
             if (card == null)
             {
                 throw new EntityNotFoundException($"User with first name: {card.CardHolder} does not exist!");
