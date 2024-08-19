@@ -5,9 +5,9 @@ namespace Virtual_Wallet.Services.Contracts
     public interface IWalletService
     {
         Wallet Create(Wallet wallet);
-        void AddFunds(double amount, Wallet wallet, Card card);
-        void WithdrawFunds(double amount, Wallet wallet, Card card);
-        double GetBalance(Wallet wallet);
-        double ConvertFunds();
+        void AddFunds(decimal amount, string currency, Wallet wallet, Card card);
+        void WithdrawFunds(decimal amount, string currency, Wallet wallet, Card card);
+        decimal GetBalance(Wallet wallet, string currency);
+        decimal ConvertFunds(decimal amount, string fromCurrency, string toCurrency, Wallet wallet);
     }
 }

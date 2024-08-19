@@ -9,6 +9,6 @@
         public string CardHolder { get; set; }
         public int CheckNumber {  get; set; }
         public CardType CardType { get; set; }
-        public double Balance { get; set; }
+        public decimal Balance { get; set; }
     }
 }

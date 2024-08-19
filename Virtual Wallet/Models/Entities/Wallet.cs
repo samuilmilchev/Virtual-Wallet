@@ -9,9 +9,11 @@
 
         public string WalletName { get; set; }
 
-        public double Balance { get; set; }
+		public Dictionary<string, decimal> Balances { get; set; }
 
-        public List<Transaction> TransactionHistory { get; set; } = new List<Transaction>();//инициализиране на списъка с трансакции за да се избегне null reference;
+		public string CurrentCurrency { get; set; }
+
+		//public List<Transaction> TransactionHistory { get; set; } = new List<Transaction>();//инициализиране на списъка с трансакции за да се избегне null reference;
 
         //public Wallet() //инициализиране на списъка с трансакции в конструктора за да се избегне null reference
         //{

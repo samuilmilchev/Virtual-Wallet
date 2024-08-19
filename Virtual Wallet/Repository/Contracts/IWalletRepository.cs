@@ -4,10 +4,11 @@ namespace Virtual_Wallet.Repository.Contracts
 {
     public interface IWalletRepository
     {
+        void AddFunds(decimal amount, string currency, Wallet wallet);
+        void ConvertFunds(Wallet wallet, string fromCurrency, string toCurrency, decimal amount);
         Wallet Create(Wallet wallet);
-        void AddFunds(double amount, Wallet wallet);
-        void WithdrawFunds(double amount, Wallet wallet);
-        double GetBalance(Wallet wallet);
-        double ConvertFunds();
-    }
+        decimal GetBalance(Wallet wallet, string currency);
+        void WithdrawFunds(decimal amount, string currency, Wallet wallet);
+		Task<Wallet> GetById(int id);
+	}
 }
