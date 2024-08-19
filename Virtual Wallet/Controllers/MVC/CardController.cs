@@ -39,6 +39,9 @@ namespace Virtual_Wallet.Controllers.MVC
                 return View(cardViewModel);
             }
 
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
             Card card = new Card();
             
 
@@ -47,12 +50,11 @@ namespace Virtual_Wallet.Controllers.MVC
             card.ExpirationData = cardViewModel.ExpirationDate;
             card.CardType = cardViewModel.CardType;
             card.CheckNumber = HashCVV(cardViewModel.CheckNumber, GenerateSalt());
+            card.UserId = user.Id;
+            card.User = user;
 
-            var username = User.Identity.Name;
-            var user = _usersService.GetByUsername(username);
-
-            user.Cards.Add(card);
             _cardService.Create(card);
+            _usersService.AddUserCard(card, user);
 
             return View("Successful");
         }

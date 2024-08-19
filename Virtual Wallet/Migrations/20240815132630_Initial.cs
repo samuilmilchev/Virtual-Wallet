@@ -38,10 +38,18 @@ namespace Virtual_Wallet.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CardNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ExpirationData = table.Column<string>(type: "nvarchar(max)", nullable: true),
+<<<<<<<< HEAD:Virtual Wallet/Migrations/20240818183655_Initial.cs
                     UserId = table.Column<int>(type: "int", nullable: false),
                     CheckNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CardType = table.Column<int>(type: "int", nullable: false),
                     Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+========
+                    CardHolder = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CheckNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CardType = table.Column<int>(type: "int", nullable: false),
+                    Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+>>>>>>>> master:Virtual Wallet/Migrations/20240815132630_Initial.cs
                 },
                 constraints: table =>
                 {
@@ -62,8 +70,12 @@ namespace Virtual_Wallet.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OwnerId = table.Column<int>(type: "int", nullable: false),
                     WalletName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+<<<<<<<< HEAD:Virtual Wallet/Migrations/20240818183655_Initial.cs
                     Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+========
+                    Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+>>>>>>>> master:Virtual Wallet/Migrations/20240815132630_Initial.cs
                 },
                 constraints: table =>
                 {
@@ -115,12 +127,21 @@ namespace Virtual_Wallet.Migrations
 
             migrationBuilder.InsertData(
                 table: "Cards",
+<<<<<<<< HEAD:Virtual Wallet/Migrations/20240818183655_Initial.cs
                 columns: new[] { "Id", "Balance", "CardNumber", "CardType", "CheckNumber", "ExpirationData", "UserId" },
                 values: new object[,]
                 {
                     { 1, 100000m, "359039739152721", 0, "111", "10/28", 1 },
                     { 2, 100000m, "379221059046032", 0, "112", "04/28", 2 },
                     { 3, 100000m, "345849306009469", 0, "121", "02/28", 3 }
+========
+                columns: new[] { "Id", "Balance", "CardHolder", "CardNumber", "CardType", "CheckNumber", "ExpirationData", "UserId" },
+                values: new object[,]
+                {
+                    { 1, 100000m, "Samuil Milchev", "359039739152721", 0, "111", "10/28", 1 },
+                    { 2, 100000m, "Violin Filev", "379221059046032", 0, "112", "04/28", 1 },
+                    { 3, 100000m, "Alexander Georgiev", "345849306009469", 0, "121", "02/28", 1 }
+>>>>>>>> master:Virtual Wallet/Migrations/20240815132630_Initial.cs
                 });
 
             migrationBuilder.InsertData(

@@ -11,9 +11,9 @@
 <link href="css/font-awesome.min.css" rel="stylesheet" />
 
 <!-- Custom styles for this template -->
-<link href="css/style.css" rel="stylesheet" />
+<link href="css/style.css?v=2.0" rel="stylesheet" />
 <!-- responsive style -->
-<link href="css/responsive.css" rel="stylesheet" />
+<link href="css/responsive.css?v=1.0" rel="stylesheet" />
 
 @{
     var isAuthenticated = User.Identity.IsAuthenticated;
@@ -25,53 +25,14 @@
 
     <div class="hero_bg_box">
         <div class="bg_img_box">
-            <img src="images/hero-bg.png" alt="">
+            <img style="filter: blur(5px);" src="~/images/StockCake-Joyful Online Shopping_17239097201.jpg" alt="">
         </div>
     </div>
 
-    <!-- end header section -->
-    <!-- slider section -->
-    <section class="slider_section ">
-        <div id="customCarousel1" class="carousel slide" data-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <div class="container ">
-                        <div class="row">
-                            <div class="col-md-6 ">
-                                <div class="detail-box">
-                                    <h1>
-                                        <!--<img src="~/images/logo 5.png" style="width: 450px; height:300px;"></img>-->
-                                    </h1>
-                                    <p style="font-size: 20px;">
-                                        Transfer, save money easy and free with <strong style="font-size: 50px;">NIMBLE</strong> wallet!
-                                    </p>
-                                    @{
-                                        if (isAuthenticated && walletName != null)
-                                        {
-                                            <p style="font-size: 20px;">
-                                                Money in @walletName : @walletBalance 
-                                            </p>
-                                        }
-                                    }
-                                    <div class="btn-box">
-                                        <a href="" class="btn1">
-                                            Read More
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="img-box">
-                                    <img src="images/morphis-put-money-on-a-plastic-card-1.png" alt="">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <h4 class="custom-paragraph" style="font-size: 40px;">
+        SEND and RECIVE anywhere <br><strong style="font-size: 100px;">NIMBLE</strong> wallet!
+    </h4>
 
-    </section>
-    <!-- end slider section -->
 </div>
 
 
@@ -84,68 +45,56 @@
                 <h2>
                     Our <span>Services</span>
                 </h2>
-                <p>
-                    There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration
+                <p style="font-size: 20px;">
+                    At Nimble, we provide a cutting-edge virtual wallet designed to make your financial transactions effortless, secure, and accessible from anywhere.
                 </p>
             </div>
             <div class="row">
                 <div class="col-md-4 ">
                     <div class="box ">
                         <div class="img-box">
-                            <img src="images/s1.png" alt="">
+                            <img src="images/glare-cloud-money1.png" alt="">
                         </div>
                         <div class="detail-box">
                             <h5>
-                                Currency Wallet
+                                Digital Wallet
                             </h5>
-                            <p>
-                                fact that a reader will be distracted by the readable content of a page when looking at its layout.
-                                The
-                                point of using
+                            <br>
+                            <p style="font-size:18px">
+                                Nimble offers a convenient digital wallet that puts you in control of your finances. <br><br>Transfer money from your card directly into your Nimble account, providing you with a safe place to store and manage your funds.
                             </p>
-                            <a href="">
-                                Read More
-                            </a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 ">
                     <div class="box ">
                         <div class="img-box">
-                            <img src="images/s2.png" alt="">
+                            <img src="images/3d-techny-metal-safe-and-money-around.gif" alt="">
                         </div>
                         <div class="detail-box">
                             <h5>
-                                Security Storage
+                                Secure Storage
                             </h5>
-                            <p>
-                                fact that a reader will be distracted by the readable content of a page when looking at its layout.
-                                The
-                                point of using
+                            <br>
+                            <p style="font-size:18px">
+                                Your money is securely stored within your Nimble wallet, protected by multiple layers of security protocols. <br><br>Whether you’re holding funds for daily use, you can trust that your money is in safe hands.
                             </p>
-                            <a href="">
-                                Read More
-                            </a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 ">
                     <div class="box ">
                         <div class="img-box">
-                            <img src="images/s3.png" alt="">
+                            <img src="images/file (2).png" alt="">
                         </div>
                         <div class="detail-box">
                             <h5>
-                                Expert Support
+                                Transaction history
                             </h5>
-                            <p>
-                                fact that a reader will be distracted by the readable content of a page when looking at its layout.
-                                The
-                                point of using
+                            <br>
+                            <p style="font-size:18px">
+                                Every transaction you make with your Nimble wallet is automatically recorded and organized.<br> <br>Whether you’re sending money, adding funds, you can easily review your complete transaction history at any time.
                             </p>
-                            <a href="">
-                                Read More
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -168,33 +117,30 @@
             <h2>
                 About <span>Us</span>
             </h2>
-            <p>
-                Magni quod blanditiis non minus sed aut voluptatum illum quisquam aspernatur ullam vel beatae rerum ipsum voluptatibus
+            <p style="font-size:20px">
+                Welcome to Nimble, your trusted virtual wallet.
             </p>
         </div>
         <div class="row">
             <div class="col-md-6 ">
                 <div class="img-box">
-                    <img src="images/about-img.png" alt="">
+                    <img src="images/florid-web-wallet-and-online-banking.gif" alt="">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="detail-box">
                     <h3>
-                        We Are Finexo
+                        We Are NIMBLE
                     </h3>
-                    <p>
-                        There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration
-                        in some form, by injected humour, or randomised words which don't look even slightly believable. If you
-                        are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in
-                        the middle of text. All
+                    <p style="font-size:18px">
+                        Founded in 2024 by three entrepreneurs in Bulgaria, Nimble was created to simplify your financial management in a digital world.
                     </p>
-                    <p>
-                        Molestiae odio earum non qui cumque provident voluptates, repellendus exercitationem, possimus at iste corrupti officiis unde alias eius ducimus reiciendis soluta eveniet. Nobis ullam ab omnis quasi expedita.
+                    <p style="font-size:18px">
+                        We prioritize security, convenience, and innovation, making Nimble more than just a transaction tool—it's your seamless financial companion. Whether you're sending money, shopping online, or managing savings, Nimble makes your financial journey smoother.
                     </p>
-                    <a href="">
-                        Read More
-                    </a>
+                    <p style="font-size:18px">
+                        As a proud Bulgarian company, we're dedicated to supporting our local tech community and exceeding our users' expectations. Thank you for choosing Nimble as your financial partner.
+                    </p>
                 </div>
             </div>
         </div>

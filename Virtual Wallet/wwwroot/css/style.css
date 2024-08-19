@@ -1,11 +1,31 @@
-﻿@import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Open+Sans:wght@300;400;600;700&display=swap");
-
+﻿@import url('https://fonts.googleapis.com/css2?family=Anek+Devanagari:wdth,wght@114,100..800&family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300..700&display=swap');
+* {
+    font-family: "Lato", sans-serif;
+}
 body {
-    font-family: "Open Sans", sans-serif;
+    font-family: "Poppins", sans-serif;
     color: #0c0c0c;
     background-color: #ffffff;
     overflow-x: hidden;
 }
+
+.custom-paragraph {
+    position: relative;
+    top: 160px;
+    left: 100px;
+    font-size: 40px;
+    color: white;
+    text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7);
+    font-family: 'Arial', sans-serif; /* Clean, modern font */
+}
+
+    .custom-paragraph strong {
+        font-size: 100px;
+        color: white; /* Ensure the color remains white */
+        text-shadow: 4px 4px 15px rgba(0, 0, 0, 0.9); /* Add depth without changing color */
+        font-family: 'Impact', sans-serif; /* Strong, impactful font for emphasis */
+    }
+
 
 .layout_padding {
     padding: 90px 0;
@@ -339,7 +359,7 @@ a:focus {
     }
 
         .slider_section .img-box img {
-            width: 50%;
+            width: 80%;
             -webkit-animation: upDown 5s infinite;
             animation: upDown 5s infinite;
         }

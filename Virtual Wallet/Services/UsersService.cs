@@ -46,7 +46,7 @@ namespace Virtual_Wallet.Services
             return _userRepository.Delete(id);
         }
 
-        public List<User> GetAll()
+        public IQueryable<User> GetAll()
         {
             return _userRepository.GetAll();
         }
@@ -83,6 +83,10 @@ namespace Virtual_Wallet.Services
             return updatedUser;
         }
 
+        public void AddUserCard(Card card, User user)
+        {
+            _userRepository.AddUserCard(card, user);
+        }
         public List<User> FilterBy(UserQueryParameters filterParameters)
         {
             return _userRepository.FilterBy(filterParameters);

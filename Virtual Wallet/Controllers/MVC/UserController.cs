@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -157,7 +158,8 @@ namespace Virtual_Wallet.Controllers.MVC
                 //Image = user.Image,
                 PhoneNumber = user.PhoneNumber,
                 Role = user.Role.ToString(),
-                IsBlocked = user.IsBlocked
+                IsBlocked = user.IsBlocked,
+                Cards = user.Cards
             };
             return View(model);
         }
@@ -253,34 +255,47 @@ namespace Virtual_Wallet.Controllers.MVC
         }
 
         [HttpGet]
-        public IActionResult ListUsers()
+        public async Task<IActionResult> ListUsers()
         {
-            var users = _usersService.GetAll();
-
-            if (users == null)
-            {
-                return NotFound();
-            }
-
-            List<UserViewModel> usersList = new List<UserViewModel>();
-
-            foreach (var user in users)
-            {
-                var model = new UserViewModel
-                {
-                    Username = user.Username,
-                    Email = user.Email,
-                    //Image = user.Image,
-                    PhoneNumber = user.PhoneNumber,
-                    Role = user.Role.ToString(),
-                    IsBlocked = user.IsBlocked
-                };
-
-                usersList.Add(model);
-            }
-
-            return View(usersList);
+            return View(await GetUserList(1));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ListUsers([FromForm]int currentPageIndex)
+        {
+            return View(await GetUserList(currentPageIndex));
+        }
+
+
+        //[HttpGet]
+        //public IActionResult ListUsers()
+        //{
+        //    var users = _usersService.GetAll();
+
+        //    if (users == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    List<UserViewModel> usersList = new List<UserViewModel>();
+
+        //    foreach (var user in users)
+        //    {
+        //        var model = new UserViewModel
+        //        {
+        //            Username = user.Username,
+        //            Email = user.Email,
+        //            //Image = user.Image,
+        //            PhoneNumber = user.PhoneNumber,
+        //            Role = user.Role.ToString(),
+        //            IsBlocked = user.IsBlocked
+        //        };
+
+        //        usersList.Add(model);
+        //    }
+
+        //    return View(usersList);
+        //}
 
         [HttpPost]
         public IActionResult SearchByUsername([FromForm] string text)
@@ -377,6 +392,24 @@ namespace Virtual_Wallet.Controllers.MVC
                 passwordSalt = hmac.Key;
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
+        }
+
+        private async Task<UserPViewModel> GetUserList(int currentPage)
+        {
+            int maxRowsPerPage = 2;
+            UserPViewModel userModel = new UserPViewModel();
+
+            userModel.UserList = await _usersService.GetAll()
+                .OrderBy(x => x.Id)
+                .Skip((currentPage - 1) * maxRowsPerPage)
+                .Take(maxRowsPerPage)
+                .ToListAsync();
+
+            double pageCount = (double)((decimal)_usersService.GetAll().Count() / Convert.ToDecimal(maxRowsPerPage));
+
+            userModel.pageCount = (int)Math.Ceiling(pageCount);
+            userModel.currentPageIndex = currentPage;
+            return userModel;
         }
     }
 }

@@ -12,8 +12,8 @@ using Virtual_Wallet.Db;
 namespace Virtual_Wallet.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240818183655_Initial")]
-    partial class Initial
+    [Migration("20240814205508_Inital")]
+    partial class Inital
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,8 +32,14 @@ namespace Virtual_Wallet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("Balance")
+                        .HasColumnType("float");
+
+                    b.Property<string>("CardHolder")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CardHolderId")
+                        .HasColumnType("int");
 
                     b.Property<string>("CardNumber")
                         .HasColumnType("nvarchar(max)");
@@ -47,7 +53,7 @@ namespace Virtual_Wallet.Migrations
                     b.Property<string>("ExpirationData")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -60,45 +66,46 @@ namespace Virtual_Wallet.Migrations
                         new
                         {
                             Id = 1,
-                            Balance = 100000m,
+                            Balance = 0.0,
+                            CardHolder = "Samuil Milchev",
+                            CardHolderId = 0,
                             CardNumber = "359039739152721",
                             CardType = 0,
                             CheckNumber = "111",
-                            ExpirationData = "10/28",
-                            UserId = 1
+                            ExpirationData = "10/28"
                         },
                         new
                         {
                             Id = 2,
-                            Balance = 100000m,
+                            Balance = 0.0,
+                            CardHolder = "Violin Filev",
+                            CardHolderId = 0,
                             CardNumber = "379221059046032",
                             CardType = 0,
                             CheckNumber = "112",
-                            ExpirationData = "04/28",
-                            UserId = 2
+                            ExpirationData = "04/28"
                         },
                         new
                         {
                             Id = 3,
-                            Balance = 100000m,
+                            Balance = 0.0,
+                            CardHolder = "Alexander Georgiev",
+                            CardHolderId = 0,
                             CardNumber = "345849306009469",
                             CardType = 0,
                             CheckNumber = "121",
-                            ExpirationData = "02/28",
-                            UserId = 3
+                            ExpirationData = "02/28"
                         });
                 });
 
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Transaction", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
@@ -199,16 +206,11 @@ namespace Virtual_Wallet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("Balance")
+                        .HasColumnType("float");
 
                     b.Property<int>("OwnerId")
                         .HasColumnType("int");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
 
                     b.Property<string>("WalletName")
                         .HasColumnType("nvarchar(max)");
@@ -224,21 +226,21 @@ namespace Virtual_Wallet.Migrations
                         new
                         {
                             Id = 1,
-                            Balance = 0.00m,
+                            Balance = 0.0,
                             OwnerId = 1,
                             WalletName = "Violin's wallet"
                         },
                         new
                         {
                             Id = 2,
-                            Balance = 0.00m,
+                            Balance = 0.0,
                             OwnerId = 2,
                             WalletName = "Sami's wallet"
                         },
                         new
                         {
                             Id = 3,
-                            Balance = 0.00m,
+                            Balance = 0.0,
                             OwnerId = 3,
                             WalletName = "Alex's wallet"
                         });
@@ -246,13 +248,9 @@ namespace Virtual_Wallet.Migrations
 
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Card", b =>
                 {
-                    b.HasOne("Virtual_Wallet.Models.Entities.User", "CardHolder")
+                    b.HasOne("Virtual_Wallet.Models.Entities.User", null)
                         .WithMany("Cards")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CardHolder");
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Transaction", b =>
