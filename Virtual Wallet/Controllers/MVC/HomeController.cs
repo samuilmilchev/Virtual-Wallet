@@ -19,15 +19,6 @@ namespace Virtual_Wallet.Controllers.MVC
             {
                 var username = User.Identity.Name;
                 var user = _usersService.GetByUsername(username);
-
-                if (user?.UserWallet != null)
-                {
-                    var walletName = user.UserWallet.WalletName;
-                    var walletBalance = user.UserWallet.Balances;
-
-                    ViewBag.WalletName = walletName;
-                    ViewBag.WalletBalance = walletBalance;
-                }
             }
             return View();
         }

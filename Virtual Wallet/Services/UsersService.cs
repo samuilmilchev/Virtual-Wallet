@@ -92,5 +92,9 @@ namespace Virtual_Wallet.Services
             return _userRepository.FilterBy(filterParameters);
         }
 
+        public User FindRecipient(UserQueryParameters filterParameters)
+        {
+            return _userRepository.FindRecipient(filterParameters);
+        }
     }
 }

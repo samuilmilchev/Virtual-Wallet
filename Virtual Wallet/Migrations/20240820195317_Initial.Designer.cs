@@ -12,7 +12,7 @@ using Virtual_Wallet.Db;
 namespace Virtual_Wallet.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240819111944_Initial")]
+    [Migration("20240820195317_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -106,8 +106,8 @@ namespace Virtual_Wallet.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Currency")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
@@ -157,9 +157,6 @@ namespace Virtual_Wallet.Migrations
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("WalletId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.ToTable("Users");
@@ -173,8 +170,7 @@ namespace Virtual_Wallet.Migrations
                             IsBlocked = false,
                             PhoneNumber = "0845965847",
                             Role = 1,
-                            Username = "Samuil",
-                            WalletId = 0
+                            Username = "Samuil"
                         },
                         new
                         {
@@ -184,8 +180,7 @@ namespace Virtual_Wallet.Migrations
                             IsBlocked = false,
                             PhoneNumber = "0865214587",
                             Role = 1,
-                            Username = "Violin",
-                            WalletId = 0
+                            Username = "Violin"
                         },
                         new
                         {
@@ -195,8 +190,7 @@ namespace Virtual_Wallet.Migrations
                             IsBlocked = false,
                             PhoneNumber = "0826541254",
                             Role = 1,
-                            Username = "Alex",
-                            WalletId = 0
+                            Username = "Alex"
                         });
                 });
 
@@ -208,27 +202,21 @@ namespace Virtual_Wallet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("BalancesJson")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("CurrentCurrency")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
 
                     b.Property<int>("OwnerId")
                         .HasColumnType("int");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
 
                     b.Property<string>("WalletName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId")
-                        .IsUnique();
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Wallets");
 
@@ -236,21 +224,24 @@ namespace Virtual_Wallet.Migrations
                         new
                         {
                             Id = 1,
-                            BalancesJson = "{\"USD\":100.00,\"EUR\":50.00}",
+                            Amount = 1000m,
+                            Currency = 0,
                             OwnerId = 1,
                             WalletName = "Violin's wallet"
                         },
                         new
                         {
                             Id = 2,
-                            BalancesJson = "{\"USD\":200.00,\"GBP\":75.00}",
+                            Amount = 1000m,
+                            Currency = 0,
                             OwnerId = 2,
                             WalletName = "Sami's wallet"
                         },
                         new
                         {
                             Id = 3,
-                            BalancesJson = "{\"USD\":150.00,\"BGN\":10000.00}",
+                            Amount = 1000m,
+                            Currency = 0,
                             OwnerId = 3,
                             WalletName = "Alex's wallet"
                         });
@@ -281,8 +272,8 @@ namespace Virtual_Wallet.Migrations
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Wallet", b =>
                 {
                     b.HasOne("Virtual_Wallet.Models.Entities.User", "Owner")
-                        .WithOne("UserWallet")
-                        .HasForeignKey("Virtual_Wallet.Models.Entities.Wallet", "OwnerId")
+                        .WithMany("UserWallets")
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -293,7 +284,7 @@ namespace Virtual_Wallet.Migrations
                 {
                     b.Navigation("Cards");
 
-                    b.Navigation("UserWallet");
+                    b.Navigation("UserWallets");
                 });
 #pragma warning restore 612, 618
         }

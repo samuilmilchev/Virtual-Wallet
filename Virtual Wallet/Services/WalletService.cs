@@ -18,14 +18,14 @@ namespace Virtual_Wallet.Services
 			//this.exchangeRateService = exchangeRateService;
 		}
 
-		public void AddFunds(decimal amount, string currency, Wallet wallet, Card card) // From card to wallet
+		public void AddFunds(decimal amount, Currency currency, Wallet wallet, Card card, User user) // From card to wallet
 		{
 			if (card.Balance < amount)
 			{
 				throw new InsufficientFundsException("Insufficient funds to execute the transaction!");
 			}
 			card.Balance -= amount;
-			this.walletRepository.AddFunds(amount, currency, wallet);
+			this.walletRepository.AddFunds(amount, currency, wallet, user);
 		}
 
 		/*public decimal ConvertFunds(decimal amount, string fromCurrency, string toCurrency, Wallet wallet)
@@ -60,48 +60,28 @@ namespace Virtual_Wallet.Services
 			return walletRepository.Create(wallet);
 		}
 
-		public decimal GetBalance(Wallet wallet, string currency)
-		{
-			return this.walletRepository.GetBalance(wallet, currency);
-		}
+		//public decimal GetBalance(Wallet wallet, Currency currency)
+		//{
+		//	return this.walletRepository.GetBalance(wallet, currency);
+		//}
 
-		public void WithdrawFunds(decimal amount, string currency, Wallet wallet, Card card) // From wallet to card
+		public void WithdrawFunds(decimal amount, Wallet wallet, Card card) // From wallet to card
 		{
-			var walletBalance = this.walletRepository.GetBalance(wallet, currency);
-			if (walletBalance < amount)
+            if (wallet.Amount < amount)
 			{
 				throw new InsufficientFundsException("Insufficient funds to execute the transaction!");
 			}
 
-			this.walletRepository.WithdrawFunds(amount, currency, wallet);
+			this.walletRepository.WithdrawFunds(amount, wallet);
 			card.Balance += amount;
 			this.cardService.UpdateCardBalance(card.Id, card);
 		}
 
-		// New method: Transfer funds from one wallet to another
-		public void TransferFunds(decimal amount, string currency, Wallet fromWallet, Wallet toWallet)
+		//New method: Transfer funds from one wallet to another
+		public void TransferFunds(decimal amount, Currency currency, Wallet fromWallet, Wallet toWallet, User user)
 		{
-			var fromWalletBalance = this.walletRepository.GetBalance(fromWallet, currency);
-			if (fromWalletBalance < amount)
-			{
-				throw new InsufficientFundsException("Insufficient funds to execute the transaction!");
-			}
+			walletRepository.SendMoney(amount, currency, fromWallet, toWallet, user);
+        }
 
-			this.walletRepository.WithdrawFunds(amount, currency, fromWallet);
-			this.walletRepository.AddFunds(amount, currency, toWallet);
-		}
-
-		// New method: Withdraw funds from wallet to cash
-		public void WithdrawToCash(decimal amount, string currency, Wallet wallet)
-		{
-			var walletBalance = this.walletRepository.GetBalance(wallet, currency);
-			if (walletBalance < amount)
-			{
-				throw new InsufficientFundsException("Insufficient funds to execute the withdrawal!");
-			}
-
-			this.walletRepository.WithdrawFunds(amount, currency, wallet);
-			// Handle the cash withdrawal externally (e.g., by interfacing with a cash-handling service)
-		}
 	}
 }

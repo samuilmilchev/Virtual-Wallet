@@ -50,10 +50,20 @@ namespace Virtual_Wallet.Repository
         }
         public User GetByUsername(string username)
         {
-            User user = this.GetUsers().Include(x => x.Cards).Include(u => u.UserWallet).FirstOrDefault(x => x.Username == username);
+            User user = this.GetUsers().Include(x => x.Cards).Include(u => u.UserWallets).FirstOrDefault(x => x.Username == username);
             if (user == null)
             {
                 throw new EntityNotFoundException($"User with username {username} does not exist!");
+            }     //commented because an excception should not be visualised in MVC(in the view)
+            return user;
+        }
+
+        public User GetByPhoneNumber(string phoneNumber)
+        {
+            User user = this.GetUsers().Include(x => x.Cards).Include(u => u.UserWallets).FirstOrDefault(x => x.PhoneNumber == phoneNumber);
+            if (user == null)
+            {
+                throw new EntityNotFoundException($"User with phone number {phoneNumber} does not exist!");
             }     //commented because an excception should not be visualised in MVC(in the view)
             return user;
         }
@@ -234,6 +244,24 @@ namespace Virtual_Wallet.Repository
             res = OrderBy(res, filterParameters.OrderBy);
 
             return res.ToList();
+        }
+
+        public User FindRecipient(UserQueryParameters recipientDTO)
+        {
+            User user = new User();
+            user = GetByPhoneNumber(recipientDTO.PhoneNumber);
+            if (user != null)
+            {
+                return user;
+            }
+            user = GetByUsername(recipientDTO.Username);
+            if (user != null)
+            {
+                return user;
+            }
+            user = GetByEmail(recipientDTO.Email);
+
+            return user;
         }
     }
 }

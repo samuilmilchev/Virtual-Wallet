@@ -4,7 +4,7 @@ namespace Virtual_Wallet.Services.Contracts
 {
     public interface ITransactionService
     {
-        Task CreateTransaction(DateTime timestamp, string currency, decimal amount, TransactionType type, int walletId);
+        Task CreateTransaction(DateTime timestamp, Currency currency, decimal amount, TransactionType type, int walletId);
         Task<IEnumerable<Transaction>> GetAllTransactions();
         Task<Transaction> GetTransactionById(int id);
         Task<IEnumerable<Transaction>> GetTransactionsByDateRange(DateTime startDate, DateTime endDate);

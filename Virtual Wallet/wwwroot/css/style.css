@@ -508,7 +508,7 @@ a:focus {
             }
 
 .about_section {
-    background-color: #00204a;
+    background-color: #23286b;
     color: #ffffff;
 }
 
@@ -627,7 +627,7 @@ a:focus {
 /*team section */
 .team_section {
     text-align: center;
-    background-color: #00204a;
+    background-color: #23286b;
     color: #ffffff;
 }
 
@@ -639,6 +639,7 @@ a:focus {
 
     .team_section .team_container {
         padding: 0 15px;
+        padding-left: 400px;
     }
 
         .team_section .team_container .box {
@@ -649,7 +650,7 @@ a:focus {
             transition: all .1s;
             margin-top: 45px;
             background: -webkit-gradient(linear, left top, left bottom, from(#002759), to(#002b64));
-            background: linear-gradient(to bottom, #002759, #002b64);
+            background: linear-gradient(to bottom, #eeeeee, #002b64);
         }
 
             .team_section .team_container .box .img-box {
@@ -665,7 +666,8 @@ a:focus {
             }
 
                 .team_section .team_container .box .img-box img {
-                    width: 120px;
+                    width: 200px;
+                    height: 200px;
                     border-radius: 100%;
                     border: 5px solid #ffffff;
                 }
@@ -675,7 +677,7 @@ a:focus {
             }
 
                 .team_section .team_container .box .detail-box h5 {
-                    color: #00bbf0;
+                    color: #a1c3fc;
                     font-weight: 600;
                     position: relative;
                 }
@@ -727,7 +729,8 @@ a:focus {
         -webkit-box-align: center;
         -ms-flex-align: center;
         align-items: center;
-        width: 100px;
+        width: 150px;
+        height: 150px;
         margin-bottom: -50px;
         margin-left: 25px;
         position: relative;
@@ -771,12 +774,9 @@ a:focus {
         }
 
 .client_section .owl-carousel .owl-nav {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
+    display: none;
+    display: none;
+    display: none;
     margin-top: 45px;
 }
 
@@ -800,7 +800,7 @@ a:focus {
 
 /* client section end */
 .info_section {
-    background-color: #00204a;
+    background-color: #23286b;
     color: #ffffff;
     padding: 45px 0 15px 0;
 }

@@ -17,5 +17,6 @@ namespace Virtual_Wallet.Repository.Contracts
         void AddUserCard(Card card, User user);
         bool UserEmailExists(string email);
         List<User> FilterBy(UserQueryParameters filterParameters);
+        User FindRecipient(UserQueryParameters recipientDTO);
     }
 }

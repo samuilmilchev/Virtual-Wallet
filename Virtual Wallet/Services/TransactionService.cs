@@ -15,7 +15,7 @@ namespace Virtual_Wallet.Services
 			_walletRepository = walletRepository;
 		}
 
-		public async Task CreateTransaction(DateTime timestamp, string currency, decimal amount, TransactionType type, int walletId)
+		public async Task CreateTransaction(DateTime timestamp, Currency currency, decimal amount, TransactionType type, int walletId)
 		{
 			// Validate the wallet exists
 			var wallet = await _walletRepository.GetById(walletId);

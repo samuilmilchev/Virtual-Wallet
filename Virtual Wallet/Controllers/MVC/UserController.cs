@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CloudinaryDotNet;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -57,19 +58,20 @@ namespace Virtual_Wallet.Controllers.MVC
                     PhoneNumber = registerModel.PhoneNumber,
                     PasswordHash = passwordHash,
                     PasswordSalt = passwordSalt,
+                    UserWallets = new List<Wallet>(),
                     Role = UserRole.User
                 };
 
                 //при създаване на акаунт се създава и първия(може би и единствен) уолет на юзъра
                 Wallet wallet = new Wallet
                 {
-                    
                     WalletName = walletModel.WalletName,
-                    Owner = user
+                    Owner = user,
+                    Currency = Currency.BGN
                 };
 
                 //тук добавяме новосъздадения уолет към юзъра
-                user.UserWallet = wallet;
+                user.UserWallets.Add(wallet);
 
 
                 //if (registerModel.Image != null)
@@ -251,6 +253,71 @@ namespace Virtual_Wallet.Controllers.MVC
             catch (DuplicateEntityException x)
             {
                 return Json(new { success = false, message = x.Message });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult SendMoney()
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            SendMoneyViewModel model = new SendMoneyViewModel();
+            model.CurrentUser = user;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult SendMoney(SendMoneyViewModel sendMoney)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(sendMoney);
+                }
+
+                var username = User.Identity.Name;
+                var user = _usersService.GetByUsername(username);
+                ViewData["CurrentUser"] = user;
+                var wallet = user.UserWallets.FirstOrDefault(x => x.Currency == sendMoney.Currency);
+
+                UserQueryParameters userQueryParameters = new UserQueryParameters();
+                userQueryParameters.Username = sendMoney.RecipienTokens;
+                userQueryParameters.PhoneNumber = sendMoney.RecipienTokens;
+                userQueryParameters.Email = sendMoney.RecipienTokens;
+
+                var recipient = _usersService.FindRecipient(userQueryParameters);
+
+                if (recipient == null)
+                {
+                    throw new EntityNotFoundException($"Recipien with credentials {sendMoney.RecipienTokens} does not exist.");
+                }
+
+                var recipientWallet = recipient.UserWallets.FirstOrDefault(x => x.Currency == sendMoney.Currency);
+                if (recipientWallet == null)
+                {
+                    Wallet newWallet = new Wallet();
+                    newWallet.Currency = sendMoney.Currency;
+                    newWallet.Amount = 0;
+                    newWallet.Owner = user;
+                    newWallet.OwnerId = user.Id;
+                    newWallet.WalletName = $"{sendMoney.Currency.ToString()} wallet";
+
+                    recipient.UserWallets.Add(newWallet);
+                }
+
+                var createdWallet = recipient.UserWallets.FirstOrDefault(x => x.Currency == sendMoney.Currency);
+
+                this._walletService.TransferFunds(sendMoney.Amount, sendMoney.Currency, wallet, createdWallet, user);
+
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
 

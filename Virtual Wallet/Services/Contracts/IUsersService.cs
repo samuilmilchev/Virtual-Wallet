@@ -16,5 +16,6 @@ namespace Virtual_Wallet.Services.Contracts
         bool BlockUser(int userId, User user);
         bool UnblockUser(int userId, User user);
         List<User> FilterBy(UserQueryParameters filterParameters);
+        User FindRecipient(UserQueryParameters filterParameters);
     }
 }

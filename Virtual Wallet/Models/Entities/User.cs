@@ -17,11 +17,8 @@ namespace Virtual_Wallet.Models.Entities
 
         public UserRole Role { get; set; }
 
-        public int WalletId { get; set; }
-        public Wallet UserWallet  { get; set; } //може би ще подлежи на промяна, като местоположение
-
-        
-
+        //public int WalletId { get; set; }
+        public List<Wallet> UserWallets  { get; set; } //може би ще подлежи на промяна, като местоположение
 
     }
 }

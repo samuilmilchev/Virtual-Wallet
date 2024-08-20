@@ -12,19 +12,22 @@ namespace Virtual_Wallet.Models.Entities
         public User Owner { get; set; }
 
         public string WalletName { get; set; }
-		public string BalancesJson { get; set; }
+		public Currency Currency { get; set; }
+		public decimal Amount { get; set; }
 
-		// This property will be used to interact with the balances as a dictionary
-		[NotMapped]
-		public Dictionary<string, decimal> Balances
-		{
-			get => BalancesJson == null ? new Dictionary<string, decimal>() : JsonSerializer.Deserialize<Dictionary<string, decimal>>(BalancesJson);
-			set => BalancesJson = JsonSerializer.Serialize(value);
-		}
+		//public string BalancesJson { get; set; }
 
-		public string CurrentCurrency { get; set; }
+		//// This property will be used to interact with the balances as a dictionary
+		//[NotMapped]
+		//public Dictionary<string, decimal> Balances
+		//{
+		//	get => BalancesJson == null ? new Dictionary<string, decimal>() : JsonSerializer.Deserialize<Dictionary<string, decimal>>(BalancesJson);
+		//	set => BalancesJson = JsonSerializer.Serialize(value);
+		//}
 
-		[Timestamp]
-		public byte[] RowVersion { get; set; }  // Concurrency token
+		//public string CurrentCurrency { get; set; }
+
+		//[Timestamp]
+		//public byte[] RowVersion { get; set; }  // Concurrency token
 	}
 }

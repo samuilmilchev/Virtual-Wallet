@@ -20,10 +20,10 @@ namespace Virtual_Wallet.Db
 		{
 			base.OnModelCreating(modelBuilder);
 
-			modelBuilder.Entity<User>()
-			.HasOne(u => u.UserWallet) // Navigation property on User
-			.WithOne(w => w.Owner) // Navigation property on Wallet
-			.HasForeignKey<Wallet>(w => w.OwnerId); // Specify the foreign key on Wallet
+			//modelBuilder.Entity<User>()
+			//.HasOne(u => u.UserWallets) // Navigation property on User
+			//.WithOne(w => w.Owner) // Navigation property on Wallet
+			//.HasForeignKey<Wallet>(w => w.OwnerId); // Specify the foreign key on Wallet
 
             modelBuilder.Entity<User>()
            .HasMany(u => u.Cards)
@@ -49,48 +49,39 @@ namespace Virtual_Wallet.Db
 
             modelBuilder.Entity<Card>().HasData(cards);
 
-			var wallets = new List<Wallet>
-			{
-				new Wallet
-				{
-					Id = 1,
-					OwnerId = 1,
-					WalletName = "Violin's wallet",
-					Balances = new Dictionary<string, decimal>
-					{
-						{ "USD", 100.00m },
-						{ "EUR", 50.00m }
-					}
-				},
-				new Wallet
-				{
-					Id = 2,
-					OwnerId = 2,
-					WalletName = "Sami's wallet",
-					Balances = new Dictionary<string, decimal>
-					{
-						{ "USD", 200.00m },
-						{ "GBP", 75.00m }
-					}
-				},
-				new Wallet
-				{
-					Id = 3,
-					OwnerId = 3,
-					WalletName = "Alex's wallet",
-					Balances = new Dictionary<string, decimal>
-					{
-						{ "USD", 150.00m },
-						{ "BGN", 10000.00m }
-					}
-				}
-			};
+            var wallets = new List<Wallet>
+            {
+                new Wallet
+                {
+                    Id = 1,
+                    OwnerId = 1,
+                    WalletName = "Violin's wallet",
+                    Amount = 1000m,
+                    Currency = Currency.BGN
+                },
+                new Wallet
+                {
+                    Id = 2,
+                    OwnerId = 2,
+                    WalletName = "Sami's wallet",
+                    Amount = 1000m,
+                    Currency = Currency.BGN
+                },
+                new Wallet
+                {
+                    Id = 3,
+                    OwnerId = 3,
+                    WalletName = "Alex's wallet",
+                    Amount = 1000m,
+                    Currency = Currency.BGN
+                }
+            };
 
             modelBuilder.Entity<Wallet>().HasData(wallets);
 
-            modelBuilder.Entity<Wallet>()
-           .Property(w => w.RowVersion)
-           .IsRowVersion();  // Configure RowVersion as a concurrency token
+           // modelBuilder.Entity<Wallet>()
+           //.Property(w => w.RowVersion)
+           //.IsRowVersion();  // Configure RowVersion as a concurrency token
 
 			// Transaction entity configuration
 			modelBuilder.Entity<Transaction>()

@@ -34,13 +34,15 @@ namespace Virtual_Wallet.Controllers.API
             var sendersCard = _cardService.GetByUserId(sender.Id);
             //var sendersCard = this._cardService.GetByCardHoler(senderUsername);
 
+            var wallet = sender.UserWallets.FirstOrDefault(x => x.Currency == transferRequest.Currency);
+
             if (transferType == "toWallet")
             {
-                this._walletService.AddFunds(transferRequest.Amount, "BGN", sender.UserWallet, sendersCard);
+                this._walletService.AddFunds(transferRequest.Amount, transferRequest.Currency, wallet, sendersCard, sender);
             }
             else if (transferType == "toCard")
             {
-                this._walletService.WithdrawFunds(transferRequest.Amount, "BGN", sender.UserWallet, sendersCard);
+                this._walletService.WithdrawFunds(transferRequest.Amount, wallet, sendersCard);
             }
             else
             {

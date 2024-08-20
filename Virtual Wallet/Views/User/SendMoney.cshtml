@@ -1,0 +1,38 @@
+﻿@model SendMoneyViewModel
+
+<div class="container">
+    <form asp-action="SendMoney" method="post" enctype="multipart/form-data">
+        <div style="text-align: center;" class="form-title">
+            <h2 style="padding-left: 20px; color:black;">Edit User</h2>
+            <hr>
+        </div>
+
+        <div class="input-box">
+            <label asp-for="RecipienTokens" style="font-size: 20px;" class="form-label"></label>
+            <input asp-for="RecipienTokens" style="color:black;" class="input-field"  />
+            <span asp-validation-for="RecipienTokens"></span>
+        </div>
+
+        <select id="transferType" class="form-control">
+        @{
+            foreach (var wallet in Model.CurrentUser.UserWallets)
+            {
+                    <option value="@wallet.Currency">@wallet.Currency</option>
+            }
+        }
+        </select>
+
+        <div class="input-box">
+            <label asp-for="Amount" style="font-size: 20px;" class="form-label"></label>
+            <input asp-for="Amount" style="color:black;" class="input-field"  />
+            <span asp-validation-for="Amount"></span>
+        </div>
+        <div class="input-box">
+            <label asp-for="Currency" style="font-size: 20px;" class="form-label"></label>
+            <input asp-for="Currency" style="color:black;" class="input-field"  />
+            <span asp-validation-for="Currency"></span>
+        </div>
+
+        <button type="submit" style="font-size: 20px; color:black;" class="input-submit">Save</button>
+    </form>
+</div>
