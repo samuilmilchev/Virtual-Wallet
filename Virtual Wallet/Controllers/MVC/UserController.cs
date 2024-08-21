@@ -10,6 +10,7 @@ using Virtual_Wallet.Exceptions;
 using Virtual_Wallet.Helpers.Contracts;
 using Virtual_Wallet.Models.Entities;
 using Virtual_Wallet.Models.ViewModels;
+using Virtual_Wallet.Services;
 using Virtual_Wallet.Services.Contracts;
 
 namespace Virtual_Wallet.Controllers.MVC
@@ -20,13 +21,15 @@ namespace Virtual_Wallet.Controllers.MVC
         private readonly IConfiguration _configuration;
         private readonly IModelMapper _modelMapper;
         private readonly IWalletService _walletService;
+        private readonly IPhotoService _photoService;
 
-        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService)
+        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService,IPhotoService photoService)
         {
             _usersService = usersService;
             _configuration = configuration;
             _modelMapper = modelMapper;
             _walletService = walletService;
+            _photoService = photoService;
         }
 
         [HttpGet]
@@ -62,8 +65,22 @@ namespace Virtual_Wallet.Controllers.MVC
                     Role = UserRole.User
                 };
 
-                //при създаване на акаунт се създава и първия(може би и единствен) уолет на юзъра
-                Wallet wallet = new Wallet
+                if (registerModel.Image != null)
+                {
+                    var result = await _photoService.UploadImageAsync(registerModel.Image);
+                    if (result.Error == null)
+                    {
+                        user.Image = result.Url.ToString();
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("ImageUploadError", "An error occurred while uploading the image");
+                        return View("Index", model);
+                    }
+                }
+                
+            //при създаване на акаунт се създава и първия(може би и единствен) уолет на юзъра
+            Wallet wallet = new Wallet
                 {
                     WalletName = walletModel.WalletName,
                     Owner = user,
@@ -157,7 +174,7 @@ namespace Virtual_Wallet.Controllers.MVC
             {
                 Username = user.Username,
                 Email = user.Email,
-                //Image = user.Image,
+                Image = user.Image,
                 PhoneNumber = user.PhoneNumber,
                 Role = user.Role.ToString(),
                 IsBlocked = user.IsBlocked,
@@ -242,6 +259,12 @@ namespace Virtual_Wallet.Controllers.MVC
                         }
                         user.Email = model.Email;
                         user.PhoneNumber = model.PhoneNumber;
+                    }
+                    if (model.UploadImage != null)
+                    {
+                        var result = await _photoService.UploadImageAsync(model.UploadImage);
+
+                        user.Image = result.Url.ToString();
                     }
 
                     var userToEdit = _modelMapper.MapUserViewModel(model);

@@ -23,5 +23,7 @@ namespace Virtual_Wallet.Models.ViewModels
         public string Role { get; set; }
         public List<Card> Cards { get; set; }
         public bool IsBlocked { get; set; }
+        public string? Image { get; set; } //въпрос към Сами: Защо са две: Image и UploadImage
+        public IFormFile? UploadImage { get; set; }
     }
 }

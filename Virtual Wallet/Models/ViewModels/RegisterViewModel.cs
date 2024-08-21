@@ -26,5 +26,7 @@ namespace Virtual_Wallet.Models.ViewModels
         //[Required(AllowEmptyStrings = false, ErrorMessage = "Phone number is required and cannot be empty.")]
         //[RegularExpression(@"add regex", ErrorMessage = "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.")]
         public string PhoneNumber { get; set; }
+
+        public IFormFile? Image { get; set; }
     }
 }

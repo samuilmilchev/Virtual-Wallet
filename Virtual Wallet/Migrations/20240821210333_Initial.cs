@@ -22,7 +22,8 @@ namespace Virtual_Wallet.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsAdmin = table.Column<bool>(type: "bit", nullable: false),
                     IsBlocked = table.Column<bool>(type: "bit", nullable: false),
-                    Role = table.Column<int>(type: "int", nullable: false)
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -101,18 +102,18 @@ namespace Virtual_Wallet.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "Email", "IsAdmin", "IsBlocked", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Username" },
-                values: new object[] { 1, "samuil@example.com", true, false, null, null, "0845965847", 1, "Samuil" });
+                columns: new[] { "Id", "Email", "Image", "IsAdmin", "IsBlocked", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Username" },
+                values: new object[] { 1, "samuil@example.com", null, true, false, null, null, "0845965847", 1, "Samuil" });
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "Email", "IsAdmin", "IsBlocked", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Username" },
-                values: new object[] { 2, "violin@example.com", true, false, null, null, "0865214587", 1, "Violin" });
+                columns: new[] { "Id", "Email", "Image", "IsAdmin", "IsBlocked", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Username" },
+                values: new object[] { 2, "violin@example.com", null, true, false, null, null, "0865214587", 1, "Violin" });
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "Email", "IsAdmin", "IsBlocked", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Username" },
-                values: new object[] { 3, "alex@example.com", true, false, null, null, "0826541254", 1, "Alex" });
+                columns: new[] { "Id", "Email", "Image", "IsAdmin", "IsBlocked", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Username" },
+                values: new object[] { 3, "alex@example.com", null, true, false, null, null, "0826541254", 1, "Alex" });
 
             migrationBuilder.InsertData(
                 table: "Cards",
