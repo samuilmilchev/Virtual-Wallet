@@ -5,7 +5,7 @@ namespace Virtual_Wallet.Repository.Contracts
 {
     public interface IUserRepository
     {
-        List<User> GetAll();
+        IQueryable<User> GetAll();
         User GetByUsername(string username);
         User GetByEmail(string email);
         User Create(User user);
@@ -14,7 +14,9 @@ namespace Virtual_Wallet.Repository.Contracts
         bool BlockUser(int userId, User user);
         bool UnblockUser(int userId, User user);
         User GetById(int id);
+        void AddUserCard(Card card, User user);
         bool UserEmailExists(string email);
         List<User> FilterBy(UserQueryParameters filterParameters);
+        User FindRecipient(UserQueryParameters recipientDTO);
     }
 }

@@ -25,6 +25,10 @@
         <div class="input-box">
             <p style="text-align: left; font-size: 20px;"><strong>IsBlocked:</strong> <span id="user-phonenumber">@Model.IsBlocked</span></p>
         </div>
+        <div class="input-box">
+            <p style="text-align: left; font-size: 20px;"><strong>CardsCount:</strong> <span id="user-phonenumber">@Model.Cards.Count()</span></p>
+        </div>
+
         <div style="display: flex;" class="input-box">
             <button style="width: 80px; height: 50px; margin-left: 20px;" class="input-submit">
                 <a style="text-decoration: none; font-size: 20px; color: black;" asp-controller="User" asp-action="Edit" asp-route-username="@Model.Username">Edit</a>

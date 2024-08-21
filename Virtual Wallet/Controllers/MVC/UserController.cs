@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CloudinaryDotNet;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -17,12 +19,14 @@ namespace Virtual_Wallet.Controllers.MVC
         private readonly IUsersService _usersService;
         private readonly IConfiguration _configuration;
         private readonly IModelMapper _modelMapper;
+        private readonly IWalletService _walletService;
 
-        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper)
+        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService)
         {
             _usersService = usersService;
             _configuration = configuration;
             _modelMapper = modelMapper;
+            _walletService = walletService;
         }
 
         [HttpGet]
@@ -43,6 +47,7 @@ namespace Virtual_Wallet.Controllers.MVC
             {
 
                 var registerModel = model.Register;
+                var walletModel = model.Wallet;
 
                 CreatePasswordHash(registerModel.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -53,8 +58,21 @@ namespace Virtual_Wallet.Controllers.MVC
                     PhoneNumber = registerModel.PhoneNumber,
                     PasswordHash = passwordHash,
                     PasswordSalt = passwordSalt,
+                    UserWallets = new List<Wallet>(),
                     Role = UserRole.User
                 };
+
+                //при създаване на акаунт се създава и първия(може би и единствен) уолет на юзъра
+                Wallet wallet = new Wallet
+                {
+                    WalletName = walletModel.WalletName,
+                    Owner = user,
+                    Currency = Currency.BGN
+                };
+
+                //тук добавяме новосъздадения уолет към юзъра
+                user.UserWallets.Add(wallet);
+
 
                 //if (registerModel.Image != null)
                 //{
@@ -64,7 +82,9 @@ namespace Virtual_Wallet.Controllers.MVC
                 //}
 
                 User createdUser = _usersService.Create(user);
+                //Wallet createdWallet = _walletService.Create(wallet); // не знам дали е нужно за сега 
                 UserResponseDTO responseDTO = _modelMapper.MapUser(createdUser);
+
 
                 string token = CreateToken(user);
                 HttpContext.Response.Cookies.Append("jwt", token, new CookieOptions
@@ -140,7 +160,8 @@ namespace Virtual_Wallet.Controllers.MVC
                 //Image = user.Image,
                 PhoneNumber = user.PhoneNumber,
                 Role = user.Role.ToString(),
-                IsBlocked = user.IsBlocked
+                IsBlocked = user.IsBlocked,
+                Cards = user.Cards
             };
             return View(model);
         }
@@ -236,34 +257,121 @@ namespace Virtual_Wallet.Controllers.MVC
         }
 
         [HttpGet]
-        public IActionResult ListUsers()
+        public IActionResult SendMoney()
         {
-            var users = _usersService.GetAll();
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
 
-            if (users == null)
-            {
-                return NotFound();
-            }
+            SendMoneyViewModel model = new SendMoneyViewModel();
+            model.CurrentUser = user;
 
-            List<UserViewModel> usersList = new List<UserViewModel>();
-
-            foreach (var user in users)
-            {
-                var model = new UserViewModel
-                {
-                    Username = user.Username,
-                    Email = user.Email,
-                    //Image = user.Image,
-                    PhoneNumber = user.PhoneNumber,
-                    Role = user.Role.ToString(),
-                    IsBlocked = user.IsBlocked
-                };
-
-                usersList.Add(model);
-            }
-
-            return View(usersList);
+            return View(model);
         }
+
+        [HttpPost]
+        public IActionResult SendMoney(SendMoneyViewModel sendMoney)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(sendMoney);
+                }
+
+                var username = User.Identity.Name;
+                var user = _usersService.GetByUsername(username);
+                //ViewData["CurrentUser"] = user;
+               
+
+                var wallet = user.UserWallets.FirstOrDefault(x => x.Currency == sendMoney.Currency);
+
+                UserQueryParameters userQueryParameters = new UserQueryParameters();
+                userQueryParameters.Username = sendMoney.RecipienTokens;
+                userQueryParameters.PhoneNumber = sendMoney.RecipienTokens;
+                userQueryParameters.Email = sendMoney.RecipienTokens;
+
+                var recipient = _usersService.FindRecipient(userQueryParameters);
+
+                if (recipient == null)
+                {
+                    throw new EntityNotFoundException($"Recipien with credentials {sendMoney.RecipienTokens} does not exist.");
+                }
+
+                var recipientWallet = recipient.UserWallets.FirstOrDefault(x => x.Currency == sendMoney.Currency);
+                if (recipientWallet == null)
+                {
+                    Wallet newWallet = new Wallet();
+                    newWallet.Currency = sendMoney.Currency;
+                    newWallet.Amount = 0;
+                    newWallet.Owner = user;
+                    newWallet.OwnerId = user.Id;
+                    newWallet.WalletName = $"{sendMoney.Currency.ToString()} wallet";
+
+                    recipient.UserWallets.Add(newWallet);
+                }
+
+                var createdWallet = recipient.UserWallets.FirstOrDefault(x => x.Currency == sendMoney.Currency);
+
+                this._walletService.TransferFunds(sendMoney.Amount, sendMoney.Currency, wallet, createdWallet, user);
+
+                return RedirectToAction("Index", "Home");
+            }
+            catch (EntityNotFoundException x)
+            {
+                var username = User.Identity.Name;
+                var user = _usersService.GetByUsername(username);
+                SendMoneyViewModel model = new SendMoneyViewModel();
+                model.CurrentUser = user;
+                
+                ViewData["ErrorMessage"] = x.Message;
+                return View(model);
+
+                // Json(new { success = false, message = x.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ListUsers()
+        {
+            return View(await GetUserList(1));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ListUsers([FromForm]int currentPageIndex)
+        {
+            return View(await GetUserList(currentPageIndex));
+        }
+
+
+        //[HttpGet]
+        //public IActionResult ListUsers()
+        //{
+        //    var users = _usersService.GetAll();
+
+        //    if (users == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    List<UserViewModel> usersList = new List<UserViewModel>();
+
+        //    foreach (var user in users)
+        //    {
+        //        var model = new UserViewModel
+        //        {
+        //            Username = user.Username,
+        //            Email = user.Email,
+        //            //Image = user.Image,
+        //            PhoneNumber = user.PhoneNumber,
+        //            Role = user.Role.ToString(),
+        //            IsBlocked = user.IsBlocked
+        //        };
+
+        //        usersList.Add(model);
+        //    }
+
+        //    return View(usersList);
+        //}
 
         [HttpPost]
         public IActionResult SearchByUsername([FromForm] string text)
@@ -360,6 +468,24 @@ namespace Virtual_Wallet.Controllers.MVC
                 passwordSalt = hmac.Key;
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
+        }
+
+        private async Task<UserPViewModel> GetUserList(int currentPage)
+        {
+            int maxRowsPerPage = 2;
+            UserPViewModel userModel = new UserPViewModel();
+
+            userModel.UserList = await _usersService.GetAll()
+                .OrderBy(x => x.Id)
+                .Skip((currentPage - 1) * maxRowsPerPage)
+                .Take(maxRowsPerPage)
+                .ToListAsync();
+
+            double pageCount = (double)((decimal)_usersService.GetAll().Count() / Convert.ToDecimal(maxRowsPerPage));
+
+            userModel.pageCount = (int)Math.Ceiling(pageCount);
+            userModel.currentPageIndex = currentPage;
+            return userModel;
         }
     }
 }

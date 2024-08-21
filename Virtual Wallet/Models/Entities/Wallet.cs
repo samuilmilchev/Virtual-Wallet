@@ -1,4 +1,8 @@
-﻿namespace Virtual_Wallet.Models.Entities
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
+
+namespace Virtual_Wallet.Models.Entities
 {
     public class Wallet
     {
@@ -8,14 +12,22 @@
         public User Owner { get; set; }
 
         public string WalletName { get; set; }
+		public Currency Currency { get; set; }
+		public decimal Amount { get; set; }
 
-        public decimal Balance { get; set; }
+		//public string BalancesJson { get; set; }
 
-        public List<Transaction> TransactionHistory { get; set; } = new List<Transaction>();//инициализиране на списъка с трансакции за да се избегне null reference;
+		//// This property will be used to interact with the balances as a dictionary
+		//[NotMapped]
+		//public Dictionary<string, decimal> Balances
+		//{
+		//	get => BalancesJson == null ? new Dictionary<string, decimal>() : JsonSerializer.Deserialize<Dictionary<string, decimal>>(BalancesJson);
+		//	set => BalancesJson = JsonSerializer.Serialize(value);
+		//}
 
-        //public Wallet() //инициализиране на списъка с трансакции в конструктора за да се избегне null reference
-        //{
-        //    TransactionHistory = new List<Transaction>(); // Initialize the transaction list
-        //}
-    }
+		//public string CurrentCurrency { get; set; }
+
+		//[Timestamp]
+		//public byte[] RowVersion { get; set; }  // Concurrency token
+	}
 }

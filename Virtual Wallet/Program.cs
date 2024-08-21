@@ -85,13 +85,15 @@ public class Program
 
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<ICardRepository, CardRepository>();
+		builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
         builder.Services.AddScoped<IWalletRepository, WalletRepository>();
 
-        builder.Services.AddScoped<IUsersService, UsersService>();
+		builder.Services.AddScoped<IUsersService, UsersService>();
         builder.Services.AddScoped<ICardService, CardService>();
+		builder.Services.AddScoped<ITransactionService, TransactionService>();
         builder.Services.AddScoped<IWalletService, WalletService>();
 
-        builder.Services.AddScoped<IModelMapper, ModelMapper>();
+		builder.Services.AddScoped<IModelMapper, ModelMapper>();
 
         var app = builder.Build();
 

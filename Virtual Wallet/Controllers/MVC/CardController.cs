@@ -39,19 +39,22 @@ namespace Virtual_Wallet.Controllers.MVC
                 return View(cardViewModel);
             }
 
-            Card card = new Card();
-
-            card.CardHolder = cardViewModel.CardHolder;
-            card.CardNumber = cardViewModel.CardNumber;
-            card.ExpirationData = cardViewModel.ExpirationDate;
-            card.CardType = cardViewModel.CardType;
-            card.CheckNumber = HashCVV(cardViewModel.CheckNumber, GenerateSalt());
-
             var username = User.Identity.Name;
             var user = _usersService.GetByUsername(username);
 
-            user.Cards.Add(card);
+            Card card = new Card();
+            
+
+           // card.CardHolder.Username = cardViewModel.CardHolder; //закоментирано за момента тъй като модела Карта няма вече string CardHolder 
+            card.CardNumber = cardViewModel.CardNumber;             // a е User CardHolder
+            card.ExpirationData = cardViewModel.ExpirationDate;
+            card.CardType = cardViewModel.CardType;
+            card.CheckNumber = HashCVV(cardViewModel.CheckNumber, GenerateSalt());
+            card.UserId = user.Id;
+            card.User = user;
+
             _cardService.Create(card);
+            _usersService.AddUserCard(card, user);
 
             return View("Successful");
         }
