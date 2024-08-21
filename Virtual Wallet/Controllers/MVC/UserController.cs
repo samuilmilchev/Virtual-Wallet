@@ -280,7 +280,9 @@ namespace Virtual_Wallet.Controllers.MVC
 
                 var username = User.Identity.Name;
                 var user = _usersService.GetByUsername(username);
-                ViewData["CurrentUser"] = user;
+                //ViewData["CurrentUser"] = user;
+               
+
                 var wallet = user.UserWallets.FirstOrDefault(x => x.Currency == sendMoney.Currency);
 
                 UserQueryParameters userQueryParameters = new UserQueryParameters();
@@ -314,10 +316,17 @@ namespace Virtual_Wallet.Controllers.MVC
 
                 return RedirectToAction("Index", "Home");
             }
-            catch (Exception)
+            catch (EntityNotFoundException x)
             {
+                var username = User.Identity.Name;
+                var user = _usersService.GetByUsername(username);
+                SendMoneyViewModel model = new SendMoneyViewModel();
+                model.CurrentUser = user;
+                
+                ViewData["ErrorMessage"] = x.Message;
+                return View(model);
 
-                throw;
+                // Json(new { success = false, message = x.Message });
             }
         }
 
