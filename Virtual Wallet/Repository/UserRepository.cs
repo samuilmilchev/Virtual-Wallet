@@ -41,7 +41,8 @@ namespace Virtual_Wallet.Repository
 
         public User GetByEmail(string email)
         {
-            User user = this.GetUsers().FirstOrDefault(x => x.Email == email);
+            
+            User user = this.GetUsers().Include(x => x.Cards).Include(u=>u.UserWallets).FirstOrDefault(x => x.Email == email);
             if (user == null)
             {
                 throw new EntityNotFoundException($"User with e-mail: {email} does not exist!");
@@ -50,6 +51,7 @@ namespace Virtual_Wallet.Repository
         }
         public User GetByUsername(string username)
         {
+            
             User user = this.GetUsers().Include(x => x.Cards).Include(u => u.UserWallets).FirstOrDefault(x => x.Username == username);
             if (user == null)
             {
@@ -60,6 +62,7 @@ namespace Virtual_Wallet.Repository
 
         public User GetByPhoneNumber(string phoneNumber)
         {
+           
             User user = this.GetUsers().Include(x => x.Cards).Include(u => u.UserWallets).FirstOrDefault(x => x.PhoneNumber == phoneNumber);
             if (user == null)
             {
@@ -249,19 +252,54 @@ namespace Virtual_Wallet.Repository
         public User FindRecipient(UserQueryParameters recipientDTO)
         {
             User user = new User();
-            user = GetByPhoneNumber(recipientDTO.PhoneNumber);
-            if (user != null)
+
+            if (IsValidEmail(recipientDTO.Email))
             {
-                return user;
+                user = GetByEmail(recipientDTO.Email);
             }
-            user = GetByUsername(recipientDTO.Username);
-            if (user != null)
+            else if (IsPhoneNumber(recipientDTO.PhoneNumber))
             {
-                return user;
+                user = GetByPhoneNumber(recipientDTO.PhoneNumber);
             }
-            user = GetByEmail(recipientDTO.Email);
+            else
+            {
+                user = GetByUsername(recipientDTO.Username);
+            }
 
             return user;
+
+            //user = GetByPhoneNumber(recipientDTO.PhoneNumber);
+            //if (user != null)
+            //{
+            //    return user;
+            //}
+            //user = GetByUsername(recipientDTO.Username);
+            //if (user != null)
+            //{
+            //    return user;
+            //}
+            //user = GetByEmail(recipientDTO.Email);
+
+
+            //return user;
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool IsPhoneNumber(string input)
+        {
+            return input.All(char.IsDigit); // assuming phone numbers are numeric
         }
     }
 }

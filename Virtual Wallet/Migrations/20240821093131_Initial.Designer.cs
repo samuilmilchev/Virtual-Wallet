@@ -12,7 +12,7 @@ using Virtual_Wallet.Db;
 namespace Virtual_Wallet.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240820195317_Initial")]
+    [Migration("20240821093131_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
