@@ -20,5 +20,7 @@ namespace Virtual_Wallet.Models.Entities
         //public int WalletId { get; set; }
         public List<Wallet> UserWallets  { get; set; } //може би ще подлежи на промяна, като местоположение
 
+        public string? Image { get; set; } //url нужен за качане на снимка/аватар чрез Cloduinary
+
     }
 }
