@@ -92,7 +92,11 @@
                             <span asp-validation-for="Register.Password" class="text-danger"></span>
                             <i class="bx bx-lock-alt icon"></i>
                         </div>
-
+                        <div class="input-box">
+                            <label asp-for="Register.Image" style="color:white;">Upload image:</label>
+                            <input asp-for="Register.Image" type="file" placeholder="Image">
+                            <span asp-validation-for="Register.Image" class="text-danger"></span>
+                        </div>
 
                         <!-- Input for wallet's name-->
                         <div class="input-box">

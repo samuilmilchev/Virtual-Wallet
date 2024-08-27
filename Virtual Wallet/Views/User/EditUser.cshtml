@@ -6,7 +6,12 @@
             <h2 style="padding-left: 20px; color:black;">Edit User</h2>
             <hr>
         </div>
-
+        <div class="input-box">
+            <label asp-for="UploadImage" style="color:black;">Upload image:</label>
+            <input asp-for="UploadImage" type="file" placeholder="Image">
+            <span asp-validation-for="UploadImage" class="text-danger"></span>
+        </div>
+        <br>
         <div class="input-box">
             <label asp-for="Username" style="font-size: 20px;" class="form-label"></label>
             <input asp-for="Username" style="color:black;" class="input-field" readonly />
@@ -24,6 +29,7 @@
             <input asp-for="PhoneNumber" class="input-field" />
             <span asp-validation-for="PhoneNumber"></span>
         </div>
+        
 
         <button type="submit" style="font-size: 20px; color:black;" class="input-submit">Save</button>
     </form>

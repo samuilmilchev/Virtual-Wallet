@@ -1,3 +1,4 @@
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -81,19 +82,25 @@ public class Program
 
         });
 
+
         // Add services to the container.
 
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<ICardRepository, CardRepository>();
-		builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+        builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
         builder.Services.AddScoped<IWalletRepository, WalletRepository>();
 
-		builder.Services.AddScoped<IUsersService, UsersService>();
+        builder.Services.AddScoped<IUsersService, UsersService>();
         builder.Services.AddScoped<ICardService, CardService>();
-		builder.Services.AddScoped<ITransactionService, TransactionService>();
+        builder.Services.AddScoped<ITransactionService, TransactionService>();
         builder.Services.AddScoped<IWalletService, WalletService>();
+        builder.Services.AddScoped<IPhotoService, PhotoService>();
 
-		builder.Services.AddScoped<IModelMapper, ModelMapper>();
+        //нужно за насторйка на клаудинери профила
+        builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+    
+
+        builder.Services.AddScoped<IModelMapper, ModelMapper>();
 
         var app = builder.Build();
 
