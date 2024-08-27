@@ -107,6 +107,12 @@ namespace Virtual_Wallet.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
+                    b.Property<int?>("RecipientId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SenderId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
 
@@ -117,6 +123,10 @@ namespace Virtual_Wallet.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RecipientId");
+
+                    b.HasIndex("SenderId");
 
                     b.HasIndex("WalletId");
 
@@ -258,11 +268,23 @@ namespace Virtual_Wallet.Migrations
 
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Transaction", b =>
                 {
+                    b.HasOne("Virtual_Wallet.Models.Entities.User", "Recipient")
+                        .WithMany()
+                        .HasForeignKey("RecipientId");
+
+                    b.HasOne("Virtual_Wallet.Models.Entities.User", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId");
+
                     b.HasOne("Virtual_Wallet.Models.Entities.Wallet", "Wallet")
                         .WithMany()
                         .HasForeignKey("WalletId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Recipient");
+
+                    b.Navigation("Sender");
 
                     b.Navigation("Wallet");
                 });
