@@ -24,11 +24,9 @@ namespace Virtual_Wallet.Controllers.MVC
         private readonly IModelMapper _modelMapper;
         private readonly IWalletService _walletService;
         private readonly IPhotoService _photoService;
-
-        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService,IPhotoService photoService)
         private readonly ITransactionService _transactionService;
 
-        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService, ITransactionService transactionService)
+        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService, ITransactionService transactionService, IPhotoService photoService)
         {
             _usersService = usersService;
             _configuration = configuration;
