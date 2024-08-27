@@ -50,6 +50,7 @@ namespace Virtual_Wallet.Repository
 
             // Create a transaction record
             var transaction = new Transaction(DateTime.Now, currency, amount, TransactionType.Add, currentWallet.Id);
+			transaction.Recipient = user;
             _context.Transactions.Add(transaction);
 
             // Save changes to the database
@@ -67,6 +68,7 @@ namespace Virtual_Wallet.Repository
 
             // Create a transaction record
             var transaction = new Transaction(DateTime.Now, currency, amount, TransactionType.Add, wallet.Id);
+            transaction.Recipient = wallet.Owner;
             _context.Transactions.Add(transaction);
 
             // Save changes to the database
@@ -102,7 +104,9 @@ namespace Virtual_Wallet.Repository
 			wallet.Amount -= amount;
 
             var transaction = new Transaction(DateTime.Now, wallet.Currency, amount, TransactionType.Withdraw, wallet.Id);
-			_context.Transactions.Add(transaction);
+			transaction.Sender = wallet.Owner;
+
+            _context.Transactions.Add(transaction);
 
 			_context.SaveChanges();
 		}

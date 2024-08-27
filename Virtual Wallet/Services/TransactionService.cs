@@ -1,4 +1,5 @@
-﻿using Virtual_Wallet.Models.Entities;
+﻿using Virtual_Wallet.DTOs.TransactionDTOs;
+using Virtual_Wallet.Models.Entities;
 using Virtual_Wallet.Repository.Contracts;
 using Virtual_Wallet.Services.Contracts;
 
@@ -46,14 +47,28 @@ namespace Virtual_Wallet.Services
 			return await _transactionRepository.GetByType(type);
 		}
 
-		public async Task<IEnumerable<Transaction>> GetTransactionsByDateRange(DateTime startDate, DateTime endDate)
+		public IQueryable<Transaction> GetTransactionsByDateRange(DateTime startDate, DateTime endDate)
 		{
-			return await _transactionRepository.GetByDateRange(startDate, endDate);
+			return _transactionRepository.GetByDateRange(startDate, endDate);
 		}
 
-		public async Task<IEnumerable<Transaction>> GetAllTransactions()
+		public IQueryable<Transaction> GetAllTransactions()
 		{
-			return await _transactionRepository.GetAll();
+			return  _transactionRepository.GetAll();
 		}
-	}
+
+		public List<Transaction> FilterBy(TransactionQueryParameters transactionQueryParameters)
+		{
+			return _transactionRepository.FilterBy(transactionQueryParameters);
+		}
+
+		public List<Transaction> SortByDate(string text)
+		{
+			return _transactionRepository.SortByDate(text);
+		}
+        public IQueryable<Transaction> SortByAmount(string text)
+        {
+            return _transactionRepository.SortByAmount(text);
+        }
+    }
 }

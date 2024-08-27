@@ -9,5 +9,6 @@ namespace Virtual_Wallet.Helpers.Contracts
         UserResponseDTO MapUser(User user);
         UserViewModel Map(User user);
         User MapUserViewModel(UserViewModel urd);
+        TransactionViewModel Map(Transaction transaction);
     }
 }

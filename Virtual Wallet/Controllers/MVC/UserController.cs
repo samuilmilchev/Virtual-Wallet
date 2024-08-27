@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using Virtual_Wallet.DTOs.TransactionDTOs;
 using Virtual_Wallet.DTOs.UserDTOs;
 using Virtual_Wallet.Exceptions;
 using Virtual_Wallet.Helpers.Contracts;
@@ -24,12 +26,16 @@ namespace Virtual_Wallet.Controllers.MVC
         private readonly IPhotoService _photoService;
 
         public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService,IPhotoService photoService)
+        private readonly ITransactionService _transactionService;
+
+        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService, ITransactionService transactionService)
         {
             _usersService = usersService;
             _configuration = configuration;
             _modelMapper = modelMapper;
             _walletService = walletService;
             _photoService = photoService;
+            _transactionService = transactionService;
         }
 
         [HttpGet]
@@ -354,6 +360,19 @@ namespace Virtual_Wallet.Controllers.MVC
         }
 
         [HttpGet]
+        public async Task<IActionResult> ListTransactions()
+        {
+            return View(await GetTransactionsList(1));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ListTransactions([FromForm] int currentPageIndex)
+        {
+            return View(await GetTransactionsList(currentPageIndex));
+        }
+
+
+        [HttpGet]
         public async Task<IActionResult> ListUsers()
         {
             return View(await GetUserList(1));
@@ -395,6 +414,69 @@ namespace Virtual_Wallet.Controllers.MVC
 
         //    return View(usersList);
         //}
+
+        [HttpPost]
+        public IActionResult SearchTransactionBySender([FromForm]string text)
+        {
+            TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
+            transactionQueryParameters.Sender = text;
+
+            var transactions = _transactionService.FilterBy(transactionQueryParameters).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult SearchTransactionByRecipient([FromForm] string text)
+        {
+            TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
+            transactionQueryParameters.Recipient = text;
+
+            var transactions = _transactionService.FilterBy(transactionQueryParameters).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult SearchTransactionByType([FromForm] string text)
+        {
+
+            if (text == "-")
+            {
+                return RedirectToAction("ListTransactions");
+            }
+
+            TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
+            transactionQueryParameters.TransactionType = text;
+
+            var transactions = _transactionService.FilterBy(transactionQueryParameters).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult SortByDate([FromForm] string text)
+        {
+            var transactions = _transactionService.SortByDate(text).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult SortByAmount([FromForm] string text)
+        {
+            var transactions = _transactionService.SortByAmount(text).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult GetDateToDate(DateTime startDate, DateTime endDate)
+        {
+            var transactions = _transactionService.GetTransactionsByDateRange(startDate, endDate).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
 
         [HttpPost]
         public IActionResult SearchByUsername([FromForm] string text)
@@ -509,6 +591,44 @@ namespace Virtual_Wallet.Controllers.MVC
             userModel.pageCount = (int)Math.Ceiling(pageCount);
             userModel.currentPageIndex = currentPage;
             return userModel;
+        }
+
+
+
+        private async Task<ListTransactionsViewModel> GetTransactionsList(int currentPage)
+        {
+            int maxRowsPerPage = 2;
+            ListTransactionsViewModel transactionModel = new ListTransactionsViewModel();
+
+            transactionModel.TransactionsList = await _transactionService.GetAllTransactions()
+                .OrderBy(x => x.Id)
+                .Skip((currentPage - 1) * maxRowsPerPage)
+                .Take(maxRowsPerPage)
+                .ToListAsync();
+
+            double pageCount = (double)((decimal)_transactionService.GetAllTransactions().Count() / Convert.ToDecimal(maxRowsPerPage));
+
+            transactionModel.pageCount = (int)Math.Ceiling(pageCount);
+            transactionModel.currentPageIndex = currentPage;
+            return transactionModel;
+        }
+
+        private async Task<ListTransactionsViewModel> GetTransactionsList(int currentPage, IQueryable<Transaction> transactions)
+        {
+            int maxRowsPerPage = 2;
+            ListTransactionsViewModel transactionModel = new ListTransactionsViewModel();
+
+            transactionModel.TransactionsList = await _transactionService.GetAllTransactions()
+                .OrderBy(x => x.Id)
+                .Skip((currentPage - 1) * maxRowsPerPage)
+                .Take(maxRowsPerPage)
+                .ToListAsync();
+
+            double pageCount = (double)((decimal)_transactionService.GetAllTransactions().Count() / Convert.ToDecimal(maxRowsPerPage));
+
+            transactionModel.pageCount = (int)Math.Ceiling(pageCount);
+            transactionModel.currentPageIndex = currentPage;
+            return transactionModel;
         }
     }
 }

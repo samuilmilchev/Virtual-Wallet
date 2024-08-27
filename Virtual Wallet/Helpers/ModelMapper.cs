@@ -49,5 +49,21 @@ namespace Virtual_Wallet.Helpers
                 PhoneNumber = urd.PhoneNumber
             };
         }
+
+        public TransactionViewModel Map(Transaction transaction)
+        {
+            TransactionViewModel mappedTransaction = new TransactionViewModel();
+
+            mappedTransaction.Id = transaction.Id;
+            mappedTransaction.Amount = transaction.Amount;
+            mappedTransaction.Wallet = transaction.Wallet;
+            mappedTransaction.Sender = transaction.Sender;
+            mappedTransaction.Recipient = transaction.Recipient;
+            mappedTransaction.Timestamp = transaction.Timestamp;
+            mappedTransaction.Currency = transaction.Currency;
+            mappedTransaction.Type = transaction.Type;
+
+            return mappedTransaction;
+        }
     }
 }
