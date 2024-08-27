@@ -21,6 +21,9 @@
             Type = type;
             WalletId = walletId;
         }
+
+        public User? Sender { get; set; }
+        public User? Recipient { get; set; }
         //public Transaction(DateTime timestamp, string currency, decimal amount, TransactionType type)
         //{
         //	Id = Guid.NewGuid();
