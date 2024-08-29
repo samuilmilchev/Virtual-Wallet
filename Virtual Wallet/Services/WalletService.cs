@@ -9,6 +9,7 @@ namespace Virtual_Wallet.Services
 	{
 		private readonly IWalletRepository walletRepository;
 		private readonly ICardService cardService;
+		private readonly Currencyapi currencyapi;
 		//private readonly IExchangeRateService exchangeRateService; // Assuming you have this service for currency conversion
 
 		public WalletService(IWalletRepository walletRepository, ICardService cardService/*, IExchangeRateService exchangeRateService*/)
@@ -28,34 +29,34 @@ namespace Virtual_Wallet.Services
 			this.walletRepository.AddFunds(amount, currency, wallet, user);
 		}
 
-		/*public decimal ConvertFunds(decimal amount, string fromCurrency, string toCurrency, Wallet wallet)
-		{
-			if (fromCurrency == toCurrency)
-			{
-				throw new InvalidOperationException("Cannot convert between the same currency.");
-			}
+		public void ConvertFunds(decimal amount, Currency fromCurrency, Currency toCurrency, Wallet fromWallet, Wallet toWallet, User user)
+        {
+			fromCurrency = Currency.BGN;
+			toCurrency = Currency.EUR;
 
-			var currentBalance = walletRepository.GetBalance(wallet, fromCurrency);
-			if (currentBalance < amount)
-			{
-				throw new InsufficientFundsException("Insufficient funds in the source currency to execute the conversion.");
-			}
+            if (fromCurrency == toCurrency)
+            {
+                throw new InvalidOperationException("Cannot convert between the same currency.");
+            }
 
-			var exchangeRate = exchangeRateService.GetExchangeRate(fromCurrency, toCurrency);
-			if (exchangeRate <= 0)
-			{
-				throw new InvalidOperationException("Invalid exchange rate retrieved.");
-			}
+            if (fromWallet.Amount < amount)
+            {
+                throw new InsufficientFundsException("Insufficient funds in the source currency to execute the conversion.");
+            }
 
-			var convertedAmount = amount * exchangeRate;
+			string JsonExchangeRateReturn = currencyapi.Latest(fromCurrency, toCurrency);
 
-			walletRepository.WithdrawFunds(amount, fromCurrency, wallet);
-			walletRepository.AddFunds(convertedAmount, toCurrency, wallet);
+			string[] strings = JsonExchangeRateReturn.Split(':');
 
-			return convertedAmount;
-		}*/
+            //decimal exchangeRate = currencyapi.Latest(fromCurrency, toCurrency);
 
-		public Wallet Create(Wallet wallet)
+            //var convertedAmount = amount * exchangeRate;
+
+            //walletRepository.WithdrawFunds(amount, fromWallet);
+            //walletRepository.AddFunds(convertedAmount, toCurrency, toWallet, user);
+        }
+
+        public Wallet Create(Wallet wallet)
 		{
 			return walletRepository.Create(wallet);
 		}
