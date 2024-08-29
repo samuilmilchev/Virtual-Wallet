@@ -1,8 +1,8 @@
-﻿using Virtual_Wallet.Helpers;
-using System.Data.SqlTypes;
+﻿using System.Data.SqlTypes;
 using System;
+using Virtual_Wallet.Models.Entities;
 
-namespace Virtual_Wallet.Models.Entities
+namespace Virtual_Wallet.Helpers
 {
     public class Currencyapi
     {

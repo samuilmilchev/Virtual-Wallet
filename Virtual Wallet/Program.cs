@@ -84,6 +84,7 @@ public class Program
 
 
         // Add services to the container.
+        builder.Services.AddScoped<Currencyapi>();
 
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<ICardRepository, CardRepository>();
