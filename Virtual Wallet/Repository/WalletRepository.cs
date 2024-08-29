@@ -137,16 +137,6 @@ namespace Virtual_Wallet.Repository
             _context.SaveChanges();
         }
 
-        //public decimal GetBalance(Wallet wallet, Currency currency)
-        //{
-        //	if (wallet.Balances == null || !wallet.Balances.ContainsKey(currency))
-        //	{
-        //		return 0;
-        //	}
-
-        //	return wallet.Balances[currency];
-        //}
-
         /*public void ConvertFunds(Wallet wallet, string fromCurrency, string toCurrency, decimal amount)
 		{
 			if (amount <= 0)
