@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Virtual_Wallet.Db;
 
@@ -11,9 +12,10 @@ using Virtual_Wallet.Db;
 namespace Virtual_Wallet.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20240827202400_EmailConfirmationFieldsAdded")]
+    partial class EmailConfirmationFieldsAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,23 +143,14 @@ namespace Virtual_Wallet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<bool>("AdminVerified")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
-
 
                     b.Property<string>("EmailConfirmationToken")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("EmailTokenExpiry")
                         .HasColumnType("datetime2");
-
-
-                    b.Property<string>("IdPhoto")
-                        .HasColumnType("nvarchar(max)");
-
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
@@ -183,9 +176,6 @@ namespace Virtual_Wallet.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
-                    b.Property<string>("Selfie")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
@@ -197,66 +187,36 @@ namespace Virtual_Wallet.Migrations
                         new
                         {
                             Id = 1,
-                            AdminVerified = false,
-                            Email = "justine@example.com",
-                            Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724940094/fjakan10q4evdkpsyeig.webp",
+                            Email = "samuil@example.com",
                             IsAdmin = true,
                             IsBlocked = false,
                             IsEmailVerified = false,
                             PhoneNumber = "0845965847",
                             Role = 1,
-                            Username = "Justine"
+                            Username = "Samuil"
                         },
                         new
                         {
                             Id = 2,
-                            AdminVerified = false,
-                            Email = "emma@example.com",
-                            Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939101/uicxqeiqdcet5qdh7tmx.jpg",
+                            Email = "violin@example.com",
                             IsAdmin = true,
                             IsBlocked = false,
                             IsEmailVerified = false,
                             PhoneNumber = "0865214587",
                             Role = 1,
-                            Username = "Emma"
+                            Username = "Violin"
                         },
                         new
                         {
                             Id = 3,
-                            AdminVerified = false,
-                            Email = "tom@example.com",
-                            Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939737/ixyjharblcfamv60ezlz.webp",
+                            Email = "alex@example.com",
                             IsAdmin = true,
                             IsBlocked = false,
                             IsEmailVerified = false,
                             PhoneNumber = "0826541254",
                             Role = 1,
-                            Username = "Tom"
+                            Username = "Alex"
                         });
-                });
-
-            modelBuilder.Entity("Virtual_Wallet.Models.Entities.VerificationApply", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("IdPhoto")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Selfie")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("VerificationsApplies");
                 });
 
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Wallet", b =>
@@ -344,15 +304,6 @@ namespace Virtual_Wallet.Migrations
                     b.Navigation("Sender");
 
                     b.Navigation("Wallet");
-                });
-
-            modelBuilder.Entity("Virtual_Wallet.Models.Entities.VerificationApply", b =>
-                {
-                    b.HasOne("Virtual_Wallet.Models.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Wallet", b =>

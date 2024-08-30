@@ -25,6 +25,7 @@ namespace Virtual_Wallet.Controllers.MVC
         private readonly IWalletService _walletService;
         private readonly IPhotoService _photoService;
         private readonly ITransactionService _transactionService;
+        private readonly IEmailService _emailService;
 
         public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService, ITransactionService transactionService, IPhotoService photoService)
         {
@@ -115,8 +116,12 @@ namespace Virtual_Wallet.Controllers.MVC
                     SameSite = SameSiteMode.Strict
                 });
 
-                // Optionally, you can log the user in here or redirect to a login page
-                return RedirectToAction("Index", "Home");
+                await _usersService.SendConfirmationEmailAsync(user);
+
+                //return RedirectToAction("Index", "Home");
+                // return Ok("Registration successful. Please check your email to verify your account.");
+                return View("EmailConfirmationMessage"); //препраща към страница, коята казва на потребителя да си потвърди е-мейла
+
             }
 
             return View("Index", model);
@@ -139,6 +144,11 @@ namespace Virtual_Wallet.Controllers.MVC
                 if (user == null || !VerifyPasswordHash(loginRequest.Password, user.PasswordHash, user.PasswordSalt))
                     return BadRequest("Invalid credentials");
 
+                if (user.IsEmailVerified != true) //проверка дали е верифициран мейла
+                    return Unauthorized("Email not confirmed. Please check your email to confirm your account."); //Unauthorised, защото други варианти разрушават логиката
+
+
+
                 string token = CreateToken(user);
                 HttpContext.Response.Cookies.Append("jwt", token, new CookieOptions
                 {
@@ -147,6 +157,7 @@ namespace Virtual_Wallet.Controllers.MVC
                     SameSite = SameSiteMode.Strict
                 });
 
+                
                 return RedirectToAction("Index", "Home");
             }
             catch (EntityNotFoundException x)
@@ -684,6 +695,24 @@ namespace Virtual_Wallet.Controllers.MVC
             transactionModel.pageCount = (int)Math.Ceiling(pageCount);
             transactionModel.currentPageIndex = currentPage;
             return transactionModel;
+        }
+
+        [HttpGet]
+        public IActionResult ConfirmEmail(string username , string token) //може би измисти ДТО за това
+        {
+            var user = _usersService.GetByUsername(username);
+            if (user == null || user.EmailConfirmationToken != token || user.EmailTokenExpiry < DateTime.UtcNow)
+            {
+                return View("EmailError");
+            }
+
+            user.IsEmailVerified = true;
+            user.EmailTokenExpiry = null;
+            user.EmailConfirmationToken = null;
+
+            _usersService.Update(user.Id , user);
+
+            return View("ConfirmEmail");
         }
     }
 }
