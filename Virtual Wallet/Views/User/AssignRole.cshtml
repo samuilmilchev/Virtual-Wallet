@@ -14,18 +14,25 @@
     <div class="alert alert-danger">@ViewData["ErrorMessage"]</div>
 }
 
+<link href="~/css/responsive.css?v=1.0" rel="stylesheet" />
+
+<link href="~/css/style.css?v=2.0" rel="stylesheet" />
+<link href="~/css/custom-style.css?v=2.0" rel="stylesheet" />
+
+
+<br><br><br><br><br><br><br><br><br><br><br><br>
 
 <div class="container">
     <form asp-action="AssignRole" method="post">
-        <div style="color:black;" class="form-title">
-            <h2>@ViewData["Title"]</h2>
+        <div class="form-title">
+            <h2 style="font-size: 40px;">@ViewData["Title"]</h2>
             <hr>
         </div>
 
         <div class="form-inputs">
             <div class="form-group">
                 <div class="input-box">
-                    <label asp-for="Username" style="font-size: 30px;" class="control-label"></label>
+                    <label asp-for="Username" style="font-size: 30px; color:black;" class="control-label"></label>
                     <input asp-for="Username" style="color:black;" class="input-field" />
                     <span asp-validation-for="Username" class="text-danger"></span>
                 </div>
@@ -52,3 +59,13 @@
         </div>
     </form>
 </div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>

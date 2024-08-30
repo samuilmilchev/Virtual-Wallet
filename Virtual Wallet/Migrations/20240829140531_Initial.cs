@@ -23,7 +23,10 @@ namespace Virtual_Wallet.Migrations
                     IsAdmin = table.Column<bool>(type: "bit", nullable: false),
                     IsBlocked = table.Column<bool>(type: "bit", nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Selfie = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdPhoto = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AdminVerified = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -53,6 +56,26 @@ namespace Virtual_Wallet.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VerificationsApplies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Selfie = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdPhoto = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VerificationsApplies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_VerificationsApplies_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -114,18 +137,18 @@ namespace Virtual_Wallet.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "Email", "Image", "IsAdmin", "IsBlocked", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Username" },
-                values: new object[] { 1, "samuil@example.com", null, true, false, null, null, "0845965847", 1, "Samuil" });
+                columns: new[] { "Id", "AdminVerified", "Email", "IdPhoto", "Image", "IsAdmin", "IsBlocked", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Selfie", "Username" },
+                values: new object[] { 1, false, "justine@example.com", null, "http://res.cloudinary.com/didrr2x3x/image/upload/v1724940094/fjakan10q4evdkpsyeig.webp", true, false, null, null, "0845965847", 1, null, "Justine" });
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "Email", "Image", "IsAdmin", "IsBlocked", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Username" },
-                values: new object[] { 2, "violin@example.com", null, true, false, null, null, "0865214587", 1, "Violin" });
+                columns: new[] { "Id", "AdminVerified", "Email", "IdPhoto", "Image", "IsAdmin", "IsBlocked", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Selfie", "Username" },
+                values: new object[] { 2, false, "emma@example.com", null, "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939101/uicxqeiqdcet5qdh7tmx.jpg", true, false, null, null, "0865214587", 1, null, "Emma" });
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "Email", "Image", "IsAdmin", "IsBlocked", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Username" },
-                values: new object[] { 3, "alex@example.com", null, true, false, null, null, "0826541254", 1, "Alex" });
+                columns: new[] { "Id", "AdminVerified", "Email", "IdPhoto", "Image", "IsAdmin", "IsBlocked", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Selfie", "Username" },
+                values: new object[] { 3, false, "tom@example.com", null, "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939737/ixyjharblcfamv60ezlz.webp", true, false, null, null, "0826541254", 1, null, "Tom" });
 
             migrationBuilder.InsertData(
                 table: "Cards",
@@ -168,6 +191,11 @@ namespace Virtual_Wallet.Migrations
                 column: "WalletId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_VerificationsApplies_UserId",
+                table: "VerificationsApplies",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Wallets_OwnerId",
                 table: "Wallets",
                 column: "OwnerId");
@@ -180,6 +208,9 @@ namespace Virtual_Wallet.Migrations
 
             migrationBuilder.DropTable(
                 name: "Transactions");
+
+            migrationBuilder.DropTable(
+                name: "VerificationsApplies");
 
             migrationBuilder.DropTable(
                 name: "Wallets");

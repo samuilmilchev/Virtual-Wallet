@@ -1,0 +1,88 @@
+﻿/* Wrapper for the user details and search forms */
+.user-container-wrapper {
+    display: flex;
+    flex-wrap: nowrap; /* Prevent wrapping */
+    gap: 20px; /* Space between user details and search forms */
+    justify-content: center; /* Center the entire content */
+}
+
+/* Container for user details */
+.user-container {
+    flex: 1 1 600px; /* Allows the container to grow and shrink */
+    display: flex;
+    align-items: flex-start; /* Align items to the top */
+    gap: 20px; /* Space between user info and image */
+    max-width: 1000px; /* Prevent the container from exceeding this width */
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px; /* Ensures it is centered */
+}
+
+/* User information styling */
+.user-info {
+    flex: 1;
+    margin-right: 20px; /* Adds space between info and image */
+}
+
+/* User image styling */
+.user-image {
+    flex-shrink: 0; /* Prevents the image from shrinking */
+}
+
+.image-style {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Search forms container styling */
+.search-forms {
+    display: flex;
+    flex-direction: column; /* Stack forms vertically */
+    gap: 10px; /* Space between each search form */
+    flex: 0 1 300px; /* Fixed width for forms container */
+    align-self: flex-start; /* Align search forms to the top */
+    margin-top: 20px; /* Adds space above search forms */
+}
+
+/* Adjust search forms layout on larger screens */
+@media screen and (min-width: 768px) {
+    .search-forms {
+        flex-direction: column; /* Stack forms vertically on larger screens */
+        gap: 15px; /* Space between search forms */
+    }
+}
+
+/* Styling search form fields */
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between input and button */
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    gap: 10px;
+    justify-content: center;
+    padding: 0;
+}
+
+.page-link {
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+    .page-link.active {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .page-link:hover {
+        background-color: #e9ecef;
+    }
