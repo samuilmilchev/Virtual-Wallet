@@ -137,53 +137,6 @@ namespace Virtual_Wallet.Repository
             _context.SaveChanges();
         }
 
-        //public decimal GetBalance(Wallet wallet, Currency currency)
-        //{
-        //	if (wallet.Balances == null || !wallet.Balances.ContainsKey(currency))
-        //	{
-        //		return 0;
-        //	}
-
-        //	return wallet.Balances[currency];
-        //}
-
-        /*public void ConvertFunds(Wallet wallet, string fromCurrency, string toCurrency, decimal amount)
-		{
-			if (amount <= 0)
-			{
-				throw new ArgumentException("Amount to convert must be greater than zero", nameof(amount));
-			}
-
-			if (wallet.Balances == null || !wallet.Balances.ContainsKey(fromCurrency) || wallet.Balances[fromCurrency] < amount)
-			{
-				throw new InsufficientFundsException("Insufficient funds to execute the conversion!");
-			}
-
-			// Get the conversion rate
-			if (!ConversionRates.TryGetValue((fromCurrency, toCurrency), out var conversionRate)) // Conversion rates should be taken from ApplicationContext??
-			{
-				throw new InvalidOperationException($"Conversion rate from {fromCurrency} to {toCurrency} is not available.");
-			}
-
-			// Convert the amount
-			var convertedAmount = amount * conversionRate;
-
-			// Subtract the amount from the original currency balance
-			wallet.Balances[fromCurrency] -= amount;
-
-			// Add the converted amount to the target currency balance
-			if (!wallet.Balances.ContainsKey(toCurrency))
-			{
-				wallet.Balances[toCurrency] = 0;
-			}
-			wallet.Balances[toCurrency] += convertedAmount;
-
-			// Log the conversion transaction
-			var transaction = new Transaction(DateTime.Now, toCurrency, convertedAmount, TransactionType.Convert, wallet.Id);
-			_context.Transactions.Add(transaction);
-
-			_context.SaveChanges();
-		}*/
         public async Task<Wallet> GetById(int id)
 		{
 			return await _context.Wallets

@@ -92,6 +92,7 @@
                             <span style="font-size:18px;" class="link-text">User Details</span>
                         </a>
                     </li>
+
                     <li class="navbar-item">
                         <a class="navbar-item-inner" asp-controller="Card" asp-action="Register">
                             <div class="navbar-item-inner-icon-wrapper">
@@ -116,7 +117,16 @@
                             <span style="font-size:18px;" class="link-text">Send Money</span>
                         </a>
                     </li>
+                                              <li class="navbar-item">
+                            <a class="navbar-item-inner" asp-controller="Wallet" asp-action="ConvertFunds">
+                                <div class="navbar-item-inner-icon-wrapper">
+                                    <ion-icon name="swap-horizontal-outline"></ion-icon>
+                                </div>
+                                <span style="font-size:18px;" class="link-text">ConvertFunds</span>
+                            </a>
+                        </li>
                     </div>
+              
                 }
                 <!-- Admin only items -->
                 @if (User.IsInRole("Admin"))
