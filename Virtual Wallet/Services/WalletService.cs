@@ -1,20 +1,25 @@
 ﻿using Virtual_Wallet.Exceptions;
+using Virtual_Wallet.Helpers;
 using Virtual_Wallet.Models.Entities;
 using Virtual_Wallet.Repository.Contracts;
 using Virtual_Wallet.Services.Contracts;
 
 namespace Virtual_Wallet.Services
 {
-	public class WalletService : IWalletService
+    public class WalletService : IWalletService
 	{
 		private readonly IWalletRepository walletRepository;
 		private readonly ICardService cardService;
+		private readonly Currencyapi currencyapi;
+		private readonly IUsersService usersService;
 		//private readonly IExchangeRateService exchangeRateService; // Assuming you have this service for currency conversion
 
-		public WalletService(IWalletRepository walletRepository, ICardService cardService/*, IExchangeRateService exchangeRateService*/)
+		public WalletService(IWalletRepository walletRepository, ICardService cardService, Currencyapi currencyapi, IUsersService usersService)
 		{
 			this.walletRepository = walletRepository;
 			this.cardService = cardService;
+			this.currencyapi = currencyapi;
+			this.usersService = usersService;
 			//this.exchangeRateService = exchangeRateService;
 		}
 
@@ -28,34 +33,39 @@ namespace Virtual_Wallet.Services
 			this.walletRepository.AddFunds(amount, currency, wallet, user);
 		}
 
-		/*public decimal ConvertFunds(decimal amount, string fromCurrency, string toCurrency, Wallet wallet)
-		{
-			if (fromCurrency == toCurrency)
-			{
-				throw new InvalidOperationException("Cannot convert between the same currency.");
-			}
+		public void ConvertFunds(decimal amount, Currency fromCurrency, Currency toCurrency, string username/*Wallet fromWallet, Wallet toWallet, User user*/)
+        {
+			User currentUser = usersService.GetByUsername(username);
 
-			var currentBalance = walletRepository.GetBalance(wallet, fromCurrency);
-			if (currentBalance < amount)
-			{
-				throw new InsufficientFundsException("Insufficient funds in the source currency to execute the conversion.");
-			}
+			Wallet fromWallet = GetByCurrency(fromCurrency, currentUser);
 
-			var exchangeRate = exchangeRateService.GetExchangeRate(fromCurrency, toCurrency);
-			if (exchangeRate <= 0)
-			{
-				throw new InvalidOperationException("Invalid exchange rate retrieved.");
-			}
+			Wallet toWallet = GetByCurrency(toCurrency, currentUser);
 
-			var convertedAmount = amount * exchangeRate;
+            if (fromCurrency == toCurrency)
+            {
+                throw new InvalidOperationException("Cannot convert between the same currency.");
+            }
 
-			walletRepository.WithdrawFunds(amount, fromCurrency, wallet);
-			walletRepository.AddFunds(convertedAmount, toCurrency, wallet);
+			//if (fromWallet.Amount < amount)
+			//{
+			//	throw new InsufficientFundsException("Insufficient funds in the source currency to execute the conversion.");
+			//}
 
-			return convertedAmount;
-		}*/
+			string JsonExchangeRateReturn = currencyapi.Latest(fromCurrency, toCurrency);
 
-		public Wallet Create(Wallet wallet)
+			string[] splitResponse = JsonExchangeRateReturn.Split(':');
+
+			string stringedConversionRate = splitResponse[2].TrimEnd('}');
+
+			decimal exchangeRate = decimal.Parse(stringedConversionRate);
+
+            var convertedAmount = amount * exchangeRate;
+
+            walletRepository.WithdrawFunds(amount, fromWallet);
+            walletRepository.AddFunds(convertedAmount, toCurrency, toWallet, currentUser);
+        }
+
+        public Wallet Create(Wallet wallet)
 		{
 			return walletRepository.Create(wallet);
 		}
@@ -83,5 +93,21 @@ namespace Virtual_Wallet.Services
 			walletRepository.SendMoney(amount, currency, fromWallet, toWallet, user);
         }
 
-	}
+        public Wallet GetByCurrency(Currency currency, User user)
+        {
+            foreach (var wallet in user.UserWallets)
+            {
+                if (wallet.Currency.Equals(currency))
+                {
+                    return wallet;
+                }
+            }
+            var newWallet = new Wallet();
+			newWallet.Currency = currency;
+			newWallet.Owner = user;
+			newWallet.WalletName = $"{currency} Wallet";
+			user.UserWallets.Add(newWallet);
+			return newWallet;
+		}
+    }
 }
