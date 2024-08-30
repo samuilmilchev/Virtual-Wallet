@@ -1,0 +1,62 @@
+﻿/* Basic reset */
+
+*{
+    line-height: normal;
+}
+
+body, ul {
+    margin: 0;
+    padding: 0;
+}
+
+/* Style the burger menu button */
+.toggle-btn {
+    font-size: 30px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: block;
+    padding: 2px;
+    position: absolute;
+    top: 2px; /* Adjust based on your layout */
+    right: 10px;
+    z-index: 500;
+}
+
+/* Hide the burger menu items by default */
+.burger-menu-items {
+    list-style: none;
+    display: none;
+    flex-direction: column;
+    background-color: #333; /* Adjust background color */
+    position: absolute;
+    border-radius: 5px;
+    top: 50px; /* Adjust based on your layout */
+    right: 10px;
+    z-index: 1000;
+    padding: 10px;
+    width: 200px; /* Adjust width as needed */
+}
+
+    /* Show the burger menu items when active */
+    .burger-menu-items.active {
+        display: flex;
+    }
+
+    /* Style the burger menu items */
+    .burger-menu-items .navbar-item {
+        margin: 5px 0;
+    }
+
+        .burger-menu-items .navbar-item a {
+            color: black;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: white; /* Adjust background color */
+        }
+
+            .burger-menu-items .navbar-item a:hover {
+                background-color: #555; /* Adjust hover color */
+            }

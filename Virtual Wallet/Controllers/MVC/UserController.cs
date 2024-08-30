@@ -25,6 +25,7 @@ namespace Virtual_Wallet.Controllers.MVC
         private readonly IWalletService _walletService;
         private readonly IPhotoService _photoService;
         private readonly ITransactionService _transactionService;
+        private readonly IEmailService _emailService;
 
         public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService, ITransactionService transactionService, IPhotoService photoService)
         {
@@ -82,9 +83,9 @@ namespace Virtual_Wallet.Controllers.MVC
                         return View("Index", model);
                     }
                 }
-                
-            //при създаване на акаунт се създава и първия(може би и единствен) уолет на юзъра
-            Wallet wallet = new Wallet
+
+                //при създаване на акаунт се създава и първия(може би и единствен) уолет на юзъра
+                Wallet wallet = new Wallet
                 {
                     WalletName = walletModel.WalletName,
                     Owner = user,
@@ -115,8 +116,12 @@ namespace Virtual_Wallet.Controllers.MVC
                     SameSite = SameSiteMode.Strict
                 });
 
-                // Optionally, you can log the user in here or redirect to a login page
-                return RedirectToAction("Index", "Home");
+                await _usersService.SendConfirmationEmailAsync(user);
+
+                //return RedirectToAction("Index", "Home");
+                // return Ok("Registration successful. Please check your email to verify your account.");
+                return View("EmailConfirmationMessage"); //препраща към страница, коята казва на потребителя да си потвърди е-мейла
+
             }
 
             return View("Index", model);
@@ -139,6 +144,11 @@ namespace Virtual_Wallet.Controllers.MVC
                 if (user == null || !VerifyPasswordHash(loginRequest.Password, user.PasswordHash, user.PasswordSalt))
                     return BadRequest("Invalid credentials");
 
+                if (user.IsEmailVerified != true) //проверка дали е верифициран мейла
+                    return Unauthorized("Email not confirmed. Please check your email to confirm your account."); //Unauthorised, защото други варианти разрушават логиката
+
+
+
                 string token = CreateToken(user);
                 HttpContext.Response.Cookies.Append("jwt", token, new CookieOptions
                 {
@@ -147,6 +157,7 @@ namespace Virtual_Wallet.Controllers.MVC
                     SameSite = SameSiteMode.Strict
                 });
 
+                
                 return RedirectToAction("Index", "Home");
             }
             catch (EntityNotFoundException x)
@@ -182,9 +193,66 @@ namespace Virtual_Wallet.Controllers.MVC
                 PhoneNumber = user.PhoneNumber,
                 Role = user.Role.ToString(),
                 IsBlocked = user.IsBlocked,
-                Cards = user.Cards
+                Cards = user.Cards,
+                AdminVerified = user.AdminVerified
             };
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult UploadPhotosVerification()
+        {
+            VerifyUserViewModel model = new VerifyUserViewModel();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadPhotosVerification(VerifyUserViewModel model)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            var selfieResult = await _photoService.UploadImageAsync(model.Selfie);
+            user.Selfie = selfieResult.Url.ToString();
+
+            var idPhotoResult = await _photoService.UploadImageAsync(model.IdPhoto);
+            user.IdPhoto = idPhotoResult.Url.ToString();
+
+            _usersService.UploadPhotoVerification(selfieResult.Url.ToString(), idPhotoResult.Url.ToString(), user);
+
+            return RedirectToAction("UserDetails", new { username = user.Username });
+        }
+
+        [HttpGet]
+        public IActionResult VerifyUsers()
+        {
+            var verifications = _usersService.GetAllVereficationApplies().Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(verifications);
+        }
+
+        [HttpPost]
+        public IActionResult VerifyUsers(string text)
+        {
+
+            string[] tokens = text.Split(',');
+
+            string verificationValue = tokens[0];
+            var user = _usersService.GetByUsername(tokens[1]);
+
+            if (verificationValue == "Accept")
+            {
+                _usersService.UpdateUserVerification(user , verificationValue);
+
+                return RedirectToAction("UserDetails", new { username = user.Username });
+            }
+            else
+            {
+                _usersService.UpdateUserVerification(user, verificationValue);
+
+                return RedirectToAction("UserDetails", new { username = user.Username });
+            }
         }
 
         [HttpGet]
@@ -308,7 +376,7 @@ namespace Virtual_Wallet.Controllers.MVC
                 var username = User.Identity.Name;
                 var user = _usersService.GetByUsername(username);
                 //ViewData["CurrentUser"] = user;
-               
+
 
                 var wallet = user.UserWallets.FirstOrDefault(x => x.Currency == sendMoney.Currency);
 
@@ -349,7 +417,7 @@ namespace Virtual_Wallet.Controllers.MVC
                 var user = _usersService.GetByUsername(username);
                 SendMoneyViewModel model = new SendMoneyViewModel();
                 model.CurrentUser = user;
-                
+
                 ViewData["ErrorMessage"] = x.Message;
                 return View(model);
 
@@ -377,7 +445,7 @@ namespace Virtual_Wallet.Controllers.MVC
         }
 
         [HttpPost]
-        public async Task<IActionResult> ListUsers([FromForm]int currentPageIndex)
+        public async Task<IActionResult> ListUsers([FromForm] int currentPageIndex)
         {
             return View(await GetUserList(currentPageIndex));
         }
@@ -414,7 +482,7 @@ namespace Virtual_Wallet.Controllers.MVC
         //}
 
         [HttpPost]
-        public IActionResult SearchTransactionBySender([FromForm]string text)
+        public IActionResult SearchTransactionBySender([FromForm] string text)
         {
             TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
             transactionQueryParameters.Sender = text;
@@ -627,6 +695,24 @@ namespace Virtual_Wallet.Controllers.MVC
             transactionModel.pageCount = (int)Math.Ceiling(pageCount);
             transactionModel.currentPageIndex = currentPage;
             return transactionModel;
+        }
+
+        [HttpGet]
+        public IActionResult ConfirmEmail(string username , string token) //може би измисти ДТО за това
+        {
+            var user = _usersService.GetByUsername(username);
+            if (user == null || user.EmailConfirmationToken != token || user.EmailTokenExpiry < DateTime.UtcNow)
+            {
+                return View("EmailError");
+            }
+
+            user.IsEmailVerified = true;
+            user.EmailTokenExpiry = null;
+            user.EmailConfirmationToken = null;
+
+            _usersService.Update(user.Id , user);
+
+            return View("ConfirmEmail");
         }
     }
 }

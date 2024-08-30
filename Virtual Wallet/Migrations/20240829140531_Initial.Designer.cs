@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Virtual_Wallet.Db;
 
@@ -11,9 +12,10 @@ using Virtual_Wallet.Db;
 namespace Virtual_Wallet.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20240829140531_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -147,17 +149,8 @@ namespace Virtual_Wallet.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-
-                    b.Property<string>("EmailConfirmationToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("EmailTokenExpiry")
-                        .HasColumnType("datetime2");
-
-
                     b.Property<string>("IdPhoto")
                         .HasColumnType("nvarchar(max)");
-
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
@@ -166,9 +159,6 @@ namespace Virtual_Wallet.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsBlocked")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsEmailVerified")
                         .HasColumnType("bit");
 
                     b.Property<byte[]>("PasswordHash")
@@ -202,7 +192,6 @@ namespace Virtual_Wallet.Migrations
                             Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724940094/fjakan10q4evdkpsyeig.webp",
                             IsAdmin = true,
                             IsBlocked = false,
-                            IsEmailVerified = false,
                             PhoneNumber = "0845965847",
                             Role = 1,
                             Username = "Justine"
@@ -215,7 +204,6 @@ namespace Virtual_Wallet.Migrations
                             Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939101/uicxqeiqdcet5qdh7tmx.jpg",
                             IsAdmin = true,
                             IsBlocked = false,
-                            IsEmailVerified = false,
                             PhoneNumber = "0865214587",
                             Role = 1,
                             Username = "Emma"
@@ -228,7 +216,6 @@ namespace Virtual_Wallet.Migrations
                             Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939737/ixyjharblcfamv60ezlz.webp",
                             IsAdmin = true,
                             IsBlocked = false,
-                            IsEmailVerified = false,
                             PhoneNumber = "0826541254",
                             Role = 1,
                             Username = "Tom"

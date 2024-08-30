@@ -8,6 +8,7 @@ using System.Text;
 using Virtual_Wallet.Db;
 using Virtual_Wallet.Helpers;
 using Virtual_Wallet.Helpers.Contracts;
+using Virtual_Wallet.Models.Entities;
 using Virtual_Wallet.Repository;
 using Virtual_Wallet.Repository.Contracts;
 using Virtual_Wallet.Services;
@@ -96,11 +97,14 @@ public class Program
         builder.Services.AddScoped<ITransactionService, TransactionService>();
         builder.Services.AddScoped<IWalletService, WalletService>();
         builder.Services.AddScoped<IPhotoService, PhotoService>();
+        builder.Services.AddScoped<IEmailService ,  EmailService>();
 
         //нужно за насторйка на клаудинери профила
         builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
-    
 
+        //Мапване на SmtpSettings класа към настройките в appsettings.json
+        builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+    
         builder.Services.AddScoped<IModelMapper, ModelMapper>();
 
         var app = builder.Build();

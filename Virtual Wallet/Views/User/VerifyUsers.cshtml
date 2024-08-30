@@ -1,0 +1,45 @@
+﻿@model List<VerificationViewModel>
+
+<link href="~/css/responsive.css?v=1.0" rel="stylesheet" />
+
+<link href="~/css/style.css?v=2.0" rel="stylesheet" />
+
+<br>
+<br>
+<h2>Verefication applies:</h2>
+<hr>
+@{
+    foreach (var apply in Model)
+    {
+
+        <h1>User Details</h1>
+        <hr>
+
+        <div class="form-inputs">
+            <div class="input-box">
+                <p style="text-align: left; font-size: 20px;"><strong>Username:</strong> <span id="user-username">@apply.User.Username</span></p>
+            </div>
+            <br>
+            <div class="input-box" style="display: flex;">
+                <p style="text-align: right; font-size: 20px;"><strong>User selfie:</strong></p>
+                <img src="@apply.Selfie" alt="User Image" style="width: 300px; height: 300px; " />
+            </div>
+            <br>
+            <div class="input-box" style="display: flex;">
+                <p style="text-align: left; font-size: 20px;"><strong>User IdPhoto:</strong></p>
+                <img src="@apply.IdPhoto" alt="User Image" style="width: 300px; height: 300px; " />
+            </div>
+            <br>
+        </div>
+
+        <form asp-action="VerifyUsers" asp-controller="User" method="post">
+            <button type="submit" name="text" value="Accept,@apply.User.Username" style="width: 80px; height: 50px; margin-left: 20px;" class="input-submit">
+                Accept Verification
+            </button>
+
+            <button type="submit" name="text" value="Decline,@apply.User.Username" style="width: 80px; height: 50px; margin-left: 20px;" class="input-submit">
+                Decline Verification
+            </button>
+        </form>
+    }
+}

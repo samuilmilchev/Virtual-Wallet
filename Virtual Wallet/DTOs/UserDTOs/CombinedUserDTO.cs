@@ -6,7 +6,6 @@ namespace Virtual_Wallet.DTOs.UserDTOs
     {
         public RegisterViewModel Register { get; set; }
         public UserDTO? Login { get; set; }
-
         public WalletDTO Wallet { get; set; }
     }
 }

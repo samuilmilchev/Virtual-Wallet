@@ -30,93 +30,94 @@
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://unpkg.com/ionicons@5.5.2/dist/ionicons.css">
     <link rel="stylesheet" href="~/css/navbar.css?v=3.0">
+    <link rel="stylesheet" href="~/css/hamburgerNav.css?v=1.0"></link>
 
 </head>
+
 <body>
     <header>
-        <div>
-            <button class="toggle-btn">☰</button>
-            <nav id="navbar">
-                <ul class="navbar-items">
-                    <img style="height:35px; width:40px; padding-top:5px;" src="~/images/n-high-resolution-logo-transparent1.png"></img>
+        <nav id="navbar">
+            <button class="toggle-btn" id="burger-menu">☰</button>
+            <ul class="navbar-items">
+                <img style="height:35px; width:40px; padding-top:5px;" src="~/images/n-high-resolution-logo-transparent1.png" alt="Logo">
+                <li class="navbar-item">
+                    <a class="navbar-item-inner" asp-controller="Home" asp-action="Index">
+                        <span style="font-size:18px;" class="link-text">Home</span>
+                    </a>
+                </li>
+                <li class="navbar-item">
+                    <a class="navbar-item-inner" asp-controller="Home" asp-action="About">
+                        <div class="navbar-item-inner-icon-wrapper">
+                            <ion-icon name="information-circle-outline"></ion-icon>
+                        </div>
+                        <span style="font-size:18px;" class="link-text">About</span>
+                    </a>
+                </li>
+                @if (isAuthenticated == null)
+                {
                     <li class="navbar-item">
-                        <a class="navbar-item-inner" asp-controller="Home" asp-action="Index">
-                            <span style="font-size:18px;" sclass="link-text">Home</span>
-                        </a>
-                    </li>
-                    <li class="navbar-item">
-                        <a class="navbar-item-inner" asp-controller="Home" asp-action="About">
+                        <a class="navbar-item-inner" asp-controller="User" asp-action="Index">
                             <div class="navbar-item-inner-icon-wrapper">
-                                <ion-icon name="information-circle-outline"></ion-icon>
+                                <ion-icon name="person-outline"></ion-icon>
                             </div>
-                            <span style="font-size:18px;" class="link-text">About</span>
+                            <span style="font-size:18px;" class="link-text">Login</span>
                         </a>
                     </li>
-                    @if (isAuthenticated == null)
-                    {
-                        <li class="navbar-item">
-                            <a class="navbar-item-inner" asp-controller="User" asp-action="Index">
-                                <div class="navbar-item-inner-icon-wrapper">
-                                    <ion-icon name="person-outline"></ion-icon>
-                                </div>
-                                <span style="font-size:18px;" class="link-text">Login</span>
-                            </a>
-                        </li>
-                    }
-                    else
-                    {
-                        <li class="navbar-item">
-                            <a class="navbar-item-inner" asp-controller="User" asp-action="Logout">
-                                <div class="navbar-item-inner-icon-wrapper">
-                                    <ion-icon name="log-out-outline"></ion-icon>
-                                </div>
-                                <span style="font-size:18px;" class="link-text">Logout</span>
-                            </a>
-                        </li>
-                    }
-                    @if (isAuthenticated != null)
-                    {
-                        <li class="navbar-item">
-                            <a class="navbar-item-inner" href="/swagger">
-                                <div class="navbar-item-inner-icon-wrapper">
-                                    <ion-icon name="code-outline"></ion-icon>
-                                </div>
-                                <span style="font-size:18px;" class="link-text">Developer API</span>
-                            </a>
-                        </li>
-                        <li class="navbar-item">
-                            <a class="navbar-item-inner" asp-controller="User" asp-action="UserDetails" asp-route-username="@User.Identity.Name">
-                                <div class="navbar-item-inner-icon-wrapper">
-                                    <ion-icon name="person-circle-outline"></ion-icon>
-                                </div>
-                                <span style="font-size:18px;" class="link-text">User Details</span>
-                            </a>
-                        </li>
-                        <li class="navbar-item">
-                            <a class="navbar-item-inner" asp-controller="Card" asp-action="Register">
-                                <div class="navbar-item-inner-icon-wrapper">
-                                    <ion-icon name="card-outline"></ion-icon>
-                                </div>
-                                <span style="font-size:18px;" class="link-text">Register Card</span>
-                            </a>
-                        </li>
-                        <li class="navbar-item">
-                            <a class="navbar-item-inner" asp-controller="Transfer" asp-action="Transfer">
-                                <div class="navbar-item-inner-icon-wrapper">
-                                    <ion-icon name="swap-horizontal-outline"></ion-icon>
-                                </div>
-                                <span style="font-size:18px;" class="link-text">Transfer Funds</span>
-                            </a>
-                        </li>
-                        <li class="navbar-item">
-                            <a class="navbar-item-inner" asp-controller="User" asp-action="SendMoney">
-                                <div class="navbar-item-inner-icon-wrapper">
-                                    <ion-icon name="swap-horizontal-outline"></ion-icon>
-                                </div>
-                                <span style="font-size:18px;" class="link-text">SendMoney</span>
-                            </a>
-                        </li>
-                        <li class="navbar-item">
+                }
+                else
+                {
+                    <li class="navbar-item">
+                        <a class="navbar-item-inner" asp-controller="User" asp-action="AssignRole">
+                            <div class="navbar-item-inner-icon-wrapper">
+                                <ion-icon name="key-outline"></ion-icon>
+                            </div>
+                            <span style="font-size:18px;" class="link-text">Assign Roles</span>
+                        </a>
+                    </li>
+                    <!-- Burger Menu items for authenticated users -->
+                    <div class="burger-menu-items">
+                    <li class="navbar-item">
+                        <a class="navbar-item-inner" href="/swagger">
+                            <div class="navbar-item-inner-icon-wrapper">
+                                <ion-icon name="code-outline"></ion-icon>
+                            </div>
+                            <span style="font-size:18px;" class="link-text">Developer API</span>
+                        </a>
+                    </li>
+                    <li class="navbar-item">
+                        <a class="navbar-item-inner" asp-controller="User" asp-action="UserDetails" asp-route-username="@User.Identity.Name">
+                            <div class="navbar-item-inner-icon-wrapper">
+                                <ion-icon name="person-circle-outline"></ion-icon>
+                            </div>
+                            <span style="font-size:18px;" class="link-text">User Details</span>
+                        </a>
+                    </li>
+
+                    <li class="navbar-item">
+                        <a class="navbar-item-inner" asp-controller="Card" asp-action="Register">
+                            <div class="navbar-item-inner-icon-wrapper">
+                                <ion-icon name="card-outline"></ion-icon>
+                            </div>
+                            <span style="font-size:18px;" class="link-text">Register Card</span>
+                        </a>
+                    </li>
+                    <li class="navbar-item">
+                        <a class="navbar-item-inner" asp-controller="Transfer" asp-action="Transfer">
+                            <div class="navbar-item-inner-icon-wrapper">
+                                <ion-icon name="swap-horizontal-outline"></ion-icon>
+                            </div>
+                            <span style="font-size:18px;" class="link-text">Transfer Funds</span>
+                        </a>
+                    </li>
+                    <li class="navbar-item">
+                        <a class="navbar-item-inner" asp-controller="User" asp-action="SendMoney">
+                            <div class="navbar-item-inner-icon-wrapper">
+                                <ion-icon name="swap-horizontal-outline"></ion-icon>
+                            </div>
+                            <span style="font-size:18px;" class="link-text">Send Money</span>
+                        </a>
+                    </li>
+                                              <li class="navbar-item">
                             <a class="navbar-item-inner" asp-controller="Wallet" asp-action="ConvertFunds">
                                 <div class="navbar-item-inner-icon-wrapper">
                                     <ion-icon name="swap-horizontal-outline"></ion-icon>
@@ -124,39 +125,47 @@
                                 <span style="font-size:18px;" class="link-text">ConvertFunds</span>
                             </a>
                         </li>
-                    }
-                    <!-- Admin only items -->
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <li class="navbar-item">
-                            <a class="navbar-item-inner" asp-controller="User" asp-action="AssignRole">
-                                <div class="navbar-item-inner-icon-wrapper">
-                                    <ion-icon name="key-outline"></ion-icon>
-                                </div>
-                                <span style="font-size:18px;" class="link-text">Assign Roles</span>
-                            </a>
-                        </li>
-                        <li class="navbar-item">
-                            <a class="navbar-item-inner" asp-controller="User" asp-action="ListUsers">
-                                <div class="navbar-item-inner-icon-wrapper">
-                                    <ion-icon name="people-outline"></ion-icon>
-                                </div>
-                                <span style="font-size:18px;" class="link-text">All Users</span>
-                            </a>
-                        </li>
-                        <li class="navbar-item">
-                            <a class="navbar-item-inner" asp-controller="User" asp-action="ListTransactions">
-                                <div class="navbar-item-inner-icon-wrapper">
-                                    <ion-icon name="people-outline"></ion-icon>
-                                </div>
-                                <span style="font-size:18px;" class="link-text">All Transactions</span>
-                            </a>
-                        </li>
-                    }
-
-                </ul>
-            </nav>
-        </div>
+                    </div>
+              
+                }
+                <!-- Admin only items -->
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="navbar-item">
+                        <a class="navbar-item-inner" asp-controller="User" asp-action="AssignRole">
+                            <div class="navbar-item-inner-icon-wrapper">
+                                <ion-icon name="key-outline"></ion-icon>
+                            </div>
+                            <span style="font-size:18px;" class="link-text">Assign Roles</span>
+                        </a>
+                    </li>
+                    <li class="navbar-item">
+                        <a class="navbar-item-inner" asp-controller="User" asp-action="ListUsers">
+                            <div class="navbar-item-inner-icon-wrapper">
+                                <ion-icon name="people-outline"></ion-icon>
+                            </div>
+                            <span style="font-size:18px;" class="link-text">All Users</span>
+                        </a>
+                    </li>
+                    <li class="navbar-item">
+                        <a class="navbar-item-inner" asp-controller="User" asp-action="ListTransactions">
+                            <div class="navbar-item-inner-icon-wrapper">
+                                <ion-icon name="people-outline"></ion-icon>
+                            </div>
+                            <span style="font-size:18px;" class="link-text">All Transactions</span>
+                        </a>
+                    </li>
+                    <li class="navbar-item">
+                        <a class="navbar-item-inner" asp-controller="User" asp-action="VerifyUsers">
+                            <div class="navbar-item-inner-icon-wrapper">
+                                <ion-icon name="people-outline"></ion-icon>
+                            </div>
+                            <span style="font-size:18px;" class="link-text">All Verification Applies</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
     </header>
 
 
@@ -172,4 +181,11 @@
     </footer>
     @RenderSection("Scripts", required: false)
 </body>
+
+<script>
+    document.getElementById("burger-menu").addEventListener("click", function() {
+    var burgerMenuItems = document.querySelector(".burger-menu-items");
+    burgerMenuItems.classList.toggle("active");
+});
+</script>
 </html>
