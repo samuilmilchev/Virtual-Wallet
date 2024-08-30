@@ -83,9 +83,9 @@ namespace Virtual_Wallet.Controllers.MVC
                         return View("Index", model);
                     }
                 }
-                
-            //при създаване на акаунт се създава и първия(може би и единствен) уолет на юзъра
-            Wallet wallet = new Wallet
+
+                //при създаване на акаунт се създава и първия(може би и единствен) уолет на юзъра
+                Wallet wallet = new Wallet
                 {
                     WalletName = walletModel.WalletName,
                     Owner = user,
@@ -193,9 +193,66 @@ namespace Virtual_Wallet.Controllers.MVC
                 PhoneNumber = user.PhoneNumber,
                 Role = user.Role.ToString(),
                 IsBlocked = user.IsBlocked,
-                Cards = user.Cards
+                Cards = user.Cards,
+                AdminVerified = user.AdminVerified
             };
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult UploadPhotosVerification()
+        {
+            VerifyUserViewModel model = new VerifyUserViewModel();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadPhotosVerification(VerifyUserViewModel model)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            var selfieResult = await _photoService.UploadImageAsync(model.Selfie);
+            user.Selfie = selfieResult.Url.ToString();
+
+            var idPhotoResult = await _photoService.UploadImageAsync(model.IdPhoto);
+            user.IdPhoto = idPhotoResult.Url.ToString();
+
+            _usersService.UploadPhotoVerification(selfieResult.Url.ToString(), idPhotoResult.Url.ToString(), user);
+
+            return RedirectToAction("UserDetails", new { username = user.Username });
+        }
+
+        [HttpGet]
+        public IActionResult VerifyUsers()
+        {
+            var verifications = _usersService.GetAllVereficationApplies().Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(verifications);
+        }
+
+        [HttpPost]
+        public IActionResult VerifyUsers(string text)
+        {
+
+            string[] tokens = text.Split(',');
+
+            string verificationValue = tokens[0];
+            var user = _usersService.GetByUsername(tokens[1]);
+
+            if (verificationValue == "Accept")
+            {
+                _usersService.UpdateUserVerification(user , verificationValue);
+
+                return RedirectToAction("UserDetails", new { username = user.Username });
+            }
+            else
+            {
+                _usersService.UpdateUserVerification(user, verificationValue);
+
+                return RedirectToAction("UserDetails", new { username = user.Username });
+            }
         }
 
         [HttpGet]
@@ -319,7 +376,7 @@ namespace Virtual_Wallet.Controllers.MVC
                 var username = User.Identity.Name;
                 var user = _usersService.GetByUsername(username);
                 //ViewData["CurrentUser"] = user;
-               
+
 
                 var wallet = user.UserWallets.FirstOrDefault(x => x.Currency == sendMoney.Currency);
 
@@ -360,7 +417,7 @@ namespace Virtual_Wallet.Controllers.MVC
                 var user = _usersService.GetByUsername(username);
                 SendMoneyViewModel model = new SendMoneyViewModel();
                 model.CurrentUser = user;
-                
+
                 ViewData["ErrorMessage"] = x.Message;
                 return View(model);
 
@@ -388,7 +445,7 @@ namespace Virtual_Wallet.Controllers.MVC
         }
 
         [HttpPost]
-        public async Task<IActionResult> ListUsers([FromForm]int currentPageIndex)
+        public async Task<IActionResult> ListUsers([FromForm] int currentPageIndex)
         {
             return View(await GetUserList(currentPageIndex));
         }
@@ -425,7 +482,7 @@ namespace Virtual_Wallet.Controllers.MVC
         //}
 
         [HttpPost]
-        public IActionResult SearchTransactionBySender([FromForm]string text)
+        public IActionResult SearchTransactionBySender([FromForm] string text)
         {
             TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
             transactionQueryParameters.Sender = text;

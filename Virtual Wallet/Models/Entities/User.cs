@@ -21,6 +21,9 @@ namespace Virtual_Wallet.Models.Entities
         public List<Wallet> UserWallets  { get; set; } //може би ще подлежи на промяна, като местоположение
 
         public string? Image { get; set; } //url нужен за качане на снимка/аватар чрез Cloduinary
+        public string? Selfie { get; set; }
+        public string? IdPhoto { get; set; }
+        public bool AdminVerified { get; set; } = false;
 
         //properties needed for Email verification
         public bool IsEmailVerified { get; set; } = false;
