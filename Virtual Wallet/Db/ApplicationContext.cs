@@ -15,6 +15,7 @@ namespace Virtual_Wallet.Db
         public DbSet<Card> Cards { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<VerificationApply> VerificationsApplies { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -33,9 +34,9 @@ namespace Virtual_Wallet.Db
 
             var users = new List<User>
             {
-            new User { Id = 1, Email = "samuil@example.com", Username = "Samuil", /*Password = ""*/ PhoneNumber = "0845965847", IsAdmin = true, IsBlocked = false, Role = UserRole.User},
-            new User { Id = 2, Email = "violin@example.com", Username = "Violin", /*Password = ""*/PhoneNumber = "0865214587", IsAdmin = true, IsBlocked = false, Role = UserRole.User},
-            new User { Id = 3, Email = "alex@example.com", Username = "Alex", /*Password = ""*/ PhoneNumber = "0826541254", IsAdmin = true, IsBlocked = false, Role = UserRole.User},
+            new User { Id = 1, Email = "justine@example.com", Username = "Justine", /*Password = ""*/ PhoneNumber = "0845965847", IsAdmin = true, IsBlocked = false, Role = UserRole.User, Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724940094/fjakan10q4evdkpsyeig.webp"},
+            new User { Id = 2, Email = "emma@example.com", Username = "Emma", /*Password = ""*/PhoneNumber = "0865214587", IsAdmin = true, IsBlocked = false, Role = UserRole.User, Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939101/uicxqeiqdcet5qdh7tmx.jpg"},
+            new User { Id = 3, Email = "tom@example.com", Username = "Tom", /*Password = ""*/ PhoneNumber = "0826541254", IsAdmin = true, IsBlocked = false, Role = UserRole.User, Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939737/ixyjharblcfamv60ezlz.webp"},
             };
 
             modelBuilder.Entity<User>().HasData(users);

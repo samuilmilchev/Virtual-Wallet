@@ -11,6 +11,9 @@ namespace Virtual_Wallet.Services.Contracts
         bool UserEmailExists(string email);
         User Create(User user);
         User Update(int id, User userUpdate/*, User user*/);
+        bool UploadPhotoVerification(string selfie, string idPhoto, User user);
+        List<VerificationApply> GetAllVereficationApplies();
+        void UpdateUserVerification(User user, string text);
         void AddUserCard(Card card, User user);
         bool Delete(int id, User user);
         bool BlockUser(int userId, User user);
