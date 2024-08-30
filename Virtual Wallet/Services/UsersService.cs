@@ -85,6 +85,21 @@ namespace Virtual_Wallet.Services
             return updatedUser;
         }
 
+        public bool UploadPhotoVerification(string selfie, string idPhoto, User user)
+        {
+            return _userRepository.UploadPhotoVerification(selfie, idPhoto, user);
+        }
+
+        public List<VerificationApply> GetAllVereficationApplies()
+        {
+            return _userRepository.GetAllVereficationApplies();
+        }
+
+        public void UpdateUserVerification(User user, string text)
+        {
+            _userRepository.UpdateUserVerification(user, text);
+        }
+
         public void AddUserCard(Card card, User user)
         {
             _userRepository.AddUserCard(card, user);

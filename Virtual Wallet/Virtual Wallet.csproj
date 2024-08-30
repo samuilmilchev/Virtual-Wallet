@@ -10,8 +10,6 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\images\3d-business-three-credit-card.png" />
-    <_ContentIncludedByDefault Remove="wwwroot\images\joyful-confetti-celebration-stockcake.jpg" />
-    <_ContentIncludedByDefault Remove="wwwroot\images\nimble-high-resolution-logo-transparent2.png" />
   </ItemGroup>
 
   <ItemGroup>

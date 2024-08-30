@@ -1,5 +1,13 @@
 ﻿@model UserViewModel
 
+
+<link href="~/css/responsive.css?v=1.0" rel="stylesheet" />
+
+<link href="~/css/style.css?v=2.0" rel="stylesheet" />
+
+<br>
+<br>
+
 <div class="container">
     <div class="form-title">
         <h1>User Details</h1>
@@ -39,6 +47,15 @@
                 <a style="text-decoration: none; font-size: 20px; color: black;" asp-controller="User" asp-action="Edit" asp-route-username="@Model.Username">Edit</a>
             </button>
         </div>
+
+        @if (Model.AdminVerified == false)
+        {
+            <div style="display: flex;" class="input-box">
+                <button style="width: 80px; height: 50px; margin-left: 20px;" class="input-submit">
+                    <a style="text-decoration: none; font-size: 20px; color: black;" asp-controller="User" asp-action="UploadPhotosVerification" asp-route-username="@Model.Username">VerifyA</a>
+                </button>
+            </div>
+        }
 
         @if (@Model.IsBlocked == false)
         {
