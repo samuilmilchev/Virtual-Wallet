@@ -22,5 +22,10 @@ namespace Virtual_Wallet.Models.Entities
 
         public string? Image { get; set; } //url нужен за качане на снимка/аватар чрез Cloduinary
 
+        //properties needed for Email verification
+        public bool IsEmailVerified { get; set; } = false;
+        public string EmailConfirmationToken { get; set; }
+        public DateTime? EmailTokenExpiry { get; set; }
+
     }
 }

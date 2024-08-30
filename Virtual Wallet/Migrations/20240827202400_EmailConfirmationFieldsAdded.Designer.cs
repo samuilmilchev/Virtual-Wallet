@@ -12,8 +12,8 @@ using Virtual_Wallet.Db;
 namespace Virtual_Wallet.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240827105338_Initial")]
-    partial class Initial
+    [Migration("20240827202400_EmailConfirmationFieldsAdded")]
+    partial class EmailConfirmationFieldsAdded
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -146,6 +146,12 @@ namespace Virtual_Wallet.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("EmailConfirmationToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EmailTokenExpiry")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
@@ -153,6 +159,9 @@ namespace Virtual_Wallet.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsBlocked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEmailVerified")
                         .HasColumnType("bit");
 
                     b.Property<byte[]>("PasswordHash")
@@ -181,6 +190,7 @@ namespace Virtual_Wallet.Migrations
                             Email = "samuil@example.com",
                             IsAdmin = true,
                             IsBlocked = false,
+                            IsEmailVerified = false,
                             PhoneNumber = "0845965847",
                             Role = 1,
                             Username = "Samuil"
@@ -191,6 +201,7 @@ namespace Virtual_Wallet.Migrations
                             Email = "violin@example.com",
                             IsAdmin = true,
                             IsBlocked = false,
+                            IsEmailVerified = false,
                             PhoneNumber = "0865214587",
                             Role = 1,
                             Username = "Violin"
@@ -201,6 +212,7 @@ namespace Virtual_Wallet.Migrations
                             Email = "alex@example.com",
                             IsAdmin = true,
                             IsBlocked = false,
+                            IsEmailVerified = false,
                             PhoneNumber = "0826541254",
                             Role = 1,
                             Username = "Alex"

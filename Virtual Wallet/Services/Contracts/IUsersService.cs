@@ -17,5 +17,7 @@ namespace Virtual_Wallet.Services.Contracts
         bool UnblockUser(int userId, User user);
         List<User> FilterBy(UserQueryParameters filterParameters);
         User FindRecipient(UserQueryParameters filterParameters);
+
+        Task SendConfirmationEmailAsync(User user);
     }
 }
