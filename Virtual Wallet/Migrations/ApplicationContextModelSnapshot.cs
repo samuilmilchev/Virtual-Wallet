@@ -147,17 +147,14 @@ namespace Virtual_Wallet.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-
                     b.Property<string>("EmailConfirmationToken")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("EmailTokenExpiry")
                         .HasColumnType("datetime2");
 
-
                     b.Property<string>("IdPhoto")
                         .HasColumnType("nvarchar(max)");
-
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");

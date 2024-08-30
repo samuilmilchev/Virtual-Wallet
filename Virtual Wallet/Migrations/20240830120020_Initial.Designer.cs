@@ -12,7 +12,7 @@ using Virtual_Wallet.Db;
 namespace Virtual_Wallet.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240829205847_Initial")]
+    [Migration("20240830120020_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -143,7 +143,19 @@ namespace Virtual_Wallet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<bool>("AdminVerified")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmailConfirmationToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EmailTokenExpiry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IdPhoto")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
@@ -153,6 +165,9 @@ namespace Virtual_Wallet.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsBlocked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEmailVerified")
                         .HasColumnType("bit");
 
                     b.Property<byte[]>("PasswordHash")
@@ -167,6 +182,9 @@ namespace Virtual_Wallet.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
+                    b.Property<string>("Selfie")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
@@ -178,33 +196,66 @@ namespace Virtual_Wallet.Migrations
                         new
                         {
                             Id = 1,
-                            Email = "samuil@example.com",
+                            AdminVerified = false,
+                            Email = "justine@example.com",
+                            Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724940094/fjakan10q4evdkpsyeig.webp",
                             IsAdmin = true,
                             IsBlocked = false,
+                            IsEmailVerified = false,
                             PhoneNumber = "0845965847",
                             Role = 1,
-                            Username = "Samuil"
+                            Username = "Justine"
                         },
                         new
                         {
                             Id = 2,
-                            Email = "violin@example.com",
+                            AdminVerified = false,
+                            Email = "emma@example.com",
+                            Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939101/uicxqeiqdcet5qdh7tmx.jpg",
                             IsAdmin = true,
                             IsBlocked = false,
+                            IsEmailVerified = false,
                             PhoneNumber = "0865214587",
                             Role = 1,
-                            Username = "Violin"
+                            Username = "Emma"
                         },
                         new
                         {
                             Id = 3,
-                            Email = "alex@example.com",
+                            AdminVerified = false,
+                            Email = "tom@example.com",
+                            Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939737/ixyjharblcfamv60ezlz.webp",
                             IsAdmin = true,
                             IsBlocked = false,
+                            IsEmailVerified = false,
                             PhoneNumber = "0826541254",
                             Role = 1,
-                            Username = "Alex"
+                            Username = "Tom"
                         });
+                });
+
+            modelBuilder.Entity("Virtual_Wallet.Models.Entities.VerificationApply", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("IdPhoto")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Selfie")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("VerificationsApplies");
                 });
 
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Wallet", b =>
@@ -292,6 +343,15 @@ namespace Virtual_Wallet.Migrations
                     b.Navigation("Sender");
 
                     b.Navigation("Wallet");
+                });
+
+            modelBuilder.Entity("Virtual_Wallet.Models.Entities.VerificationApply", b =>
+                {
+                    b.HasOne("Virtual_Wallet.Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Wallet", b =>
