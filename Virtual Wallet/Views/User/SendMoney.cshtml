@@ -41,7 +41,16 @@
             <span asp-validation-for="Amount"></span>
         </div>
 
-        <button type="submit" style="font-size: 20px; color:black;" class="input-submit">Save</button>
+        @{
+            if (Model.CurrentUser.IsBlocked == true || Model.CurrentUser.AdminVerified == false)
+            {
+                <p>You are blocked or not verified by admin and you are not allowed to send money to other users.</p>
+            }
+            else
+            {
+                <button type="submit" style="font-size: 20px; color:black;" class="input-submit">Save</button>
+            }
+        }
 
         @if (ViewData["ErrorMessage"] != null)
         {

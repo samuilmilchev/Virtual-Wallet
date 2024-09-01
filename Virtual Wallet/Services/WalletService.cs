@@ -14,17 +14,17 @@ namespace Virtual_Wallet.Services
         private readonly ICardService cardService;
         private readonly Currencyapi currencyapi;
         private readonly IUsersService usersService;
-        private readonly IExchangeRateService exchangeRateService; // Assuming you have this service for currency conversion
+        //private readonly IExchangeRateService exchangeRateService; // Assuming you have this service for currency conversion
         private readonly IEmailService emailService;
 
-        public WalletService(IWalletRepository walletRepository, ICardService cardService, Currencyapi currencyapi, IUsersService usersService, IEmailService emailService,  IExchangeRateService exchangeRateService)
+        public WalletService(IWalletRepository walletRepository, ICardService cardService, Currencyapi currencyapi, IUsersService usersService, IEmailService emailService /* IExchangeRateService exchangeRateService*/)
         {
             this.walletRepository = walletRepository;
             this.cardService = cardService;
             this.currencyapi = currencyapi;
             this.usersService = usersService;
             this.emailService = emailService;
-            this.exchangeRateService = exchangeRateService;
+            //this.exchangeRateService = exchangeRateService;
         }
 
         public void AddFunds(decimal amount, Currency currency, Wallet wallet, Card card, User user) // From card to wallet
