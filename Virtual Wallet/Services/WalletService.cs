@@ -1,6 +1,7 @@
 ﻿using Virtual_Wallet.Exceptions;
 using Virtual_Wallet.Helpers;
 using Virtual_Wallet.Models.Entities;
+using Virtual_Wallet.Models.ViewModels;
 using Virtual_Wallet.Repository;
 using Virtual_Wallet.Repository.Contracts;
 using Virtual_Wallet.Services.Contracts;
@@ -13,17 +14,17 @@ namespace Virtual_Wallet.Services
         private readonly ICardService cardService;
         private readonly Currencyapi currencyapi;
         private readonly IUsersService usersService;
+        private readonly IExchangeRateService exchangeRateService; // Assuming you have this service for currency conversion
         private readonly IEmailService emailService;
-        //private readonly IExchangeRateService exchangeRateService; // Assuming you have this service for currency conversion
 
-        public WalletService(IWalletRepository walletRepository, ICardService cardService, Currencyapi currencyapi, IUsersService usersService, IEmailService emailService)
+        public WalletService(IWalletRepository walletRepository, ICardService cardService, Currencyapi currencyapi, IUsersService usersService, IEmailService emailService,  IExchangeRateService exchangeRateService)
         {
             this.walletRepository = walletRepository;
             this.cardService = cardService;
             this.currencyapi = currencyapi;
             this.usersService = usersService;
             this.emailService = emailService;
-            //this.exchangeRateService = exchangeRateService;
+            this.exchangeRateService = exchangeRateService;
         }
 
         public void AddFunds(decimal amount, Currency currency, Wallet wallet, Card card, User user) // From card to wallet
@@ -111,6 +112,31 @@ namespace Virtual_Wallet.Services
             newWallet.WalletName = $"{currency} Wallet";
             user.UserWallets.Add(newWallet);
             return newWallet;
+        }
+
+
+        public void CreateSavingWallet(SavingWalletViewModel model)
+        {
+            walletRepository.CreateSavingWallet(model);
+        }
+
+        public decimal CalculateInterest(SavingWalletViewModel model)
+        {
+            double totalDays = (model.EndDate - DateTime.Now).TotalDays;
+
+            decimal interest = model.Amount * 0.01m;
+
+            decimal result = Math.Round((decimal)totalDays * interest, 4, MidpointRounding.ToEven);
+            return result;
+        }
+
+        public decimal CalculateTotal(SavingWalletViewModel model)
+        {
+            double totalDays = (model.EndDate - DateTime.Now).TotalDays;
+            decimal calculatedInterest = CalculateInterest(model) * (decimal)totalDays + model.Amount;
+
+            var result = Math.Round(calculatedInterest, 1, MidpointRounding.ToEven);
+            return result;
         }
 
         public string GenerateEmailConfirationToken()
