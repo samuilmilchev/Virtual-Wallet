@@ -1,4 +1,5 @@
 ﻿using Virtual_Wallet.Models.Entities;
+using Virtual_Wallet.Models.ViewModels;
 
 namespace Virtual_Wallet.Services.Contracts
 {
@@ -11,5 +12,8 @@ namespace Virtual_Wallet.Services.Contracts
         //decimal GetBalance(Wallet wallet, string currency);
         void ConvertFunds(decimal amount, Currency fromCurrency, Currency toCurrency, string username);
         Wallet GetByCurrency(Currency currency, User user);
+        void CreateSavingWallet(SavingWalletViewModel model);
+        decimal CalculateInterest(SavingWalletViewModel model);
+        decimal CalculateTotal(SavingWalletViewModel model);
     }
 }

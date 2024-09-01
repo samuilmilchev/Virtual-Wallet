@@ -157,7 +157,7 @@ namespace Virtual_Wallet.Controllers.MVC
                     SameSite = SameSiteMode.Strict
                 });
 
-                
+
                 return RedirectToAction("Index", "Home");
             }
             catch (EntityNotFoundException x)
@@ -243,7 +243,7 @@ namespace Virtual_Wallet.Controllers.MVC
 
             if (verificationValue == "Accept")
             {
-                _usersService.UpdateUserVerification(user , verificationValue);
+                _usersService.UpdateUserVerification(user, verificationValue);
 
                 return RedirectToAction("UserDetails", new { username = user.Username });
             }
@@ -426,6 +426,15 @@ namespace Virtual_Wallet.Controllers.MVC
         }
 
         [HttpGet]
+        public IActionResult UserSavingWallets()
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            return View(user.SavingWallets);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> ListTransactions()
         {
             return View(await GetTransactionsList(1));
@@ -449,7 +458,6 @@ namespace Virtual_Wallet.Controllers.MVC
         {
             return View(await GetUserList(currentPageIndex));
         }
-
 
         //[HttpGet]
         //public IActionResult ListUsers()

@@ -1,0 +1,77 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
+* {
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
+body {
+    margin: 0; /* Remove default margin to ensure the image covers the entire page */
+    padding: 0; /* Remove default padding */
+    background-image: url('../images/sl_122221_47450_06.jpg');
+    backdrop-filter:blur(2px);
+    background-size: cover; /* Ensure the image covers the entire viewport */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+    background-attachment: fixed; /* Keep the image fixed during scrolling (optional) */
+}
+
+.user-container-wrapper {
+    display: flex;
+    justify-content: center; /* Center the entire content */
+    padding: 20px;
+}
+
+.user-container {
+    width: 100%;
+    max-width: 800px; /* Restrict maximum width */
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center; /* Center align all text */
+}
+
+.user-image {
+    margin-bottom: 20px; /* Add space below the image */
+}
+
+.image-style {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 0 auto; /* Center the image */
+}
+
+.user-info {
+    text-align: left; /* Align text to left for better readability */
+    margin-top: 20px; /* Add space above details */
+}
+
+    .user-info p {
+        font-size: 18px;
+        margin: 10px 0;
+    }
+
+.button-group {
+    margin-top: 20px; /* Add space above buttons */
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Space between buttons */
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+    .btn:hover {
+        background-color: #0056b3;
+    }

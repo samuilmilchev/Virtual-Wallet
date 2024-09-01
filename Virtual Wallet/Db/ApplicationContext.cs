@@ -16,6 +16,7 @@ namespace Virtual_Wallet.Db
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<VerificationApply> VerificationsApplies { get; set; }
+        public DbSet<SavingWallet> SavingWallets { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -80,12 +81,12 @@ namespace Virtual_Wallet.Db
 
             modelBuilder.Entity<Wallet>().HasData(wallets);
 
-           // modelBuilder.Entity<Wallet>()
-           //.Property(w => w.RowVersion)
-           //.IsRowVersion();  // Configure RowVersion as a concurrency token
+            // modelBuilder.Entity<Wallet>()
+            //.Property(w => w.RowVersion)
+            //.IsRowVersion();  // Configure RowVersion as a concurrency token
 
-			// Transaction entity configuration
-			modelBuilder.Entity<Transaction>()
+            // Transaction entity configuration
+            modelBuilder.Entity<Transaction>()
 				.HasKey(t => t.Id); // Ensure Id is the primary key
 
 			modelBuilder.Entity<Transaction>()

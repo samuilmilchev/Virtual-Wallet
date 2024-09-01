@@ -62,6 +62,29 @@ namespace Virtual_Wallet.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SavingWallets",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    InterestRate = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    OwnerId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SavingWallets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SavingWallets_Users_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "VerificationsApplies",
                 columns: table => new
                 {
@@ -179,6 +202,11 @@ namespace Virtual_Wallet.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SavingWallets_OwnerId",
+                table: "SavingWallets",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Transactions_RecipientId",
                 table: "Transactions",
                 column: "RecipientId");
@@ -208,6 +236,9 @@ namespace Virtual_Wallet.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Cards");
+
+            migrationBuilder.DropTable(
+                name: "SavingWallets");
 
             migrationBuilder.DropTable(
                 name: "Transactions");

@@ -93,6 +93,36 @@ namespace Virtual_Wallet.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Virtual_Wallet.Models.Entities.SavingWallet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("InterestRate")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("SavingWallets");
+                });
+
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Transaction", b =>
                 {
                     b.Property<int>("Id")
@@ -320,6 +350,17 @@ namespace Virtual_Wallet.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Virtual_Wallet.Models.Entities.SavingWallet", b =>
+                {
+                    b.HasOne("Virtual_Wallet.Models.Entities.User", "Owner")
+                        .WithMany("SavingWallets")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+                });
+
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Transaction", b =>
                 {
                     b.HasOne("Virtual_Wallet.Models.Entities.User", "Recipient")
@@ -366,6 +407,8 @@ namespace Virtual_Wallet.Migrations
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.User", b =>
                 {
                     b.Navigation("Cards");
+
+                    b.Navigation("SavingWallets");
 
                     b.Navigation("UserWallets");
                 });

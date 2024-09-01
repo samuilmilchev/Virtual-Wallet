@@ -1,0 +1,109 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
+* {
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('../images/18129294.jpg');
+    backdrop-filter: blur(2px);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+/* Container styling */
+.container {
+    display: flex;
+    justify-content: center; /* Center align the main container */
+    padding: 20px;
+}
+
+/* User container styling */
+.user-container {
+    width: 100%;
+    max-width: 800px; /* Restrict maximum width */
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Title and horizontal rule */
+.form-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+    .form-title h1 {
+        margin: 0;
+        color: black;
+        font-size: 28px;
+    }
+
+hr {
+    border: none;
+    height: 1px;
+    background-color: #ddd;
+    margin: 10px 0 20px;
+}
+
+/* Form inputs styling */
+.form-inputs {
+    margin-top: 20px;
+}
+
+.input-box {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.control-label {
+    font-size: 18px;
+    color: black;
+    margin: 0;
+}
+
+    /* Strong styling inside labels */
+    .control-label strong {
+        font-size: 20px;
+        color: #333;
+    }
+
+/* Buttons styling */
+.input-submit {
+    width: 150px;
+    height: 50px;
+    margin: 10px;
+    font-size: 18px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .input-submit:hover {
+        background-color: #0056b3;
+    }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .user-container {
+        padding: 20px;
+    }
+
+    .input-submit {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}

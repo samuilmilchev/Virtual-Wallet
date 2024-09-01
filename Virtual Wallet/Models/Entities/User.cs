@@ -29,6 +29,8 @@ namespace Virtual_Wallet.Models.Entities
         public bool IsEmailVerified { get; set; } = false;
         public string EmailConfirmationToken { get; set; }
         public DateTime? EmailTokenExpiry { get; set; }
+        
+        public List<SavingWallet> SavingWallets { get; set; }
 
     }
 }
