@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Virtual_Wallet.Models.Entities;
 using Virtual_Wallet.Models.ViewModels;
 using Virtual_Wallet.Services;
 using Virtual_Wallet.Services.Contracts;
@@ -8,10 +9,12 @@ namespace Virtual_Wallet.Controllers.MVC
     public class WalletController : Controller
     {
         private readonly IWalletService _walletService;
+        private readonly IUsersService _usersService;
 
-        public WalletController(IWalletService walletService)
+        public WalletController(IWalletService walletService, IUsersService usersService)
         {
             _walletService = walletService;
+            _usersService = usersService;
         }
 
         [HttpGet]
@@ -42,6 +45,85 @@ namespace Virtual_Wallet.Controllers.MVC
 
             //If the model is not valid, return to the same view with validation errors.
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult TransactionSuccess()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult LargeTransactionVerificationForm()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult VerifyTransaction(string transactionToken)
+        {
+            if (string.IsNullOrEmpty(transactionToken))
+            {
+                ViewData["ErrorMessage"] = "Verification code is required.";
+                return View("LargeTransactionVerificationForm"); // Return to the view with an error message
+            }
+
+            if (!TempData.ContainsKey("Amount") ||
+                !TempData.ContainsKey("Currency") ||
+                //!TempData.ContainsKey("SenderWalletId") ||
+                //!TempData.ContainsKey("RecipientWalletId") ||
+                !TempData.ContainsKey("SenderUsername") ||
+                !TempData.ContainsKey("RecipientUsername"))
+            {
+                ViewData["ErrorMessage"] = "Invalid transaction data.";
+                return View("LargeTransactionVerificationForm");
+            }
+
+            var amount = Convert.ToDecimal(TempData["Amount"]);
+            var currency = (Currency)Enum.Parse(typeof(Currency), TempData["Currency"].ToString());
+            //var senderWalletId = Convert.ToInt32(TempData["SenderWalletId"]);
+            //var recipientWalletId = Convert.ToInt32(TempData["RecipientWalletId"]);
+            var senderUsername = TempData["SenderUsername"] as string;
+            var recipientUsername = TempData["RecipientUsername"] as string;
+
+            var sender = _usersService.GetByUsername(senderUsername);
+            var recipient = _usersService.GetByUsername(recipientUsername);
+
+
+            if (sender == null || string.IsNullOrEmpty(transactionToken))
+            {
+                ViewData["ErrorMessage"] = "Invalid request.";
+                return View("LargeTransactionVerificationForm");
+            }
+
+            if (recipient == null || string.IsNullOrEmpty(transactionToken))
+            {
+                ViewData["ErrorMessage"] = "Invalid request.";
+                return View("LargeTransactionVerificationForm");
+            }
+
+
+            if (sender.TransactionVerificationToken == transactionToken && sender.TransactionTokenExpiry >= DateTime.Now)
+            {
+
+                var senderWallet = sender.UserWallets.FirstOrDefault(s =>s.Currency == currency);
+                var recipientWallet = recipient.UserWallets.FirstOrDefault(x => x.Currency == currency);
+
+                _walletService.TransferFunds(amount , currency , senderWallet , recipientWallet, sender);
+                // Clear the token after successful verification
+                sender.TransactionVerificationToken = null;
+                sender.TransactionTokenExpiry = null;
+
+                _usersService.Update(sender.Id, sender); 
+
+                return RedirectToAction("TransactionSuccess"); 
+            }
+            else
+            {
+                // Invalid token or token expired
+                ViewData["ErrorMessage"] = "Invalid or expired verification code.";
+                return View(); // Return to the view with an error message
+            }
         }
     }
 }

@@ -11,5 +11,7 @@ namespace Virtual_Wallet.Services.Contracts
         //decimal GetBalance(Wallet wallet, string currency);
         void ConvertFunds(decimal amount, Currency fromCurrency, Currency toCurrency, string username);
         Wallet GetByCurrency(Currency currency, User user);
+
+        Task SendConfirmationEmailAsync(User user);
     }
 }

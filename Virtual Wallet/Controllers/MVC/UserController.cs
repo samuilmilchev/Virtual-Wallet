@@ -27,7 +27,7 @@ namespace Virtual_Wallet.Controllers.MVC
         private readonly ITransactionService _transactionService;
         private readonly IEmailService _emailService;
 
-        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService, ITransactionService transactionService, IPhotoService photoService)
+        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService, ITransactionService transactionService, IPhotoService photoService , IEmailService emailService)
         {
             _usersService = usersService;
             _configuration = configuration;
@@ -35,6 +35,7 @@ namespace Virtual_Wallet.Controllers.MVC
             _walletService = walletService;
             _photoService = photoService;
             _transactionService = transactionService;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -404,8 +405,23 @@ namespace Virtual_Wallet.Controllers.MVC
 
                     recipient.UserWallets.Add(newWallet);
                 }
-
                 var createdWallet = recipient.UserWallets.FirstOrDefault(x => x.Currency == sendMoney.Currency);
+
+                if (sendMoney.Amount >= 300)
+                {
+                    _walletService.SendConfirmationEmailAsync(user);
+
+                    TempData["Amount"] = sendMoney.Amount;
+                    TempData["Currency"] = sendMoney.Currency;
+                    //TempData["SenderWalletCurrency"] = wallet.Currency;
+                    //TempData["RecipientWalletCurrency"] = createdWallet.Currency;
+                    TempData["SenderUsername"] = user.Username;
+                    TempData["RecipientUsername"] = recipient.Username;
+
+                    return RedirectToAction("LargeTransactionVerificationForm", "Wallet");
+                }
+
+                
 
                 this._walletService.TransferFunds(sendMoney.Amount, sendMoney.Currency, wallet, createdWallet, user);
 
@@ -701,9 +717,11 @@ namespace Virtual_Wallet.Controllers.MVC
         public IActionResult ConfirmEmail(string username , string token) //може би измисти ДТО за това
         {
             var user = _usersService.GetByUsername(username);
-            if (user == null || user.EmailConfirmationToken != token || user.EmailTokenExpiry < DateTime.UtcNow)
+            ViewData["Username"] = username;
+
+            if (user == null || user.EmailConfirmationToken != token || user.EmailTokenExpiry < DateTime.Now)
             {
-                return View("EmailError");
+                return RedirectToAction("EmailError", new { username = user.Username });
             }
 
             user.IsEmailVerified = true;
@@ -714,5 +732,23 @@ namespace Virtual_Wallet.Controllers.MVC
 
             return View("ConfirmEmail");
         }
+
+        [HttpPost]
+        public  async Task<IActionResult> ResendConfirmationEmail(string username)
+        {
+            var user = _usersService.GetByUsername(username);
+            if (user == null)
+            {
+                return NotFound("User has not been found.");
+            }
+
+            await _usersService.SendConfirmationEmailAsync(user);
+
+            TempData["Message"] = "A new confirmation email has been sent to your email address.";
+            return RedirectToAction("EmailConfirmationSentAgain");
+            
+        }
+
+       
     }
 }

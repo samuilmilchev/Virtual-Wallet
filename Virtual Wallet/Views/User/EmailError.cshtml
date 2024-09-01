@@ -1,2 +1,6 @@
 ﻿<h1>Email Confirmation Failed</h1>
 <p>It looks like this email confirmation link is invalid or has expired. Please request a new one.</p>
+<form asp-action="ResendConfirmationEmail" method="post">
+    <input type="hidden" name="username" value="@ViewData["Username"]" />
+    <button type="submit" class="btn btn-primary">Resend Confirmation Email</button>
+</form>

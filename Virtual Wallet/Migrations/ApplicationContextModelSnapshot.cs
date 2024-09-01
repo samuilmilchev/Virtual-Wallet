@@ -183,6 +183,12 @@ namespace Virtual_Wallet.Migrations
                     b.Property<string>("Selfie")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("TransactionTokenExpiry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TransactionVerificationToken")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 

@@ -30,5 +30,7 @@ namespace Virtual_Wallet.Models.Entities
         public string EmailConfirmationToken { get; set; }
         public DateTime? EmailTokenExpiry { get; set; }
 
+        public string? TransactionVerificationToken { get; set; }
+        public DateTime? TransactionTokenExpiry { get; set; }
     }
 }
