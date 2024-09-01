@@ -29,7 +29,9 @@ namespace Virtual_Wallet.Migrations
                     AdminVerified = table.Column<bool>(type: "bit", nullable: false),
                     IsEmailVerified = table.Column<bool>(type: "bit", nullable: false),
                     EmailConfirmationToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmailTokenExpiry = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    EmailTokenExpiry = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TransactionVerificationToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TransactionTokenExpiry = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -163,18 +165,18 @@ namespace Virtual_Wallet.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "AdminVerified", "Email", "EmailConfirmationToken", "EmailTokenExpiry", "IdPhoto", "Image", "IsAdmin", "IsBlocked", "IsEmailVerified", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Selfie", "Username" },
-                values: new object[] { 1, false, "justine@example.com", null, null, null, "http://res.cloudinary.com/didrr2x3x/image/upload/v1724940094/fjakan10q4evdkpsyeig.webp", true, false, false, null, null, "0845965847", 1, null, "Justine" });
+                columns: new[] { "Id", "AdminVerified", "Email", "EmailConfirmationToken", "EmailTokenExpiry", "IdPhoto", "Image", "IsAdmin", "IsBlocked", "IsEmailVerified", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Selfie", "TransactionTokenExpiry", "TransactionVerificationToken", "Username" },
+                values: new object[] { 1, false, "justine@example.com", null, null, null, "http://res.cloudinary.com/didrr2x3x/image/upload/v1724940094/fjakan10q4evdkpsyeig.webp", true, false, false, null, null, "0845965847", 1, null, null, null, "Justine" });
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "AdminVerified", "Email", "EmailConfirmationToken", "EmailTokenExpiry", "IdPhoto", "Image", "IsAdmin", "IsBlocked", "IsEmailVerified", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Selfie", "Username" },
-                values: new object[] { 2, false, "emma@example.com", null, null, null, "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939101/uicxqeiqdcet5qdh7tmx.jpg", true, false, false, null, null, "0865214587", 1, null, "Emma" });
+                columns: new[] { "Id", "AdminVerified", "Email", "EmailConfirmationToken", "EmailTokenExpiry", "IdPhoto", "Image", "IsAdmin", "IsBlocked", "IsEmailVerified", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Selfie", "TransactionTokenExpiry", "TransactionVerificationToken", "Username" },
+                values: new object[] { 2, false, "emma@example.com", null, null, null, "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939101/uicxqeiqdcet5qdh7tmx.jpg", true, false, false, null, null, "0865214587", 1, null, null, null, "Emma" });
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "AdminVerified", "Email", "EmailConfirmationToken", "EmailTokenExpiry", "IdPhoto", "Image", "IsAdmin", "IsBlocked", "IsEmailVerified", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Selfie", "Username" },
-                values: new object[] { 3, false, "tom@example.com", null, null, null, "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939737/ixyjharblcfamv60ezlz.webp", true, false, false, null, null, "0826541254", 1, null, "Tom" });
+                columns: new[] { "Id", "AdminVerified", "Email", "EmailConfirmationToken", "EmailTokenExpiry", "IdPhoto", "Image", "IsAdmin", "IsBlocked", "IsEmailVerified", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Selfie", "TransactionTokenExpiry", "TransactionVerificationToken", "Username" },
+                values: new object[] { 3, false, "tom@example.com", null, null, null, "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939737/ixyjharblcfamv60ezlz.webp", true, false, false, null, null, "0826541254", 1, null, null, null, "Tom" });
 
             migrationBuilder.InsertData(
                 table: "Cards",
