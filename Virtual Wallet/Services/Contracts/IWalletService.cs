@@ -15,5 +15,6 @@ namespace Virtual_Wallet.Services.Contracts
         void CreateSavingWallet(SavingWalletViewModel model);
         decimal CalculateInterest(SavingWalletViewModel model);
         decimal CalculateTotal(SavingWalletViewModel model);
+        Task SendConfirmationEmailAsync(User user);
     }
 }

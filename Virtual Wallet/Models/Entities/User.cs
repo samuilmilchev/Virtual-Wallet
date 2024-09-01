@@ -32,5 +32,7 @@ namespace Virtual_Wallet.Models.Entities
         
         public List<SavingWallet> SavingWallets { get; set; }
 
+        public string? TransactionVerificationToken { get; set; }
+        public DateTime? TransactionTokenExpiry { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using Virtual_Wallet.Helpers;
 using Virtual_Wallet.Models.Entities;
 using Virtual_Wallet.Models.ViewModels;
+using Virtual_Wallet.Repository;
 using Virtual_Wallet.Repository.Contracts;
 using Virtual_Wallet.Services.Contracts;
 
@@ -13,15 +14,17 @@ namespace Virtual_Wallet.Services
         private readonly ICardService cardService;
         private readonly Currencyapi currencyapi;
         private readonly IUsersService usersService;
-        //private readonly IExchangeRateService exchangeRateService; // Assuming you have this service for currency conversion
+        private readonly IExchangeRateService exchangeRateService; // Assuming you have this service for currency conversion
+        private readonly IEmailService emailService;
 
-        public WalletService(IWalletRepository walletRepository, ICardService cardService, Currencyapi currencyapi, IUsersService usersService)
+        public WalletService(IWalletRepository walletRepository, ICardService cardService, Currencyapi currencyapi, IUsersService usersService, IEmailService emailService,  IExchangeRateService exchangeRateService)
         {
             this.walletRepository = walletRepository;
             this.cardService = cardService;
             this.currencyapi = currencyapi;
             this.usersService = usersService;
-            //this.exchangeRateService = exchangeRateService;
+            this.emailService = emailService;
+            this.exchangeRateService = exchangeRateService;
         }
 
         public void AddFunds(decimal amount, Currency currency, Wallet wallet, Card card, User user) // From card to wallet
@@ -111,6 +114,7 @@ namespace Virtual_Wallet.Services
             return newWallet;
         }
 
+
         public void CreateSavingWallet(SavingWalletViewModel model)
         {
             walletRepository.CreateSavingWallet(model);
@@ -135,5 +139,21 @@ namespace Virtual_Wallet.Services
             return result;
         }
 
+        public string GenerateEmailConfirationToken()
+        {
+            return Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+        }
+
+        public async Task SendConfirmationEmailAsync(User user)
+        {
+            var token = GenerateEmailConfirationToken();
+            user.TransactionVerificationToken = token;
+            user.TransactionTokenExpiry = DateTime.Now.AddMinutes(10);
+
+            usersService.Update(user.Id , user);
+            await emailService.SendAsync(user.Email, "Transaction Verification", $"This is your transaction verification code: {token} .<p>Please do not share this code to anyone.</p>");
+
+
+        }
     }
 }
