@@ -52,7 +52,7 @@ namespace Virtual_Wallet.Repository
         public User GetByUsername(string username)
         {
             
-            User user = this.GetUsers().Include(x => x.Cards).Include(u => u.UserWallets).FirstOrDefault(x => x.Username == username);
+            User user = this.GetUsers().Include(x => x.Cards).Include(u => u.UserWallets).Include(x => x.SavingWallets).FirstOrDefault(x => x.Username == username);
             if (user == null)
             {
                 throw new EntityNotFoundException($"User with username {username} does not exist!");
@@ -135,7 +135,7 @@ namespace Virtual_Wallet.Repository
 
         public User GetById(int id)
         {
-            User user = this.GetUsers().FirstOrDefault(u => u.Id == id);
+            User user = this.GetUsers().Include(x => x.Cards).Include(u => u.UserWallets).Include(x => x.SavingWallets).AsNoTracking().FirstOrDefault(u => u.Id == id);
 
             return user ?? throw new EntityNotFoundException($"User with id={id} doesn't exist.");
         }

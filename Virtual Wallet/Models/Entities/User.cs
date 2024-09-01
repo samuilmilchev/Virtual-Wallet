@@ -25,5 +25,14 @@ namespace Virtual_Wallet.Models.Entities
         public string? IdPhoto { get; set; }
         public bool AdminVerified { get; set; } = false;
 
+        //properties needed for Email verification
+        public bool IsEmailVerified { get; set; } = false;
+        public string EmailConfirmationToken { get; set; }
+        public DateTime? EmailTokenExpiry { get; set; }
+        
+        public List<SavingWallet> SavingWallets { get; set; }
+
+        public string? TransactionVerificationToken { get; set; }
+        public DateTime? TransactionTokenExpiry { get; set; }
     }
 }

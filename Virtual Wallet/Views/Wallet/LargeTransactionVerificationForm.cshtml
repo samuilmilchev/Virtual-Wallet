@@ -1,0 +1,26 @@
+﻿<h1>Large Transaction Verification</h1>
+<p>A verification code has been sent to your e-mail address.</p>
+<p>Please type in the code in the input field and press submit to complete the transaction</p>
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @ViewData["ErrorMessage"]
+    </div>
+}
+
+<form asp-action="VerifyTransaction" method="post">
+    <input type="text" name="transactionToken" class="form-control" placeholder="Enter verification code" />
+
+    <input type="hidden" name="Amount" value="@TempData["Amount"]" />
+    <input type="hidden" name="Currency" value="@TempData["Currency"]" />
+    @* <input type="hidden" name="SenderWalletId" value="@TempData["SenderWalletId"]" />
+    <input type="hidden" name="RecipientWalletId" value="@TempData["RecipientWalletId"]" /> *@
+    <input type="hidden" name="SenderUsername" value="@TempData["SenderUsername"]" />
+    <input type="hidden" name="RecipientUsername" value="@TempData["RecipientUsername"]" />
+
+    <button type="submit" class="btn btn-primary">Verify Transaction</button>
+</form>
+@{
+    TempData.Keep();
+}

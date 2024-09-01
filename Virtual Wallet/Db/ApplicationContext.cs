@@ -16,6 +16,7 @@ namespace Virtual_Wallet.Db
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<VerificationApply> VerificationsApplies { get; set; }
+        public DbSet<SavingWallet> SavingWallets { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -43,9 +44,9 @@ namespace Virtual_Wallet.Db
 
             var cards = new List<Card>
             {
-                new Card {Id = 1, CardHolder = "Samuil Milchev", CardNumber = "359039739152721", CheckNumber = "111", ExpirationData = "10/28", UserId = 1},
-                new Card {Id = 2, CardHolder = "Violin Filev", CardNumber = "379221059046032", CheckNumber = "112", ExpirationData = "04/28", UserId = 1},
-                new Card {Id = 3, CardHolder = "Alexander Georgiev", CardNumber = "345849306009469", CheckNumber = "121", ExpirationData = "02/28", UserId = 1}
+                new Card {Id = 1, CardHolder = "Justine Fox", CardNumber = "359039739152721", CheckNumber = "111", ExpirationData = "10/28", UserId = 1},
+                new Card {Id = 2, CardHolder = "Emma Robertson", CardNumber = "379221059046032", CheckNumber = "112", ExpirationData = "04/28", UserId = 2},
+                new Card {Id = 3, CardHolder = "Tom Luis", CardNumber = "345849306009469", CheckNumber = "121", ExpirationData = "02/28", UserId = 3}
             };
 
             modelBuilder.Entity<Card>().HasData(cards);
@@ -56,7 +57,7 @@ namespace Virtual_Wallet.Db
                 {
                     Id = 1,
                     OwnerId = 1,
-                    WalletName = "Violin's wallet",
+                    WalletName = "Justine's wallet",
                     Amount = 1000m,
                     Currency = Currency.BGN
                 },
@@ -64,7 +65,7 @@ namespace Virtual_Wallet.Db
                 {
                     Id = 2,
                     OwnerId = 2,
-                    WalletName = "Sami's wallet",
+                    WalletName = "Emma's wallet",
                     Amount = 1000m,
                     Currency = Currency.BGN
                 },
@@ -72,7 +73,7 @@ namespace Virtual_Wallet.Db
                 {
                     Id = 3,
                     OwnerId = 3,
-                    WalletName = "Alex's wallet",
+                    WalletName = "Tom's wallet",
                     Amount = 1000m,
                     Currency = Currency.BGN
                 }
@@ -80,12 +81,12 @@ namespace Virtual_Wallet.Db
 
             modelBuilder.Entity<Wallet>().HasData(wallets);
 
-           // modelBuilder.Entity<Wallet>()
-           //.Property(w => w.RowVersion)
-           //.IsRowVersion();  // Configure RowVersion as a concurrency token
+            // modelBuilder.Entity<Wallet>()
+            //.Property(w => w.RowVersion)
+            //.IsRowVersion();  // Configure RowVersion as a concurrency token
 
-			// Transaction entity configuration
-			modelBuilder.Entity<Transaction>()
+            // Transaction entity configuration
+            modelBuilder.Entity<Transaction>()
 				.HasKey(t => t.Id); // Ensure Id is the primary key
 
 			modelBuilder.Entity<Transaction>()

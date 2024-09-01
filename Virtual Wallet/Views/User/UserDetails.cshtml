@@ -2,76 +2,57 @@
 
 
 <link href="~/css/responsive.css?v=1.0" rel="stylesheet" />
-
 <link href="~/css/style.css?v=2.0" rel="stylesheet" />
+<link href="~/css/UserDetails.css" rel="stylesheet">
 
 <br>
 <br>
+<br>
+<br>
+<br>
 
-<div class="container">
-    <div class="form-title">
-        <h1>User Details</h1>
-        <hr>
-    </div>
-
-    <div class="form-inputs">
-
-        <div class="input-box">
-            <p style="text-align: left; font-size: 20px;"><strong>Profile photo:</strong></p>
-            <img src="@Model.Image" alt="User Image" style="width: 300px; height: 300px; " />
-        </div>
-        <div class="input-box">
-            <p style="text-align: left; font-size: 20px;"><strong>Username:</strong> <span id="user-username">@Model.Username</span></p>
-        </div>
-        <br>
-        <div class="input-box">
-            <p style="text-align: left; font-size: 20px;"><strong>Email:</strong> <span id="user-lastname">@Model.Email</span></p>
-        </div>
-        <br>
-        <div class="input-box">
-            <p style="text-align: left; font-size: 20px;"><strong>Phone Number:</strong> <span id="user-phonenumber">@Model.PhoneNumber</span></p>
-        </div>
-        <br>
-        <div class="input-box">
-            <p style="text-align: left; font-size: 20px;"><strong>Role:</strong> <span id="user-phonenumber">@Model.Role</span></p>
-        </div>
-        <div class="input-box">
-            <p style="text-align: left; font-size: 20px;"><strong>IsBlocked:</strong> <span id="user-phonenumber">@Model.IsBlocked</span></p>
-        </div>
-        <div class="input-box">
-            <p style="text-align: left; font-size: 20px;"><strong>CardsCount:</strong> <span id="user-phonenumber">@Model.Cards.Count()</span></p>
+<div class="user-container-wrapper">
+    <div class="user-container">
+        <!-- User Image Centered at the Top -->
+        <div class="user-image">
+            <p style="text-align: center; font-size: 20px;"><strong>Profile photo:</strong></p>
+            <img src="@Model.Image" alt="User Image" class="image-style" />
         </div>
 
-        <div style="display: flex;" class="input-box">
-            <button style="width: 80px; height: 50px; margin-left: 20px;" class="input-submit">
-                <a style="text-decoration: none; font-size: 20px; color: black;" asp-controller="User" asp-action="Edit" asp-route-username="@Model.Username">Edit</a>
-            </button>
-        </div>
+        <!-- User Details Section -->
+        <div class="user-info">
+            <h1>Profile details:</h1>
+            <hr>
+            <p style="margin-bottom: 10px; font-size: 20px; "><strong>Username:</strong> <span id="user-username">@Model.Username</span></p>
+            <p style="margin-bottom: 10px; font-size: 20px; "><strong>Email:</strong> <span id="user-email">@Model.Email</span></p>
+            <p style="margin-bottom: 10px; font-size: 20px; "><strong>Phone Number:</strong> <span id="user-phonenumber">@Model.PhoneNumber</span></p>
+            <p style="margin-bottom: 10px; font-size: 20px; "><strong>Role:</strong> <span id="user-role">@Model.Role</span></p>
+            <p style="margin-bottom: 10px; font-size: 20px; "><strong>Is Blocked:</strong> <span id="user-isblocked">@Model.IsBlocked</span></p>
+            <p style="margin-bottom: 10px; font-size: 20px; "><strong>Cards Count:</strong> <span id="user-cardscount">@Model.Cards.Count()</span></p>
 
-        @if (Model.AdminVerified == false)
-        {
-            <div style="display: flex;" class="input-box">
-                <button style="width: 80px; height: 50px; margin-left: 20px;" class="input-submit">
-                    <a style="text-decoration: none; font-size: 20px; color: black;" asp-controller="User" asp-action="UploadPhotosVerification" asp-route-username="@Model.Username">VerifyA</a>
-                </button>
+            <!-- Buttons for Edit, Verify, Block/Unblock Actions -->
+            <div class="button-group">
+                <a class="btn" asp-controller="User" asp-action="Edit" asp-route-username="@Model.Username">Edit</a>
+
+                @if (Model.AdminVerified == false)
+                {
+                    <a class="btn" asp-controller="User" asp-action="UploadPhotosVerification" asp-route-username="@Model.Username">Verify</a>
+                }
+
+                @if (Model.IsAdmin == true)
+                {
+                    @if (@Model.IsBlocked == false)
+                    {
+                        <a class="btn" asp-controller="User" asp-action="BlockUser" asp-route-username="@Model.Username">Block</a>
+                    }
+                    else
+                    {
+                        <a class="btn" asp-controller="User" asp-action="UnblockUser" asp-route-username="@Model.Username">Unblock</a>
+                    }
+                }
             </div>
-        }
-
-        @if (@Model.IsBlocked == false)
-        {
-            <div style="display: flex;" class="input-box">
-                <button style="width: 80px; height: 50px; margin-left: 20px;" class="input-submit">
-                    <a style="text-decoration: none; font-size: 20px; color: black;" asp-controller="User" asp-action="BlockUser" asp-route-username="@Model.Username">Block</a>
-                </button>
-            </div>
-        }
-        else
-        {
-            <div style="display: flex;" class="input-box">
-                <button style="width: 80px; height: 50px; margin-left: 20px;" class="input-submit">
-                    <a style="text-decoration: none; font-size: 20px; color: black;" asp-controller="User" asp-action="UnblockUser" asp-route-username="@Model.Username">Unblock</a>
-                </button>
-            </div>
-        }
+        </div>
     </div>
 </div>
+
+<br><br><br>

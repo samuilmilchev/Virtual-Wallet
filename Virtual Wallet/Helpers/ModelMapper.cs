@@ -37,6 +37,7 @@ namespace Virtual_Wallet.Helpers
             newUser.IsBlocked = user.IsBlocked;
             newUser.Cards = user.Cards;
             newUser.AdminVerified = user.AdminVerified;
+            newUser.IsAdmin = user.IsAdmin;
 
             return newUser;
         }

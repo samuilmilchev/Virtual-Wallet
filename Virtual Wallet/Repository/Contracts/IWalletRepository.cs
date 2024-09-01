@@ -1,4 +1,5 @@
 ﻿using Virtual_Wallet.Models.Entities;
+using Virtual_Wallet.Models.ViewModels;
 
 namespace Virtual_Wallet.Repository.Contracts
 {
@@ -12,6 +13,7 @@ namespace Virtual_Wallet.Repository.Contracts
 		Task<Wallet> GetById(int id);
         void SendMoney(decimal amount, Currency currency, Wallet fromWallet, Wallet toWallet, User user);
         void AddFundsToRecipient(decimal amount, Currency currency, Wallet wallet, User user);
+        void CreateSavingWallet(SavingWalletViewModel model);
 
     }
 }

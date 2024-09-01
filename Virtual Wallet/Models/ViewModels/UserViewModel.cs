@@ -28,5 +28,6 @@ namespace Virtual_Wallet.Models.ViewModels
         //public string? Selfie { get; set; }
         //public string? IdPhoto { get; set; }
         public bool AdminVerified { get; set; }
+        public bool IsAdmin { get; set; }
     }
 }

@@ -12,7 +12,7 @@ using Virtual_Wallet.Db;
 namespace Virtual_Wallet.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240829140531_Initial")]
+    [Migration("20240901205637_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -95,6 +95,36 @@ namespace Virtual_Wallet.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Virtual_Wallet.Models.Entities.SavingWallet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("InterestRate")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("SavingWallets");
+                });
+
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Transaction", b =>
                 {
                     b.Property<int>("Id")
@@ -149,6 +179,12 @@ namespace Virtual_Wallet.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("EmailConfirmationToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EmailTokenExpiry")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("IdPhoto")
                         .HasColumnType("nvarchar(max)");
 
@@ -159,6 +195,9 @@ namespace Virtual_Wallet.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsBlocked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEmailVerified")
                         .HasColumnType("bit");
 
                     b.Property<byte[]>("PasswordHash")
@@ -174,6 +213,12 @@ namespace Virtual_Wallet.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Selfie")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("TransactionTokenExpiry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TransactionVerificationToken")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
@@ -192,6 +237,7 @@ namespace Virtual_Wallet.Migrations
                             Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724940094/fjakan10q4evdkpsyeig.webp",
                             IsAdmin = true,
                             IsBlocked = false,
+                            IsEmailVerified = false,
                             PhoneNumber = "0845965847",
                             Role = 1,
                             Username = "Justine"
@@ -204,6 +250,7 @@ namespace Virtual_Wallet.Migrations
                             Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939101/uicxqeiqdcet5qdh7tmx.jpg",
                             IsAdmin = true,
                             IsBlocked = false,
+                            IsEmailVerified = false,
                             PhoneNumber = "0865214587",
                             Role = 1,
                             Username = "Emma"
@@ -216,6 +263,7 @@ namespace Virtual_Wallet.Migrations
                             Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939737/ixyjharblcfamv60ezlz.webp",
                             IsAdmin = true,
                             IsBlocked = false,
+                            IsEmailVerified = false,
                             PhoneNumber = "0826541254",
                             Role = 1,
                             Username = "Tom"
@@ -310,6 +358,17 @@ namespace Virtual_Wallet.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Virtual_Wallet.Models.Entities.SavingWallet", b =>
+                {
+                    b.HasOne("Virtual_Wallet.Models.Entities.User", "Owner")
+                        .WithMany("SavingWallets")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+                });
+
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Transaction", b =>
                 {
                     b.HasOne("Virtual_Wallet.Models.Entities.User", "Recipient")
@@ -356,6 +415,8 @@ namespace Virtual_Wallet.Migrations
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.User", b =>
                 {
                     b.Navigation("Cards");
+
+                    b.Navigation("SavingWallets");
 
                     b.Navigation("UserWallets");
                 });
