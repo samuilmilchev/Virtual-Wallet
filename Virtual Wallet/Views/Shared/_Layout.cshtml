@@ -67,11 +67,11 @@
                 else
                 {
                     <li class="navbar-item">
-                        <a class="navbar-item-inner" asp-controller="User" asp-action="AssignRole">
+                        <a class="navbar-item-inner" asp-controller="User" asp-action="Logout">
                             <div class="navbar-item-inner-icon-wrapper">
-                                <ion-icon name="key-outline"></ion-icon>
+                                <ion-icon name="person-outline"></ion-icon>
                             </div>
-                            <span style="font-size:18px;" class="link-text">Assign Roles</span>
+                            <span style="font-size:18px;" class="link-text">Logout</span>
                         </a>
                     </li>
                     <!-- Burger Menu items for authenticated users -->
@@ -92,6 +92,23 @@
                             <span style="font-size:18px;" class="link-text">User Details</span>
                         </a>
                     </li>
+                    <li class="navbar-item">
+                        <a class="navbar-item-inner" asp-controller="Wallet" asp-action="CreateSavingWallet">
+                            <div class="navbar-item-inner-icon-wrapper">
+                                <ion-icon name="person-circle-outline"></ion-icon>
+                            </div>
+                            <span style="font-size:18px;" class="link-text">Create Saving Wallet</span>
+                        </a>
+                    </li>
+                    <li class="navbar-item">
+                        <a class="navbar-item-inner" asp-controller="User" asp-action="UserSavingWallets">
+                            <div class="navbar-item-inner-icon-wrapper">
+                                <ion-icon name="person-circle-outline"></ion-icon>
+                            </div>
+                            <span style="font-size:18px;" class="link-text">User SavingWallets</span>
+                        </a>
+                    </li>
+
                     <li class="navbar-item">
                         <a class="navbar-item-inner" asp-controller="Card" asp-action="Register">
                             <div class="navbar-item-inner-icon-wrapper">
@@ -116,7 +133,17 @@
                             <span style="font-size:18px;" class="link-text">Send Money</span>
                         </a>
                     </li>
+                    <li class="navbar-item">
+                        <a class="navbar-item-inner" asp-controller="Wallet" asp-action="ConvertFunds">
+                            <div class="navbar-item-inner-icon-wrapper">
+                                <ion-icon name="swap-horizontal-outline"></ion-icon>
+                            </div>
+                            <span style="font-size:18px;" class="link-text">ConvertFunds</span>
+                        </a>
+                    </li>
+
                     </div>
+
                 }
                 <!-- Admin only items -->
                 @if (User.IsInRole("Admin"))
@@ -173,9 +200,9 @@
 </body>
 
 <script>
-    document.getElementById("burger-menu").addEventListener("click", function() {
-    var burgerMenuItems = document.querySelector(".burger-menu-items");
-    burgerMenuItems.classList.toggle("active");
-});
+    document.getElementById("burger-menu").addEventListener("click", function () {
+        var burgerMenuItems = document.querySelector(".burger-menu-items");
+        burgerMenuItems.classList.toggle("active");
+    });
 </script>
 </html>

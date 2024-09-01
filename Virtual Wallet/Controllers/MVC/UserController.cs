@@ -25,8 +25,9 @@ namespace Virtual_Wallet.Controllers.MVC
         private readonly IWalletService _walletService;
         private readonly IPhotoService _photoService;
         private readonly ITransactionService _transactionService;
+        private readonly IEmailService _emailService;
 
-        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService, ITransactionService transactionService, IPhotoService photoService)
+        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService, ITransactionService transactionService, IPhotoService photoService , IEmailService emailService)
         {
             _usersService = usersService;
             _configuration = configuration;
@@ -34,6 +35,7 @@ namespace Virtual_Wallet.Controllers.MVC
             _walletService = walletService;
             _photoService = photoService;
             _transactionService = transactionService;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -115,8 +117,12 @@ namespace Virtual_Wallet.Controllers.MVC
                     SameSite = SameSiteMode.Strict
                 });
 
-                // Optionally, you can log the user in here or redirect to a login page
-                return RedirectToAction("Index", "Home");
+                await _usersService.SendConfirmationEmailAsync(user);
+
+                //return RedirectToAction("Index", "Home");
+                // return Ok("Registration successful. Please check your email to verify your account.");
+                return View("EmailConfirmationMessage"); //препраща към страница, коята казва на потребителя да си потвърди е-мейла
+
             }
 
             return View("Index", model);
@@ -139,6 +145,11 @@ namespace Virtual_Wallet.Controllers.MVC
                 if (user == null || !VerifyPasswordHash(loginRequest.Password, user.PasswordHash, user.PasswordSalt))
                     return BadRequest("Invalid credentials");
 
+                if (user.IsEmailVerified != true) //проверка дали е верифициран мейла
+                    return Unauthorized("Email not confirmed. Please check your email to confirm your account."); //Unauthorised, защото други варианти разрушават логиката
+
+
+
                 string token = CreateToken(user);
                 HttpContext.Response.Cookies.Append("jwt", token, new CookieOptions
                 {
@@ -146,6 +157,7 @@ namespace Virtual_Wallet.Controllers.MVC
                     Secure = false, // Change to true in production
                     SameSite = SameSiteMode.Strict
                 });
+
 
                 return RedirectToAction("Index", "Home");
             }
@@ -232,7 +244,7 @@ namespace Virtual_Wallet.Controllers.MVC
 
             if (verificationValue == "Accept")
             {
-                _usersService.UpdateUserVerification(user , verificationValue);
+                _usersService.UpdateUserVerification(user, verificationValue);
 
                 return RedirectToAction("UserDetails", new { username = user.Username });
             }
@@ -393,8 +405,23 @@ namespace Virtual_Wallet.Controllers.MVC
 
                     recipient.UserWallets.Add(newWallet);
                 }
-
                 var createdWallet = recipient.UserWallets.FirstOrDefault(x => x.Currency == sendMoney.Currency);
+
+                if (sendMoney.Amount >= 300)
+                {
+                    _walletService.SendConfirmationEmailAsync(user);
+
+                    TempData["Amount"] = sendMoney.Amount;
+                    TempData["Currency"] = sendMoney.Currency;
+                    //TempData["SenderWalletCurrency"] = wallet.Currency;
+                    //TempData["RecipientWalletCurrency"] = createdWallet.Currency;
+                    TempData["SenderUsername"] = user.Username;
+                    TempData["RecipientUsername"] = recipient.Username;
+
+                    return RedirectToAction("LargeTransactionVerificationForm", "Wallet");
+                }
+
+                
 
                 this._walletService.TransferFunds(sendMoney.Amount, sendMoney.Currency, wallet, createdWallet, user);
 
@@ -412,6 +439,15 @@ namespace Virtual_Wallet.Controllers.MVC
 
                 // Json(new { success = false, message = x.Message });
             }
+        }
+
+        [HttpGet]
+        public IActionResult UserSavingWallets()
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            return View(user.SavingWallets);
         }
 
         [HttpGet]
@@ -438,7 +474,6 @@ namespace Virtual_Wallet.Controllers.MVC
         {
             return View(await GetUserList(currentPageIndex));
         }
-
 
         //[HttpGet]
         //public IActionResult ListUsers()
@@ -685,5 +720,43 @@ namespace Virtual_Wallet.Controllers.MVC
             transactionModel.currentPageIndex = currentPage;
             return transactionModel;
         }
+
+        [HttpGet]
+        public IActionResult ConfirmEmail(string username , string token) //може би измисти ДТО за това
+        {
+            var user = _usersService.GetByUsername(username);
+            ViewData["Username"] = username;
+
+            if (user == null || user.EmailConfirmationToken != token || user.EmailTokenExpiry < DateTime.Now)
+            {
+                return RedirectToAction("EmailError", new { username = user.Username });
+            }
+
+            user.IsEmailVerified = true;
+            user.EmailTokenExpiry = null;
+            user.EmailConfirmationToken = null;
+
+            _usersService.Update(user.Id , user);
+
+            return View("ConfirmEmail");
+        }
+
+        [HttpPost]
+        public  async Task<IActionResult> ResendConfirmationEmail(string username)
+        {
+            var user = _usersService.GetByUsername(username);
+            if (user == null)
+            {
+                return NotFound("User has not been found.");
+            }
+
+            await _usersService.SendConfirmationEmailAsync(user);
+
+            TempData["Message"] = "A new confirmation email has been sent to your email address.";
+            return RedirectToAction("EmailConfirmationSentAgain");
+            
+        }
+
+       
     }
 }

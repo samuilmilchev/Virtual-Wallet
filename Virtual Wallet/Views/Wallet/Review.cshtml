@@ -1,0 +1,95 @@
+﻿@model SavingWalletViewModel
+
+<link href="~/css/responsive.css?v=1.0" rel="stylesheet" />
+<link href="~/css/style.css?v=2.0" rel="stylesheet" />
+<link href="~/css/Review.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
+<div style="padding-left: 550px; padding-top: 250px;">
+    <div class="user-container">
+        <div class="user-info">
+            <div class="form-title">
+                <h1>Saving Wallet Details</h1>
+                <hr>
+            </div>
+
+            <div class="form-inputs">
+                <!-- Input for Start Date -->
+                <div class="input-box">
+                    <p class="control-label">
+                        <strong>Start Date:</strong>
+                        <span>@Model.StartDate</span>
+                    </p>
+                </div>
+
+                <!-- Input for End Date -->
+                <div class="input-box">
+                    <p class="control-label">
+                        <strong>End Date:</strong>
+                        <span>@Model.EndDate</span>
+                    </p>
+                </div>
+
+                <!-- Input for Amount -->
+                <div class="input-box">
+                    <p class="control-label">
+                        <strong>Amount:</strong>
+                        <span>@Model.Amount</span>
+                    </p>
+                </div>
+
+                <!-- Input for Interest -->
+                <div class="input-box">
+                    <p class="control-label">
+                        <strong>Interest:</strong>
+                        <span>@Model.InterestRate</span>
+                    </p>
+                    <p>Interest is added to your amount every day</p>
+                </div>
+
+                <div class="input-box">
+                    <p class="control-label">
+                        <strong>Amount calculated:</strong>
+                        <span>@Model.FinalAmount</span>
+                    </p>
+                </div>
+
+                <!-- Accept and Decline Buttons -->
+                <form asp-action="Review" asp-controller="Wallet" method="post">
+                    <button type="submit" name="text" value="Accept" class="input-submit">
+                        Accept Verification
+                    </button>
+
+                    <button type="submit" name="text" value="Decline" class="input-submit">
+                        Decline Verification
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+<script>
+    $(function () {
+        $("#StartDate").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+        $("#EndDate").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+    });
+</script>

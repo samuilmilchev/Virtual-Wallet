@@ -6,10 +6,12 @@ namespace Virtual_Wallet.Controllers.MVC
     public class HomeController : Controller
     {
         private readonly IUsersService _usersService;
+        private readonly IEmailService _emailService;
 
-        public HomeController(IUsersService usersService)
+        public HomeController(IUsersService usersService,IEmailService emailService)
         {
             _usersService = usersService;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -20,6 +22,8 @@ namespace Virtual_Wallet.Controllers.MVC
                 var username = User.Identity.Name;
                 var user = _usersService.GetByUsername(username);
             }
+
+            //_emailService.SendAsync("alexander_ng@abv.bg", "Confirm Email" , "Hi, Alex!");
             return View();
         }
 

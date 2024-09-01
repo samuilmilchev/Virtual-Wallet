@@ -1,0 +1,99 @@
+﻿body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Quicksand', sans-serif; /* Consistent font style */
+    background-color: #f4f4f9; /* Light background color for better contrast */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('../images/18129294.jpg');
+    backdrop-filter: blur(2px);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+/* Container Styling */
+.register-card-container {
+    width: 600px; /* Max width of the form */
+    background-color: #fff; /* White background for form */
+    padding: 40px; /* Padding around the form */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for elevation */
+    margin: 20px; /* Margin for spacing */
+}
+
+/* Header Styling */
+.form-header {
+    margin-bottom: 10px; /* Space below the header */
+    color: #333; /* Darker text color */
+    font-size: 28px; /* Larger font size */
+    text-align: center; /* Center align the header */
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background-color: #ddd; /* Light grey line */
+    margin-bottom: 20px;
+}
+
+/* Form Field Styling */
+.field {
+    margin-bottom: 20px; /* Space between form fields */
+}
+
+.field-label {
+    display: block; /* Ensure label is above input */
+    margin-bottom: 8px; /* Space between label and input */
+    font-size: 16px; /* Font size of the label */
+    color: black; /* Lighter text color for label */
+}
+
+.input-field {
+    width: 100%; /* Full width of input fields */
+    padding: 12px 15px; /* Padding for input fields */
+    font-size: 16px; /* Font size for input fields */
+    border: 1px solid #ccc; /* Light border for inputs */
+    border-radius: 4px; /* Rounded corners for inputs */
+    transition: border-color 0.3s ease; /* Smooth transition on focus */
+}
+
+    .input-field:focus {
+        border-color: #007bff; /* Blue border on focus */
+        outline: none; /* Remove default outline */
+    }
+
+/* Validation Message Styling */
+.validation-message {
+    color: red; /* Red color for validation messages */
+    font-size: 14px; /* Smaller font size for messages */
+    margin-top: 5px; /* Space above validation message */
+    display: block; /* Display as block */
+}
+
+/* Submit Button Styling */
+.submit-button {
+    width: 100%; /* Full width button */
+    padding: 12px; /* Padding for button */
+    font-size: 18px; /* Larger font size for button */
+    background-color: #007bff; /* Blue background */
+    color: #fff; /* White text color */
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth transition on hover */
+}
+
+    .submit-button:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+    }
+
+/* Responsive Styling */
+@media (max-width: 768px) {
+    .register-card-container {
+        padding: 20px; /* Reduce padding on smaller screens */
+    }
+}

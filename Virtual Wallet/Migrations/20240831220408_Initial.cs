@@ -26,7 +26,10 @@ namespace Virtual_Wallet.Migrations
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Selfie = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IdPhoto = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AdminVerified = table.Column<bool>(type: "bit", nullable: false)
+                    AdminVerified = table.Column<bool>(type: "bit", nullable: false),
+                    IsEmailVerified = table.Column<bool>(type: "bit", nullable: false),
+                    EmailConfirmationToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmailTokenExpiry = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -53,6 +56,29 @@ namespace Virtual_Wallet.Migrations
                     table.ForeignKey(
                         name: "FK_Cards_Users_UserId",
                         column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SavingWallets",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    InterestRate = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    OwnerId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SavingWallets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SavingWallets_Users_OwnerId",
+                        column: x => x.OwnerId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -137,18 +163,18 @@ namespace Virtual_Wallet.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "AdminVerified", "Email", "IdPhoto", "Image", "IsAdmin", "IsBlocked", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Selfie", "Username" },
-                values: new object[] { 1, false, "justine@example.com", null, "http://res.cloudinary.com/didrr2x3x/image/upload/v1724940094/fjakan10q4evdkpsyeig.webp", true, false, null, null, "0845965847", 1, null, "Justine" });
+                columns: new[] { "Id", "AdminVerified", "Email", "EmailConfirmationToken", "EmailTokenExpiry", "IdPhoto", "Image", "IsAdmin", "IsBlocked", "IsEmailVerified", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Selfie", "Username" },
+                values: new object[] { 1, false, "justine@example.com", null, null, null, "http://res.cloudinary.com/didrr2x3x/image/upload/v1724940094/fjakan10q4evdkpsyeig.webp", true, false, false, null, null, "0845965847", 1, null, "Justine" });
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "AdminVerified", "Email", "IdPhoto", "Image", "IsAdmin", "IsBlocked", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Selfie", "Username" },
-                values: new object[] { 2, false, "emma@example.com", null, "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939101/uicxqeiqdcet5qdh7tmx.jpg", true, false, null, null, "0865214587", 1, null, "Emma" });
+                columns: new[] { "Id", "AdminVerified", "Email", "EmailConfirmationToken", "EmailTokenExpiry", "IdPhoto", "Image", "IsAdmin", "IsBlocked", "IsEmailVerified", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Selfie", "Username" },
+                values: new object[] { 2, false, "emma@example.com", null, null, null, "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939101/uicxqeiqdcet5qdh7tmx.jpg", true, false, false, null, null, "0865214587", 1, null, "Emma" });
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "AdminVerified", "Email", "IdPhoto", "Image", "IsAdmin", "IsBlocked", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Selfie", "Username" },
-                values: new object[] { 3, false, "tom@example.com", null, "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939737/ixyjharblcfamv60ezlz.webp", true, false, null, null, "0826541254", 1, null, "Tom" });
+                columns: new[] { "Id", "AdminVerified", "Email", "EmailConfirmationToken", "EmailTokenExpiry", "IdPhoto", "Image", "IsAdmin", "IsBlocked", "IsEmailVerified", "PasswordHash", "PasswordSalt", "PhoneNumber", "Role", "Selfie", "Username" },
+                values: new object[] { 3, false, "tom@example.com", null, null, null, "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939737/ixyjharblcfamv60ezlz.webp", true, false, false, null, null, "0826541254", 1, null, "Tom" });
 
             migrationBuilder.InsertData(
                 table: "Cards",
@@ -174,6 +200,11 @@ namespace Virtual_Wallet.Migrations
                 name: "IX_Cards_UserId",
                 table: "Cards",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SavingWallets_OwnerId",
+                table: "SavingWallets",
+                column: "OwnerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_RecipientId",
@@ -205,6 +236,9 @@ namespace Virtual_Wallet.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Cards");
+
+            migrationBuilder.DropTable(
+                name: "SavingWallets");
 
             migrationBuilder.DropTable(
                 name: "Transactions");
