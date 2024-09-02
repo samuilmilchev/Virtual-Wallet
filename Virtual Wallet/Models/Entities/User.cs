@@ -21,8 +21,8 @@ namespace Virtual_Wallet.Models.Entities
         public List<Wallet> UserWallets  { get; set; } //може би ще подлежи на промяна, като местоположение
 
         public string? Image { get; set; } //url нужен за качане на снимка/аватар чрез Cloduinary
-        public ICollection<User> Friends { get; set; } = new List<User>();
-        public ICollection<User> FriendOf { get; set; } = new List<User>();
+        public ICollection<User> Friends { get; set; }
+        public ICollection<User> FriendOf { get; set; }
 
     }
 }

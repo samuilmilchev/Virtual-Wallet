@@ -18,16 +18,24 @@
 		<div>
 			<button type="submit" class="btn btn-primary">Submit</button>
 		</div>
-		<h2>Friends List</h2>
-		@foreach (var friends in Model.friends)
-		{
-			<ul>
-				<li>@friends</li>
-			</ul>
-		}
-		@if (ViewData["ErrorMessage"] != null)
-		{
-			<div class="alert alert-danger">@ViewData["ErrorMessage"]</div>
-		}
+
 	</form>
+	<h2>Friends List</h2>
+	@foreach (var friend in Model.friends)
+	{
+		<ul>
+			<li>
+				@friend
+				<form asp-action="RemoveFriend" method="post" style="display:inline;">
+					<input type="hidden" name="friend" value="@friend" />
+					<button type="submit" class="btn btn-danger">Delete</button>
+				</form>
+			</li>
+
+		</ul>
+	}
+	@if (ViewData["ErrorMessage"] != null)
+	{
+		<div class="alert alert-danger">@ViewData["ErrorMessage"]</div>
+	}
 </div>

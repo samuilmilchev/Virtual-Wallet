@@ -42,7 +42,7 @@ namespace Virtual_Wallet.Repository
         public User GetByEmail(string email)
         {
             
-            User user = this.GetUsers().Include(x => x.Cards).Include(u=>u.UserWallets).FirstOrDefault(x => x.Email == email);
+            User user = this.GetUsers().Include(y => y.Friends).Include(x => x.Cards).Include(u=>u.UserWallets).FirstOrDefault(x => x.Email == email);
             if (user == null)
             {
                 throw new EntityNotFoundException($"User with e-mail: {email} does not exist!");
@@ -52,7 +52,7 @@ namespace Virtual_Wallet.Repository
         public User GetByUsername(string username)
         {
             
-            User user = this.GetUsers().Include(x => x.Cards).Include(u => u.UserWallets).FirstOrDefault(x => x.Username == username);
+            User user = this.GetUsers().Include(y => y.Friends).Include(x => x.Cards).Include(u => u.UserWallets).FirstOrDefault(x => x.Username == username);
             if (user == null)
             {
                 throw new EntityNotFoundException($"User with username {username} does not exist!");
@@ -63,7 +63,7 @@ namespace Virtual_Wallet.Repository
         public User GetByPhoneNumber(string phoneNumber)
         {
            
-            User user = this.GetUsers().Include(x => x.Cards).Include(u => u.UserWallets).FirstOrDefault(x => x.PhoneNumber == phoneNumber);
+            User user = this.GetUsers().Include(y => y.Friends).Include(x => x.Cards).Include(u => u.UserWallets).FirstOrDefault(x => x.PhoneNumber == phoneNumber);
             if (user == null)
             {
                 throw new EntityNotFoundException($"User with phone number {phoneNumber} does not exist!");

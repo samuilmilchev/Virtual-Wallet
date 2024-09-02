@@ -20,36 +20,36 @@ namespace Virtual_Wallet.Db
         {
             base.OnModelCreating(modelBuilder);
 
-            //modelBuilder.Entity<User>()
-            //.HasOne(u => u.UserWallets) // Navigation property on User
-            //.WithOne(w => w.Owner) // Navigation property on Wallet
-            //.HasForeignKey<Wallet>(w => w.OwnerId); // Specify the foreign key on Wallet
+			//modelBuilder.Entity<User>()
+			//.HasOne(u => u.UserWallets) // Navigation property on User
+			//.WithOne(w => w.Owner) // Navigation property on Wallet
+			//.HasForeignKey<Wallet>(w => w.OwnerId); // Specify the foreign key on Wallet
 
-            modelBuilder.Entity<User>()
-           .HasMany(u => u.Cards)
-           .WithOne(c => c.User)
-           .HasForeignKey(c => c.UserId)
-           .OnDelete(DeleteBehavior.Cascade);
+			modelBuilder.Entity<User>()
+				.HasMany(u => u.Cards)        // One-to-many relationship
+				.WithOne(c => c.User)
+				.HasForeignKey(c => c.UserId)
+				.OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Friends)
-                .WithMany(u => u.FriendOf)
-                .UsingEntity<Dictionary<string, object>>(
-                    "Friends", // Name of the join table
-                    j => j
-                        .HasOne<User>()
-                        .WithMany()
-                        .HasForeignKey("FriendId")
-                        .OnDelete(DeleteBehavior.Restrict),
-                    j => j
-                        .HasOne<User>()
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                );
+			modelBuilder.Entity<User>()
+				.HasMany(u => u.Friends)      // Many-to-many self-referencing relationship
+				.WithMany(c => c.FriendOf)
+				.UsingEntity<Dictionary<string, object>>(
+					"Friends",
+					j => j
+						.HasOne<User>()
+						.WithMany()
+						.HasForeignKey("FriendId")
+						.OnDelete(DeleteBehavior.Restrict),
+					j => j
+						.HasOne<User>()
+						.WithMany()
+						.HasForeignKey("UserId")
+						.OnDelete(DeleteBehavior.Restrict)
+				);
 
 
-            var users = new List<User>
+			var users = new List<User>
             {
             new User { Id = 1, Email = "samuil@example.com", Username = "Samuil", /*Password = ""*/ PhoneNumber = "0845965847", IsAdmin = true, IsBlocked = false, Role = UserRole.User},
             new User { Id = 2, Email = "violin@example.com", Username = "Violin", /*Password = ""*/PhoneNumber = "0865214587", IsAdmin = true, IsBlocked = false, Role = UserRole.User},

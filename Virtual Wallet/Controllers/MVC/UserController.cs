@@ -66,7 +66,8 @@ namespace Virtual_Wallet.Controllers.MVC
 					PasswordHash = passwordHash,
 					PasswordSalt = passwordSalt,
 					UserWallets = new List<Wallet>(),
-					Role = UserRole.User
+					Role = UserRole.User,
+					Friends = new List<User>()
 				};
 
 				if (registerModel.Image != null)
@@ -524,24 +525,24 @@ namespace Virtual_Wallet.Controllers.MVC
 			}
 		}
 
-		// DELETE: api/User/{userId}/friends/{friendId}
-		[HttpDelete("{userId}/friends/{friendId}")]
-		public ActionResult RemoveFriend(int userId, int friendId)
-		{
-			try
-			{
-				_usersService.RemoveFriend(userId, friendId);
-				return NoContent(); // 204 No Content for a successful deletion
-			}
-			catch (EntityNotFoundException ex)
-			{
-				return NotFound(new { message = ex.Message }); // 404 Not Found if the user or friend is not found
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(500, new { message = ex.Message }); // 500 Internal Server Error for other exceptions
-			}
-		}
+		//// DELETE: api/User/{userId}/friends/{friendId}
+		//[HttpDelete("{userId}/friends/{friendId}")]
+		//public ActionResult RemoveFriend(int userId, int friendId)
+		//{
+		//	try
+		//	{
+		//		_usersService.RemoveFriend(userId, friendId);
+		//		return NoContent(); // 204 No Content for a successful deletion
+		//	}
+		//	catch (EntityNotFoundException ex)
+		//	{
+		//		return NotFound(new { message = ex.Message }); // 404 Not Found if the user or friend is not found
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return StatusCode(500, new { message = ex.Message }); // 500 Internal Server Error for other exceptions
+		//	}
+		//}
 
 		[HttpGet]
 		public IActionResult FriendsList()
@@ -567,8 +568,8 @@ namespace Virtual_Wallet.Controllers.MVC
 				userQueryParameters.PhoneNumber = input;
 				userQueryParameters.Email = input;
 
-				var frirend = _usersService.FindRecipient(userQueryParameters);
-				var friendId = frirend.Id;
+				var friend = _usersService.FindRecipient(userQueryParameters);
+				var friendId = friend.Id;
 
 				var username = User.Identity.Name;
 				var user = _usersService.GetByUsername(username);
@@ -576,9 +577,11 @@ namespace Virtual_Wallet.Controllers.MVC
 
 				_usersService.AddFriend(userId, friendId);
 
+				FriendsListViewModel friendsListViewModel = new FriendsListViewModel();
 				var friends = _usersService.GetFriends(userId);
-				var friendViewModels = friends.Select(friend => _modelMapper.Map(friend)).ToList();
-				return View(friendViewModels); // Render the full view with the friends list
+				var friendsList = friends.Select(friend => friend.Username).ToList();
+				friendsListViewModel.friends = friendsList;
+				return View(friendsListViewModel); // Render the full view with the friends list
 			}
 			catch (EntityNotFoundException ex)
 			{
@@ -593,6 +596,33 @@ namespace Virtual_Wallet.Controllers.MVC
 				return View(friendsListViewModel);
 
 				// Json(new { success = false, message = x.Message });
+			}
+		}
+
+		[HttpPost]
+		public ActionResult RemoveFriend(string friend)
+		{
+			try
+			{
+				var username = User.Identity.Name;
+				var user = _usersService.GetByUsername(username);
+				var userId = user.Id;
+				var friendsUserProfile = _usersService.GetByUsername(friend);
+				var friendId = friendsUserProfile.Id;
+				_usersService.RemoveFriend(userId, friendId);
+				FriendsListViewModel friendsListViewModel = new FriendsListViewModel();
+				var friends = _usersService.GetFriends(userId);
+				var friendsList = friends.Select(friend => friend.Username).ToList();
+				friendsListViewModel.friends = friendsList;
+				return View("FriendsList", friendsListViewModel);
+			}
+			catch (EntityNotFoundException ex)
+			{
+				return NotFound(new { message = ex.Message }); // 404 Not Found if the user or friend is not found
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, new { message = ex.Message }); // 500 Internal Server Error for other exceptions
 			}
 		}
 
