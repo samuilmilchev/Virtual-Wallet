@@ -183,9 +183,9 @@ namespace Virtual_Wallet.Migrations
                 columns: new[] { "Id", "Balance", "CardHolder", "CardNumber", "CardType", "CheckNumber", "ExpirationData", "UserId" },
                 values: new object[,]
                 {
-                    { 1, 100000m, "Samuil Milchev", "359039739152721", 0, "111", "10/28", 1 },
-                    { 2, 100000m, "Violin Filev", "379221059046032", 0, "112", "04/28", 1 },
-                    { 3, 100000m, "Alexander Georgiev", "345849306009469", 0, "121", "02/28", 1 }
+                    { 1, 100000m, "Justine Fox", "359039739152721", 0, "111", "10/28", 1 },
+                    { 2, 100000m, "Emma Robertson", "379221059046032", 0, "112", "04/28", 2 },
+                    { 3, 100000m, "Tom Luis", "345849306009469", 0, "121", "02/28", 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -193,9 +193,9 @@ namespace Virtual_Wallet.Migrations
                 columns: new[] { "Id", "Amount", "Currency", "OwnerId", "WalletName" },
                 values: new object[,]
                 {
-                    { 1, 1000m, 0, 1, "Violin's wallet" },
-                    { 2, 1000m, 0, 2, "Sami's wallet" },
-                    { 3, 1000m, 0, 3, "Alex's wallet" }
+                    { 1, 1000m, 0, 1, "Justine's wallet" },
+                    { 2, 1000m, 0, 2, "Emma's wallet" },
+                    { 3, 1000m, 0, 3, "Tom's wallet" }
                 });
 
             migrationBuilder.CreateIndex(

@@ -62,7 +62,7 @@ namespace Virtual_Wallet.Migrations
                         {
                             Id = 1,
                             Balance = 100000m,
-                            CardHolder = "Samuil Milchev",
+                            CardHolder = "Justine Fox",
                             CardNumber = "359039739152721",
                             CardType = 0,
                             CheckNumber = "111",
@@ -73,23 +73,23 @@ namespace Virtual_Wallet.Migrations
                         {
                             Id = 2,
                             Balance = 100000m,
-                            CardHolder = "Violin Filev",
+                            CardHolder = "Emma Robertson",
                             CardNumber = "379221059046032",
                             CardType = 0,
                             CheckNumber = "112",
                             ExpirationData = "04/28",
-                            UserId = 1
+                            UserId = 2
                         },
                         new
                         {
                             Id = 3,
                             Balance = 100000m,
-                            CardHolder = "Alexander Georgiev",
+                            CardHolder = "Tom Luis",
                             CardNumber = "345849306009469",
                             CardType = 0,
                             CheckNumber = "121",
                             ExpirationData = "02/28",
-                            UserId = 1
+                            UserId = 3
                         });
                 });
 
@@ -325,7 +325,7 @@ namespace Virtual_Wallet.Migrations
                             Amount = 1000m,
                             Currency = 0,
                             OwnerId = 1,
-                            WalletName = "Violin's wallet"
+                            WalletName = "Justine's wallet"
                         },
                         new
                         {
@@ -333,7 +333,7 @@ namespace Virtual_Wallet.Migrations
                             Amount = 1000m,
                             Currency = 0,
                             OwnerId = 2,
-                            WalletName = "Sami's wallet"
+                            WalletName = "Emma's wallet"
                         },
                         new
                         {
@@ -341,7 +341,7 @@ namespace Virtual_Wallet.Migrations
                             Amount = 1000m,
                             Currency = 0,
                             OwnerId = 3,
-                            WalletName = "Alex's wallet"
+                            WalletName = "Tom's wallet"
                         });
                 });
 

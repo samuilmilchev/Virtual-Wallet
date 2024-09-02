@@ -451,6 +451,15 @@ namespace Virtual_Wallet.Controllers.MVC
         }
 
         [HttpGet]
+        public IActionResult ListCards()
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            return View(user.Cards);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> ListTransactions()
         {
             return View(await GetTransactionsList(1));
@@ -722,7 +731,7 @@ namespace Virtual_Wallet.Controllers.MVC
         }
 
         [HttpGet]
-        public IActionResult ConfirmEmail(string username , string token) //може би измисти ДТО за това
+        public IActionResult ConfirmEmail(string username , string token) //може би измисли ДТО за това
         {
             var user = _usersService.GetByUsername(username);
             ViewData["Username"] = username;
