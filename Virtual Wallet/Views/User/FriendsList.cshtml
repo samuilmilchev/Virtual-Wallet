@@ -1,32 +1,33 @@
-﻿
+﻿@model FriendsListViewModel
 
 <!-- Friends List Modal -->
-<div class="modal fade" id="friendsModal" tabindex="-1" role="dialog" aria-labelledby="friendsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="friendsModalLabel">Friends List</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Search Bar -->
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" id="friendSearchInput" placeholder="Search by username, email, or phone number">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" id="searchFriendButton">Search</button>
-                    </div>
-                </div>
+<div class="container">
+	<br><br><br>
+	<form asp-action="FriendsList" method="post" enctype="multipart/form-data">
+		<div style="text-align: center;" class="form-title">
+			<h2 style="padding-left: 20px; color:black;">Friend List</h2>
+			<hr>
+		</div>
 
-                <!-- Friends List -->
-                <ul class="list-group" id="friendsList">
-                    <!-- Friends will be dynamically injected here -->
-                </ul>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
+		<h2>Add Friend</h2>
+		<div>
+			<label asp-for="input"></label>
+			<input asp-for="input" class="form-control" />
+			<span asp-validation-for="input" class="text-danger"></span>
+		</div>
+		<div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</div>
+		<h2>Friends List</h2>
+		@foreach (var friends in Model.friends)
+		{
+			<ul>
+				<li>@friends</li>
+			</ul>
+		}
+		@if (ViewData["ErrorMessage"] != null)
+		{
+			<div class="alert alert-danger">@ViewData["ErrorMessage"]</div>
+		}
+	</form>
 </div>

@@ -64,8 +64,12 @@ namespace Virtual_Wallet.Services
         {
             return _userRepository.GetByUsername(username);
         }
+		public User GetByPhoneNumber(string phoneNumber)
+		{
+			return _userRepository.GetByPhoneNumber(phoneNumber);
+		}
 
-        public bool UnblockUser(int userId, User user)
+		public bool UnblockUser(int userId, User user)
         {
             return _userRepository.UnblockUser(userId, user);
         }
