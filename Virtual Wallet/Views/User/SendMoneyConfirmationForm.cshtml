@@ -1,0 +1,76 @@
+﻿@model SendMoneyViewModel
+
+<link href="~/css/responsive.css?v=1.0" rel="stylesheet" />
+<link href="~/css/style.css?v=2.0" rel="stylesheet" />
+<link href="~/css/Review.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @ViewData["ErrorMessage"]
+    </div>
+}
+
+<div style="padding-left: 550px; padding-top: 250px;">
+    <div class="user-container">
+        <div class="user-info">
+            <div class="form-title">
+                <h1>Transaction Details</h1>
+                <hr>
+            </div>
+
+            <div class="form-inputs">
+               
+                <!-- Input for Recipient -->
+                <div class="input-box">
+                    <p class="control-label">
+                        <strong>To:</strong>
+                        <span>@Model.RecipienTokens</span>
+                    </p>
+                </div>
+
+                <!-- Input for Amount -->
+                <div class="input-box">
+                    <p class="control-label">
+                        <strong>Amount:</strong>
+                        <span>@Model.Amount</span>
+                    </p>
+                    
+                </div>
+                <!-- Input for Currency -->
+                <div class="input-box">
+                    <p class="control-label">
+                        <strong>Currency:</strong>
+                        <span>@Model.Currency.ToString()</span>
+                    </p>
+                </div>
+
+                <!-- Accept and Decline Buttons -->
+                <form asp-action="SendMoneyConfirmationForm" asp-controller="User" method="post">
+                    <button type="submit" name="text" value="Accept" class="input-submit">
+                        Confirm Transaction
+                    </button>
+
+                    <button type="submit" name="text" value="Decline" class="input-submit">
+                        Decline Transaction
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+

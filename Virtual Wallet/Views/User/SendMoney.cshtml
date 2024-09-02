@@ -41,6 +41,8 @@
             <span asp-validation-for="Amount"></span>
         </div>
 
+        <button type="submit" style="font-size: 20px; color:black;" class="input-submit">Send</button> @* временно *@
+
         @{
             if (Model.CurrentUser.IsBlocked == true || Model.CurrentUser.AdminVerified == false)
             {
@@ -48,7 +50,7 @@
             }
             else
             {
-                <button type="submit" style="font-size: 20px; color:black;" class="input-submit">Save</button>
+                
             }
         }
 
