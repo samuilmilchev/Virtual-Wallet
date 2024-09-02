@@ -4,7 +4,6 @@ using Virtual_Wallet.Services.Contracts;
 
 namespace Virtual_Wallet.Controllers.API
 {
-{
     [Route("api/home")]
     [ApiController]
     public class HomeApiController : ControllerBase
