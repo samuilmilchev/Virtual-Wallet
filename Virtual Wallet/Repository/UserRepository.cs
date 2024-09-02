@@ -301,5 +301,44 @@ namespace Virtual_Wallet.Repository
         {
             return input.All(char.IsDigit); // assuming phone numbers are numeric
         }
+
+        public void AddFriend(int userId, int friendId)
+        {
+            var user = GetById(userId);
+            var friend = GetById(friendId);
+
+            if (user == null || friend == null)
+            {
+                throw new EntityNotFoundException("User or friend not found.");
+            }
+
+            user.Friends.Add(friend);
+            _context.SaveChanges();
+        }
+
+        public void RemoveFriend(int userId, int friendId)
+        {
+            var user = GetById(userId);
+            var friend = GetById(friendId);
+
+            if (user == null || friend == null)
+            {
+                throw new EntityNotFoundException("User or friend not found.");
+            }
+
+            user.Friends.Remove(friend);
+            _context.SaveChanges();
+        }
+
+        public List<User> GetFriends(int userId)
+        {
+            var user = GetById(userId);
+            if (user == null)
+            {
+                throw new EntityNotFoundException($"User with id={userId} doesn't exist.");
+            }
+
+            return user.Friends.ToList();
+        }
     }
 }

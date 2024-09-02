@@ -22,6 +22,21 @@ namespace Virtual_Wallet.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("Friends", b =>
+                {
+                    b.Property<int>("FriendId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FriendId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Friends");
+                });
+
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Card", b =>
                 {
                     b.Property<int>("Id")
@@ -256,6 +271,21 @@ namespace Virtual_Wallet.Migrations
                             OwnerId = 3,
                             WalletName = "Alex's wallet"
                         });
+                });
+
+            modelBuilder.Entity("Friends", b =>
+                {
+                    b.HasOne("Virtual_Wallet.Models.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("FriendId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Virtual_Wallet.Models.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Card", b =>

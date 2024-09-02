@@ -82,9 +82,9 @@ namespace Virtual_Wallet.Controllers.MVC
                         return View("Index", model);
                     }
                 }
-                
-            //при създаване на акаунт се създава и първия(може би и единствен) уолет на юзъра
-            Wallet wallet = new Wallet
+
+                //при създаване на акаунт се създава и първия(може би и единствен) уолет на юзъра
+                Wallet wallet = new Wallet
                 {
                     WalletName = walletModel.WalletName,
                     Owner = user,
@@ -308,7 +308,7 @@ namespace Virtual_Wallet.Controllers.MVC
                 var username = User.Identity.Name;
                 var user = _usersService.GetByUsername(username);
                 //ViewData["CurrentUser"] = user;
-               
+
 
                 var wallet = user.UserWallets.FirstOrDefault(x => x.Currency == sendMoney.Currency);
 
@@ -349,7 +349,7 @@ namespace Virtual_Wallet.Controllers.MVC
                 var user = _usersService.GetByUsername(username);
                 SendMoneyViewModel model = new SendMoneyViewModel();
                 model.CurrentUser = user;
-                
+
                 ViewData["ErrorMessage"] = x.Message;
                 return View(model);
 
@@ -377,7 +377,7 @@ namespace Virtual_Wallet.Controllers.MVC
         }
 
         [HttpPost]
-        public async Task<IActionResult> ListUsers([FromForm]int currentPageIndex)
+        public async Task<IActionResult> ListUsers([FromForm] int currentPageIndex)
         {
             return View(await GetUserList(currentPageIndex));
         }
@@ -414,7 +414,7 @@ namespace Virtual_Wallet.Controllers.MVC
         //}
 
         [HttpPost]
-        public IActionResult SearchTransactionBySender([FromForm]string text)
+        public IActionResult SearchTransactionBySender([FromForm] string text)
         {
             TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
             transactionQueryParameters.Sender = text;
@@ -508,6 +508,96 @@ namespace Virtual_Wallet.Controllers.MVC
 
             return View(users);
         }
+
+        // POST: api/User/{userId}/friends/{friendId}
+        [HttpPost("{userId}/friends/{friendId}")]
+        public ActionResult AddFriend(int userId, int friendId)
+        {
+            try
+            {
+                _usersService.AddFriend(userId, friendId);
+                return NoContent(); // 204 No Content for a successful addition
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message }); // 404 Not Found if either user or friend is not found
+            }
+        }
+
+        // DELETE: api/User/{userId}/friends/{friendId}
+        [HttpDelete("{userId}/friends/{friendId}")]
+        public ActionResult RemoveFriend(int userId, int friendId)
+        {
+            try
+            {
+                _usersService.RemoveFriend(userId, friendId);
+                return NoContent(); // 204 No Content for a successful deletion
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message }); // 404 Not Found if the user or friend is not found
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message }); // 500 Internal Server Error for other exceptions
+            }
+        }
+
+        [HttpGet]
+        public IActionResult FriendsList()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult FriendsList(int userId)
+        {
+            try
+            {
+                var friends = _usersService.GetFriends(userId);
+                var friendViewModels = friends.Select(friend => _modelMapper.Map(friend)).ToList();
+                return View(friendViewModels); // Render the full view with the friends list
+            }
+            catch (EntityNotFoundException ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View("Error"); // Optionally, render an error view if the user is not found
+            }
+        }
+
+        //// GET: api/User/{userId}/friends
+        //[HttpGet("{userId}/friends")]
+        //public ActionResult<IEnumerable<UserViewModel>> GetFriends(int userId)
+        //{
+        //    try
+        //    {
+        //        var friends = _usersService.GetFriends(userId);
+        //        var friendViewModels = friends.Select(friend => _modelMapper.Map(friend)).ToList(); // Map to view models
+        //        return View(friendViewModels); // Return a view with the list of friends
+        //    }
+        //    catch (EntityNotFoundException ex)
+        //    {
+        //        return NotFound(new { message = ex.Message }); // 404 Not Found if the user is not found
+        //    }
+        //}
+
+
+
+        //[HttpGet("{userId}/friendsPartial")]
+        //public ActionResult GetFriendsPartial(int userId)
+        //{
+        //    try
+        //    {
+        //        var friends = _usersService.GetFriends(userId);
+        //        var friendViewModels = friends.Select(friend => _modelMapper.Map(friend)).ToList(); // Map to view models
+        //        return PartialView("_FriendsListPartial", friendViewModels);
+        //    }
+        //    catch (EntityNotFoundException ex)
+        //    {
+        //        return NotFound(new { message = ex.Message }); // 404 Not Found if the user is not found
+        //    }
+        //}
+
 
         public IActionResult BlockUser(string username)
         {

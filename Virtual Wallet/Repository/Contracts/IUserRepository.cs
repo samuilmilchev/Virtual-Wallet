@@ -18,5 +18,8 @@ namespace Virtual_Wallet.Repository.Contracts
         bool UserEmailExists(string email);
         List<User> FilterBy(UserQueryParameters filterParameters);
         User FindRecipient(UserQueryParameters recipientDTO);
+        void AddFriend(int userId, int friendId);
+        void RemoveFriend(int userId, int friendId);
+        List<User> GetFriends(int userId);
     }
 }

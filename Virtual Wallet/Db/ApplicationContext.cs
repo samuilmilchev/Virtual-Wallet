@@ -16,20 +16,38 @@ namespace Virtual_Wallet.Db
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
-		{
-			base.OnModelCreating(modelBuilder);
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
-			//modelBuilder.Entity<User>()
-			//.HasOne(u => u.UserWallets) // Navigation property on User
-			//.WithOne(w => w.Owner) // Navigation property on Wallet
-			//.HasForeignKey<Wallet>(w => w.OwnerId); // Specify the foreign key on Wallet
+            //modelBuilder.Entity<User>()
+            //.HasOne(u => u.UserWallets) // Navigation property on User
+            //.WithOne(w => w.Owner) // Navigation property on Wallet
+            //.HasForeignKey<Wallet>(w => w.OwnerId); // Specify the foreign key on Wallet
 
             modelBuilder.Entity<User>()
            .HasMany(u => u.Cards)
            .WithOne(c => c.User)
            .HasForeignKey(c => c.UserId)
            .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Friends)
+                .WithMany(u => u.FriendOf)
+                .UsingEntity<Dictionary<string, object>>(
+                    "Friends", // Name of the join table
+                    j => j
+                        .HasOne<User>()
+                        .WithMany()
+                        .HasForeignKey("FriendId")
+                        .OnDelete(DeleteBehavior.Restrict),
+                    j => j
+                        .HasOne<User>()
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                );
+
 
             var users = new List<User>
             {
@@ -79,19 +97,19 @@ namespace Virtual_Wallet.Db
 
             modelBuilder.Entity<Wallet>().HasData(wallets);
 
-           // modelBuilder.Entity<Wallet>()
-           //.Property(w => w.RowVersion)
-           //.IsRowVersion();  // Configure RowVersion as a concurrency token
+            // modelBuilder.Entity<Wallet>()
+            //.Property(w => w.RowVersion)
+            //.IsRowVersion();  // Configure RowVersion as a concurrency token
 
-			// Transaction entity configuration
-			modelBuilder.Entity<Transaction>()
-				.HasKey(t => t.Id); // Ensure Id is the primary key
+            // Transaction entity configuration
+            modelBuilder.Entity<Transaction>()
+                .HasKey(t => t.Id); // Ensure Id is the primary key
 
-			modelBuilder.Entity<Transaction>()
-				.Property(t => t.Timestamp)
-				.IsRequired(); // Ensure Timestamp is required
+            modelBuilder.Entity<Transaction>()
+                .Property(t => t.Timestamp)
+                .IsRequired(); // Ensure Timestamp is required
 
-			// Any other Transaction-specific configuration goes here
-		}
-	}
+            // Any other Transaction-specific configuration goes here
+        }
+    }
 }

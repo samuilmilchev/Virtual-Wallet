@@ -124,6 +124,14 @@
                                 <span style="font-size:18px;" class="link-text">ConvertFunds</span>
                             </a>
                         </li>
+                        <li class="navbar-item">
+                            <a class="navbar-item-inner" asp-controller="User" asp-action="FriendsList">
+                                <div class="navbar-item-inner-icon-wrapper">
+                                    <ion-icon name="people-outline"></ion-icon>
+                                </div>
+                                <span style="font-size:18px;" class="link-text">Friends List</span>
+                            </a>
+                        </li>
                     }
                     <!-- Admin only items -->
                     @if (User.IsInRole("Admin"))
@@ -158,7 +166,8 @@
             </nav>
         </div>
     </header>
-
+</body>
+</html>
 
 
     <!-- Additional header content if needed -->
@@ -171,5 +180,3 @@
         <small>©️ Copyright @DateTime.Now.Year, Card</small>
     </footer>
     @RenderSection("Scripts", required: false)
-</body>
-</html>

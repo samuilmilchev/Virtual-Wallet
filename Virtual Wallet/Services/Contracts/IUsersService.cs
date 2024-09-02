@@ -17,5 +17,9 @@ namespace Virtual_Wallet.Services.Contracts
         bool UnblockUser(int userId, User user);
         List<User> FilterBy(UserQueryParameters filterParameters);
         User FindRecipient(UserQueryParameters filterParameters);
-    }
+        void AddFriend(int userId, int friendId);
+        void RemoveFriend(int userId, int friendId);
+        List<User> GetFriends(int userId);
+
+	}
 }
