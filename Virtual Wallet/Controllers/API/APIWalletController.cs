@@ -10,13 +10,13 @@ namespace Virtual_Wallet.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class WalletController : ControllerBase
+    public class APIWalletController : ControllerBase
     {
 
         private readonly IWalletService _walletService;
         private readonly IUsersService _usersService;
 
-        public WalletController(IWalletService walletService, IUsersService usersService)
+        public APIWalletController(IWalletService walletService, IUsersService usersService)
         {
             _walletService = walletService;
             _usersService = usersService;
