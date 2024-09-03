@@ -1,9 +1,8 @@
-﻿body {
+﻿﻿body {
     margin: 0; /* Remove default margin to ensure the image covers the entire page */
     padding: 0; /* Remove default padding */
-    background-image: url('../images/modern_tech_background_with_low_poly_design_1905.jpg');
+    background-image: url('../images/Untitled3.png');
     background-size: cover; /* Ensure the image covers the entire viewport */
-    backdrop-filter: blur(2px);
     background-position: center; /* Center the image */
     background-repeat: no-repeat; /* Prevent the image from repeating */
     background-attachment: fixed; /* Keep the image fixed during scrolling (optional) */

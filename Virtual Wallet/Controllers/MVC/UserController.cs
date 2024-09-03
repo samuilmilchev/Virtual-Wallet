@@ -425,7 +425,7 @@ namespace Virtual_Wallet.Controllers.MVC
 
                 this._walletService.TransferFunds(sendMoney.Amount, sendMoney.Currency, wallet, createdWallet, user);
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("TransactionSuccess", "Wallet");
             }
             catch (EntityNotFoundException x)
             {
@@ -439,6 +439,17 @@ namespace Virtual_Wallet.Controllers.MVC
 
                 // Json(new { success = false, message = x.Message });
             }
+        }
+
+        [HttpGet]
+        public IActionResult UserWallets()
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            var wallets = user.UserWallets.Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(wallets);
         }
 
         [HttpGet]
