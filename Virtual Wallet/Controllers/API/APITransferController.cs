@@ -8,13 +8,13 @@ namespace Virtual_Wallet.Controllers.API
 {
     [Route("api/transfer")]
     [ApiController]
-    public class TransferController : ControllerBase
+    public class APITransferController : ControllerBase
     {
         private readonly ICardService _cardService;
         private readonly IWalletService _walletService;
         private readonly IUsersService _usersService;
 
-        public TransferController(ICardService cardService, IWalletService walletService, IUsersService usersService)
+        public APITransferController(ICardService cardService, IWalletService walletService, IUsersService usersService)
         {
             _cardService = cardService;
             _walletService = walletService;
