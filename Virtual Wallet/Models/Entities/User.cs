@@ -31,6 +31,8 @@ namespace Virtual_Wallet.Models.Entities
         public DateTime? EmailTokenExpiry { get; set; }
         
         public List<SavingWallet> SavingWallets { get; set; }
+        public ICollection<User> Friends { get; set; }
+        public ICollection<User> FriendOf { get; set; }
 
         public string? TransactionVerificationToken { get; set; }
         public DateTime? TransactionTokenExpiry { get; set; }

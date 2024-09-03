@@ -8,7 +8,8 @@ namespace Virtual_Wallet.Repository.Contracts
         IQueryable<User> GetAll();
         User GetByUsername(string username);
         User GetByEmail(string email);
-        User Create(User user);
+        User GetByPhoneNumber (string phoneNumber);
+		User Create(User user);
         User Update(int id, User user);
         bool Delete(int id);
         bool BlockUser(int userId, User user);
@@ -19,7 +20,12 @@ namespace Virtual_Wallet.Repository.Contracts
         void UpdateUserVerification(User user, string text);
         void AddUserCard(Card card, User user);
         bool UserEmailExists(string email);
+        bool UserNameExists(string name);
+        bool UserPhoneNumberExists(string password);
         List<User> FilterBy(UserQueryParameters filterParameters);
         User FindRecipient(UserQueryParameters recipientDTO);
+        void AddFriend(int userId, int friendId);
+        void RemoveFriend(int userId, int friendId);
+        List<User> GetFriends(int userId);
     }
 }

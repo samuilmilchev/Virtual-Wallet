@@ -14,5 +14,14 @@ namespace Virtual_Wallet.Services.Contracts
         List<Transaction> FilterBy(TransactionQueryParameters transactionQueryParameters);
         List<Transaction> SortByDate(string text);
         IQueryable<Transaction> SortByAmount(string text);
+
+        Task<IEnumerable<Transaction>> GetTransactionByUserId(int userId);
+
+
+        IQueryable<Transaction> UserGetTransactionsByDateRange(DateTime startDate, DateTime endDate, int userId);
+       
+        List<Transaction> UserFilterBy(TransactionQueryParameters transactionQueryParameters, int userId);
+        List<Transaction> UserSortByDate(string text, int userId);
+        IQueryable<Transaction> UserSortByAmount(string text, int userId);
     }
 }

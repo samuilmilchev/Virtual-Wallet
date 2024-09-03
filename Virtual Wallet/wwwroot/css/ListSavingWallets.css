@@ -92,3 +92,32 @@ hr {
         margin-bottom: 10px;
     }
 }
+
+/* Button Styling */
+.btn-submit {
+    display: block; 
+    width: 200px; 
+    margin: 20px auto; 
+    padding: 12px 20px; 
+    background-color: #f44336; 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    font-size: 18px; 
+    font-weight: 600; 
+    cursor: pointer; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    transition: background-color 0.3s, transform 0.3s; /
+}
+
+    /* Hover effect for the button */
+    .btn-submit:hover {
+        background-color: #d32f2f; 
+        transform: translateY(-2px); 
+    }
+
+    /* Focus effect for accessibility */
+    .btn-submit:focus {
+        outline: none; 
+        box-shadow: 0 0 0 4px rgba(244, 67, 54, 0.3); 
+    }

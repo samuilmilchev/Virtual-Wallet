@@ -18,22 +18,40 @@ namespace Virtual_Wallet.Db
         public DbSet<VerificationApply> VerificationsApplies { get; set; }
         public DbSet<SavingWallet> SavingWallets { get; set; }
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
-		{
-			base.OnModelCreating(modelBuilder);
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
 			//modelBuilder.Entity<User>()
 			//.HasOne(u => u.UserWallets) // Navigation property on User
 			//.WithOne(w => w.Owner) // Navigation property on Wallet
 			//.HasForeignKey<Wallet>(w => w.OwnerId); // Specify the foreign key on Wallet
 
-            modelBuilder.Entity<User>()
-           .HasMany(u => u.Cards)
-           .WithOne(c => c.User)
-           .HasForeignKey(c => c.UserId)
-           .OnDelete(DeleteBehavior.Cascade);
+			modelBuilder.Entity<User>()
+				.HasMany(u => u.Cards)        // One-to-many relationship
+				.WithOne(c => c.User)
+				.HasForeignKey(c => c.UserId)
+				.OnDelete(DeleteBehavior.Cascade);
 
-            var users = new List<User>
+			modelBuilder.Entity<User>()
+				.HasMany(u => u.Friends)      // Many-to-many self-referencing relationship
+				.WithMany(c => c.FriendOf)
+				.UsingEntity<Dictionary<string, object>>(
+					"Friends",
+					j => j
+						.HasOne<User>()
+						.WithMany()
+						.HasForeignKey("FriendId")
+						.OnDelete(DeleteBehavior.Restrict),
+					j => j
+						.HasOne<User>()
+						.WithMany()
+						.HasForeignKey("UserId")
+						.OnDelete(DeleteBehavior.Restrict)
+				);
+
+
+			var users = new List<User>
             {
             new User { Id = 1, Email = "justine@example.com", Username = "Justine", /*Password = ""*/ PhoneNumber = "0845965847", IsAdmin = true, IsBlocked = false, Role = UserRole.User, Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724940094/fjakan10q4evdkpsyeig.webp"},
             new User { Id = 2, Email = "emma@example.com", Username = "Emma", /*Password = ""*/PhoneNumber = "0865214587", IsAdmin = true, IsBlocked = false, Role = UserRole.User, Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939101/uicxqeiqdcet5qdh7tmx.jpg"},
@@ -89,11 +107,11 @@ namespace Virtual_Wallet.Db
             modelBuilder.Entity<Transaction>()
 				.HasKey(t => t.Id); // Ensure Id is the primary key
 
-			modelBuilder.Entity<Transaction>()
-				.Property(t => t.Timestamp)
-				.IsRequired(); // Ensure Timestamp is required
+            modelBuilder.Entity<Transaction>()
+                .Property(t => t.Timestamp)
+                .IsRequired(); // Ensure Timestamp is required
 
-			// Any other Transaction-specific configuration goes here
-		}
-	}
+            // Any other Transaction-specific configuration goes here
+        }
+    }
 }

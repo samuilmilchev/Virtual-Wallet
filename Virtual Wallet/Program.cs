@@ -20,13 +20,16 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllersWithViews() // Uncomment the lines below if you get the exception "JsonSerializationException: Self referencing loop detected for property..." 
-                                               .AddNewtonsoftJson(options =>
-                                               {
-                                                   options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                                               })
-      ;
+        // Configure services
+        builder.Services.AddControllersWithViews() // For MVC controllers
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
 
+        builder.Services.AddControllers(); // For API controllers
+
+        // Swagger
         builder.Services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new OpenApiInfo { Title = "Virtual Wallet API V1", Version = "v1" });
@@ -34,83 +37,65 @@ public class Program
 
         builder.Services.AddDbContext<ApplicationContext>(options =>
         {
-            //    // The connection string can be found in the appsettings.json file. 
-            //    // It's a good practice to keep the connection string in a separate file,
-            //    //  because it's easier to change the connection string without recompiling the entire application.
-            //    // Also, the connection string is a sensitive information and should not be exposed in the code.
             string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             options.UseSqlServer(connectionString);
-
-            //    // The following helps with debugging the trobled relationship between EF and SQL Ї\_(-_-)_/Ї 
             options.EnableSensitiveDataLogging();
         });
 
+        // Authentication and Authorization
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-           .AddJwtBearer(options =>
-           {
-               options.RequireHttpsMetadata = false; // Set to true if using HTTPS
-               options.SaveToken = true;
-               options.TokenValidationParameters = new TokenValidationParameters
-               {
-                   ValidateIssuerSigningKey = true,
-                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["AppSettings:Token"])),
-                   ValidateIssuer = false,
-                   ValidateAudience = false
-               };
-
-               options.Events = new JwtBearerEvents
-               {
-                   OnMessageReceived = context =>
-                   {
-                       // Check for token in cookies
-                       var token = context.Request.Cookies["jwt"];
-                       if (token != null)
-                       {
-                           context.Token = token;
-                       }
-                       return Task.CompletedTask;
-                   }
-               };
-           });
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["AppSettings:Token"])),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var token = context.Request.Cookies["jwt"];
+                        if (token != null)
+                        {
+                            context.Token = token;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            });
 
         builder.Services.AddAuthorization();
-
         builder.Services.AddSession(options =>
         {
             options.IdleTimeout = TimeSpan.FromMinutes(30);
             options.Cookie.HttpOnly = true;
             options.Cookie.IsEssential = true;
-
         });
 
-
-        // Add services to the container.
+        // Dependency Injection
         builder.Services.AddScoped<Currencyapi>();
-
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<ICardRepository, CardRepository>();
         builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
         builder.Services.AddScoped<IWalletRepository, WalletRepository>();
-
         builder.Services.AddScoped<IUsersService, UsersService>();
         builder.Services.AddScoped<ICardService, CardService>();
         builder.Services.AddScoped<ITransactionService, TransactionService>();
         builder.Services.AddScoped<IWalletService, WalletService>();
         builder.Services.AddScoped<IPhotoService, PhotoService>();
-        builder.Services.AddScoped<IEmailService ,  EmailService>();
-
-        //нужно за насторйка на клаудинери профила
+        builder.Services.AddScoped<IEmailService, EmailService>();
         builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
-
-        //Мапване на SmtpSettings класа към настройките в appsettings.json
         builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
-    
         builder.Services.AddScoped<IModelMapper, ModelMapper>();
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
-
+        // Configure the HTTP request pipeline
         app.UseDeveloperExceptionPage();
         app.UseStaticFiles();
         app.UseRouting();
@@ -118,18 +103,23 @@ public class Program
         app.UseAuthorization();
         app.UseSession();
         app.UseSwagger();
-        app.UseSwaggerUI(
-               options =>
-               {
-                   options.SwaggerEndpoint("/swagger/v1/swagger.json", "Virtual Wallet API V1");
-                   options.RoutePrefix = "swagger";
-               }
-           );
+        app.UseSwaggerUI(options =>
+        {
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "Virtual Wallet API V1");
+            options.RoutePrefix = "swagger";
+        });
 
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapDefaultControllerRoute();
-            //endpoints.MapControllers();
+            // MVC routing
+            endpoints.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            // API routing
+            endpoints.MapControllers();
+
+            // Swagger endpoint
             endpoints.MapSwagger();
         });
 

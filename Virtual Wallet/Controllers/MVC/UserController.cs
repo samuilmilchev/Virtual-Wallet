@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using NuGet.Configuration;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -27,7 +29,7 @@ namespace Virtual_Wallet.Controllers.MVC
         private readonly ITransactionService _transactionService;
         private readonly IEmailService _emailService;
 
-        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService, ITransactionService transactionService, IPhotoService photoService , IEmailService emailService)
+        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService, ITransactionService transactionService, IPhotoService photoService, IEmailService emailService)
         {
             _usersService = usersService;
             _configuration = configuration;
@@ -38,38 +40,39 @@ namespace Virtual_Wallet.Controllers.MVC
             _emailService = emailService;
         }
 
-        [HttpGet]
-        public IActionResult Index()
-        {
-            var model = new CombinedUserDTO
-            {
-                Login = new UserDTO(),
-                Register = new RegisterViewModel()
-            };
-            return View("Index");
-        }
+		[HttpGet]
+		public IActionResult Index()
+		{
+			var model = new CombinedUserDTO
+			{
+				Login = new UserDTO(),
+				Register = new RegisterViewModel()
+			};
+			return View("Index");
+		}
 
-        [HttpPost]
-        public async Task<IActionResult> Register(CombinedUserDTO model)
-        {
-            if (ModelState.IsValid)
-            {
+		[HttpPost]
+		public async Task<IActionResult> Register(CombinedUserDTO model)
+		{
+			if (ModelState.IsValid)
+			{
 
-                var registerModel = model.Register;
-                var walletModel = model.Wallet;
+				var registerModel = model.Register;
+				var walletModel = model.Wallet;
 
-                CreatePasswordHash(registerModel.Password, out byte[] passwordHash, out byte[] passwordSalt);
+				CreatePasswordHash(registerModel.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-                User user = new User
-                {
-                    Email = registerModel.Email,
-                    Username = registerModel.Username,
-                    PhoneNumber = registerModel.PhoneNumber,
-                    PasswordHash = passwordHash,
-                    PasswordSalt = passwordSalt,
-                    UserWallets = new List<Wallet>(),
-                    Role = UserRole.User
-                };
+				User user = new User
+				{
+					Email = registerModel.Email,
+					Username = registerModel.Username,
+					PhoneNumber = registerModel.PhoneNumber,
+					PasswordHash = passwordHash,
+					PasswordSalt = passwordSalt,
+					UserWallets = new List<Wallet>(),
+					Role = UserRole.User,
+					Friends = new List<User>()
+				};
 
                 if (registerModel.Image != null)
                 {
@@ -84,38 +87,38 @@ namespace Virtual_Wallet.Controllers.MVC
                         return View("Index", model);
                     }
                 }
-
-                //при създаване на акаунт се създава и първия(може би и единствен) уолет на юзъра
-                Wallet wallet = new Wallet
+                
+            //при създаване на акаунт се създава и първия(може би и единствен) уолет на юзъра
+            Wallet wallet = new Wallet
                 {
                     WalletName = walletModel.WalletName,
                     Owner = user,
                     Currency = Currency.BGN
                 };
 
-                //тук добавяме новосъздадения уолет към юзъра
-                user.UserWallets.Add(wallet);
+				//тук добавяме новосъздадения уолет към юзъра
+				user.UserWallets.Add(wallet);
 
 
-                //if (registerModel.Image != null)
-                //{
-                //    var result = await _photoService.AddPhotoAsync(registerModel.Image);
+				//if (registerModel.Image != null)
+				//{
+				//    var result = await _photoService.AddPhotoAsync(registerModel.Image);
 
-                //    user.Image = result.Url.ToString();
-                //}
+				//    user.Image = result.Url.ToString();
+				//}
 
-                User createdUser = _usersService.Create(user);
-                //Wallet createdWallet = _walletService.Create(wallet); // не знам дали е нужно за сега 
-                UserResponseDTO responseDTO = _modelMapper.MapUser(createdUser);
+				User createdUser = _usersService.Create(user);
+				//Wallet createdWallet = _walletService.Create(wallet); // не знам дали е нужно за сега 
+				UserResponseDTO responseDTO = _modelMapper.MapUser(createdUser);
 
 
-                string token = CreateToken(user);
-                HttpContext.Response.Cookies.Append("jwt", token, new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = false, // Change to true in production
-                    SameSite = SameSiteMode.Strict
-                });
+				string token = CreateToken(user);
+				HttpContext.Response.Cookies.Append("jwt", token, new CookieOptions
+				{
+					HttpOnly = true,
+					Secure = false, // Change to true in production
+					SameSite = SameSiteMode.Strict
+				});
 
                 await _usersService.SendConfirmationEmailAsync(user);
 
@@ -125,25 +128,25 @@ namespace Virtual_Wallet.Controllers.MVC
 
             }
 
-            return View("Index", model);
+			return View("Index", model);
 
-        }
+		}
 
-        [HttpGet]
-        public IActionResult Login()
-        {
-            return View();
-        }
+		[HttpGet]
+		public IActionResult Login()
+		{
+			return View();
+		}
 
-        [HttpPost]
-        public async Task<ActionResult<string>> Login(CombinedUserDTO model)
-        {
-            try
-            {
-                var loginRequest = model.Login;
-                User user = _usersService.GetByUsername(loginRequest.Username);
-                if (user == null || !VerifyPasswordHash(loginRequest.Password, user.PasswordHash, user.PasswordSalt))
-                    return BadRequest("Invalid credentials");
+		[HttpPost]
+		public async Task<ActionResult<string>> Login(CombinedUserDTO model)
+		{
+			try
+			{
+				var loginRequest = model.Login;
+				User user = _usersService.GetByUsername(loginRequest.Username);
+				if (user == null || !VerifyPasswordHash(loginRequest.Password, user.PasswordHash, user.PasswordSalt))
+					return BadRequest("Invalid credentials");
 
                 if (user.IsEmailVerified != true) //проверка дали е верифициран мейла
                     return Unauthorized("Email not confirmed. Please check your email to confirm your account."); //Unauthorised, защото други варианти разрушават логиката
@@ -158,25 +161,24 @@ namespace Virtual_Wallet.Controllers.MVC
                     SameSite = SameSiteMode.Strict
                 });
 
-
                 return RedirectToAction("Index", "Home");
             }
             catch (EntityNotFoundException x)
             {
 
-                ViewData["ErrorMessage"] = x.Message;
-                return View(model);
-            }
+				ViewData["ErrorMessage"] = x.Message;
+				return View(model);
+			}
 
-        }
+		}
 
-        [HttpGet]
-        public IActionResult Logout()
-        {
-            HttpContext.Response.Cookies.Delete("jwt");
+		[HttpGet]
+		public IActionResult Logout()
+		{
+			HttpContext.Response.Cookies.Delete("jwt");
 
-            return RedirectToAction("Index", "Home");
-        }
+			return RedirectToAction("Index", "Home");
+		}
 
         [HttpGet]
         public IActionResult UserDetails(string username)
@@ -195,7 +197,9 @@ namespace Virtual_Wallet.Controllers.MVC
                 Role = user.Role.ToString(),
                 IsBlocked = user.IsBlocked,
                 Cards = user.Cards,
-                AdminVerified = user.AdminVerified
+                AdminVerified = user.AdminVerified,
+				Wallets = user.UserWallets
+				
             };
             return View(model);
         }
@@ -211,18 +215,28 @@ namespace Virtual_Wallet.Controllers.MVC
         [HttpPost]
         public async Task<IActionResult> UploadPhotosVerification(VerifyUserViewModel model)
         {
-            var username = User.Identity.Name;
-            var user = _usersService.GetByUsername(username);
+            try
+            {
+                var username = User.Identity.Name;
+                var user = _usersService.GetByUsername(username);
 
-            var selfieResult = await _photoService.UploadImageAsync(model.Selfie);
-            user.Selfie = selfieResult.Url.ToString();
+                var selfieResult = await _photoService.UploadImageAsync(model.Selfie);
+                user.Selfie = selfieResult.Url.ToString();
 
-            var idPhotoResult = await _photoService.UploadImageAsync(model.IdPhoto);
-            user.IdPhoto = idPhotoResult.Url.ToString();
+                var idPhotoResult = await _photoService.UploadImageAsync(model.IdPhoto);
+                user.IdPhoto = idPhotoResult.Url.ToString();
 
-            _usersService.UploadPhotoVerification(selfieResult.Url.ToString(), idPhotoResult.Url.ToString(), user);
+                _usersService.UploadPhotoVerification(selfieResult.Url.ToString(), idPhotoResult.Url.ToString(), user);
 
-            return RedirectToAction("UserDetails", new { username = user.Username });
+                return RedirectToAction("UserDetails", new { username = user.Username });
+            }
+            catch (ArgumentNullException x)
+
+            {
+                ViewData["ErrorMessage"] = x.Message;
+                return View();
+            }
+
         }
 
         [HttpGet]
@@ -246,6 +260,8 @@ namespace Virtual_Wallet.Controllers.MVC
             {
                 _usersService.UpdateUserVerification(user, verificationValue);
 
+				_emailService.SendAsync(user.Email, "Successfully verified", "You have been successfully verified by admin.");
+
                 return RedirectToAction("UserDetails", new { username = user.Username });
             }
             else
@@ -263,145 +279,145 @@ namespace Virtual_Wallet.Controllers.MVC
         }
 
 
-        [HttpPost]
-        //[Authorize(Roles = "Admin")]
-        public IActionResult AssignRole(AssignRoleViewModel model)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return View(model);
-                }
+		[HttpPost]
+		//[Authorize(Roles = "Admin")]
+		public IActionResult AssignRole(AssignRoleViewModel model)
+		{
+			try
+			{
+				if (!ModelState.IsValid)
+				{
+					return View(model);
+				}
 
-                var user = _usersService.GetByUsername(model.Username);
+				var user = _usersService.GetByUsername(model.Username);
 
-                if (user == null)
-                {
-                    ViewData["ErrorMessage"] = $"User with username {model.Username} not found";
-                    return View(model);
-                }
+				if (user == null)
+				{
+					ViewData["ErrorMessage"] = $"User with username {model.Username} not found";
+					return View(model);
+				}
 
-                user.Role = model.Role;
+				user.Role = model.Role;
 
-                var userRole = user.Role;
-                _usersService.Update(user.Id, user);
+				var userRole = user.Role;
+				_usersService.Update(user.Id, user);
 
-                ViewData["Message"] = "Role assigned successfully";
-                return View(new AssignRoleViewModel());
-            }
-            catch (EntityNotFoundException x)
-            {
+				ViewData["Message"] = "Role assigned successfully";
+				return View(new AssignRoleViewModel());
+			}
+			catch (EntityNotFoundException x)
+			{
 
-                ViewData["ErrorMessage"] = x.Message;
-                return View(model);
-            }
+				ViewData["ErrorMessage"] = x.Message;
+				return View(model);
+			}
 
-        }
-        [HttpGet]
-        public IActionResult Edit(string username)
-        {
-            var user = _usersService.GetByUsername(username);
+		}
+		[HttpGet]
+		public IActionResult Edit(string username)
+		{
+			var user = _usersService.GetByUsername(username);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
+			if (user == null)
+			{
+				return NotFound();
+			}
 
-            var mappedUser = _modelMapper.Map(user);
+			var mappedUser = _modelMapper.Map(user);
 
-            // Return the view directly with the mapped user
-            return View("EditUser", mappedUser);
-        }
+			// Return the view directly with the mapped user
+			return View("EditUser", mappedUser);
+		}
 
-        [HttpPost]
-        public async Task<IActionResult> EditUser(UserViewModel model)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var username = User.Identity.Name;
-                    var user = _usersService.GetByUsername(username);
+		[HttpPost]
+		public async Task<IActionResult> EditUser(UserViewModel model)
+		{
+			try
+			{
+				if (ModelState.IsValid)
+				{
+					var username = User.Identity.Name;
+					var user = _usersService.GetByUsername(username);
 
-                    if (user != null)
-                    {
-                        if (_usersService.UserEmailExists(model.Email) && user.Email != model.Email)
-                        {
-                            throw new DuplicateEntityException("User with this email already exists.");
-                        }
-                        user.Email = model.Email;
-                        user.PhoneNumber = model.PhoneNumber;
-                    }
-                    if (model.UploadImage != null)
-                    {
-                        var result = await _photoService.UploadImageAsync(model.UploadImage);
+					if (user != null)
+					{
+						if (_usersService.UserEmailExists(model.Email) && user.Email != model.Email)
+						{
+							throw new DuplicateEntityException("User with this email already exists.");
+						}
+						user.Email = model.Email;
+						user.PhoneNumber = model.PhoneNumber;
+					}
+					if (model.UploadImage != null)
+					{
+						var result = await _photoService.UploadImageAsync(model.UploadImage);
 
-                        user.Image = result.Url.ToString();
-                    }
+						user.Image = result.Url.ToString();
+					}
 
-                    var userToEdit = _modelMapper.MapUserViewModel(model);
-                    var editedUser = _usersService.Update(user.Id, userToEdit);
-                    return RedirectToAction("UserDetails", new { username = editedUser.Username });
-                }
-                return View(model);
-            }
-            catch (DuplicateEntityException x)
-            {
-                return Json(new { success = false, message = x.Message });
-            }
-        }
+					var userToEdit = _modelMapper.MapUserViewModel(model);
+					var editedUser = _usersService.Update(user.Id, userToEdit);
+					return RedirectToAction("UserDetails", new { username = editedUser.Username });
+				}
+				return View(model);
+			}
+			catch (DuplicateEntityException x)
+			{
+				return Json(new { success = false, message = x.Message });
+			}
+		}
 
-        [HttpGet]
-        public IActionResult SendMoney()
-        {
-            var username = User.Identity.Name;
-            var user = _usersService.GetByUsername(username);
+		[HttpGet]
+		public IActionResult SendMoney()
+		{
+			var username = User.Identity.Name;
+			var user = _usersService.GetByUsername(username);
 
-            SendMoneyViewModel model = new SendMoneyViewModel();
-            model.CurrentUser = user;
+			SendMoneyViewModel model = new SendMoneyViewModel();
+			model.CurrentUser = user;
 
-            return View(model);
-        }
+			return View(model);
+		}
 
-        [HttpPost]
-        public IActionResult SendMoney(SendMoneyViewModel sendMoney)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return View(sendMoney);
-                }
+		[HttpPost]
+		public IActionResult SendMoney(SendMoneyViewModel sendMoney)
+		{
+			try
+			{
+				if (!ModelState.IsValid)
+				{
+					return View(sendMoney);
+				}
 
                 var username = User.Identity.Name;
                 var user = _usersService.GetByUsername(username);
                 //ViewData["CurrentUser"] = user;
 
 
-                var wallet = user.UserWallets.FirstOrDefault(x => x.Currency == sendMoney.Currency);
+				var wallet = user.UserWallets.FirstOrDefault(x => x.Currency == sendMoney.Currency);
 
-                UserQueryParameters userQueryParameters = new UserQueryParameters();
-                userQueryParameters.Username = sendMoney.RecipienTokens;
-                userQueryParameters.PhoneNumber = sendMoney.RecipienTokens;
-                userQueryParameters.Email = sendMoney.RecipienTokens;
+				UserQueryParameters userQueryParameters = new UserQueryParameters();
+				userQueryParameters.Username = sendMoney.RecipienTokens;
+				userQueryParameters.PhoneNumber = sendMoney.RecipienTokens;
+				userQueryParameters.Email = sendMoney.RecipienTokens;
 
-                var recipient = _usersService.FindRecipient(userQueryParameters);
+				var recipient = _usersService.FindRecipient(userQueryParameters);
 
-                if (recipient == null)
-                {
-                    throw new EntityNotFoundException($"Recipien with credentials {sendMoney.RecipienTokens} does not exist.");
-                }
+				if (recipient == null)
+				{
+					throw new EntityNotFoundException($"Recipien with credentials {sendMoney.RecipienTokens} does not exist.");
+				}
 
-                var recipientWallet = recipient.UserWallets.FirstOrDefault(x => x.Currency == sendMoney.Currency);
-                if (recipientWallet == null)
-                {
-                    Wallet newWallet = new Wallet();
-                    newWallet.Currency = sendMoney.Currency;
-                    newWallet.Amount = 0;
-                    newWallet.Owner = user;
-                    newWallet.OwnerId = user.Id;
-                    newWallet.WalletName = $"{sendMoney.Currency.ToString()} wallet";
+				var recipientWallet = recipient.UserWallets.FirstOrDefault(x => x.Currency == sendMoney.Currency);
+				if (recipientWallet == null)
+				{
+					Wallet newWallet = new Wallet();
+					newWallet.Currency = sendMoney.Currency;
+					newWallet.Amount = 0;
+					newWallet.Owner = user;
+					newWallet.OwnerId = user.Id;
+					newWallet.WalletName = $"{sendMoney.Currency.ToString()} wallet";
 
                     recipient.UserWallets.Add(newWallet);
                 }
@@ -421,12 +437,22 @@ namespace Virtual_Wallet.Controllers.MVC
                     return RedirectToAction("LargeTransactionVerificationForm", "Wallet");
                 }
 
-                
 
-                this._walletService.TransferFunds(sendMoney.Amount, sendMoney.Currency, wallet, createdWallet, user);
 
-                return RedirectToAction("TransactionSuccess", "Wallet");
+                //this._walletService.TransferFunds(sendMoney.Amount, sendMoney.Currency, wallet, createdWallet, user);
+
+                JsonSerializerSettings settings = new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                };
+                TempData["SendMoneyModel"] = JsonConvert.SerializeObject(sendMoney, settings);
+                TempData["SenderUsername"] = user.Username;
+                TempData["RecipientUsername"] = recipient.Username;
+
+                return View("SendMoneyConfirmationForm", sendMoney); //препраща към форма за преглед на детайлите на трансакцията
+
             }
+
             catch (EntityNotFoundException x)
             {
                 var username = User.Identity.Name;
@@ -437,9 +463,9 @@ namespace Virtual_Wallet.Controllers.MVC
                 ViewData["ErrorMessage"] = x.Message;
                 return View(model);
 
-                // Json(new { success = false, message = x.Message });
-            }
-        }
+				// Json(new { success = false, message = x.Message });
+			}
+		}
 
         [HttpGet]
         public IActionResult UserWallets()
@@ -462,59 +488,78 @@ namespace Virtual_Wallet.Controllers.MVC
         }
 
         [HttpGet]
+        public IActionResult ListCards()
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            return View(user.Cards);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> ListTransactions()
         {
             return View(await GetTransactionsList(1));
         }
+		[HttpGet]
+		public async Task<IActionResult> ListUsers()
+		{
+			return View(await GetUserList(1));
+		}
 
         [HttpPost]
         public async Task<IActionResult> ListTransactions([FromForm] int currentPageIndex)
         {
             return View(await GetTransactionsList(currentPageIndex));
         }
+		[HttpPost]
+		public async Task<IActionResult> ListUsers([FromForm] int currentPageIndex)
+		{
+			return View(await GetUserList(currentPageIndex));
+		}
 
-
-        [HttpGet]
-        public async Task<IActionResult> ListUsers()
-        {
-            return View(await GetUserList(1));
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ListUsers([FromForm] int currentPageIndex)
-        {
-            return View(await GetUserList(currentPageIndex));
-        }
 
         //[HttpGet]
-        //public IActionResult ListUsers()
+        //public async Task<IActionResult> ListTransactions()
         //{
-        //    var users = _usersService.GetAll();
-
-        //    if (users == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    List<UserViewModel> usersList = new List<UserViewModel>();
-
-        //    foreach (var user in users)
-        //    {
-        //        var model = new UserViewModel
-        //        {
-        //            Username = user.Username,
-        //            Email = user.Email,
-        //            //Image = user.Image,
-        //            PhoneNumber = user.PhoneNumber,
-        //            Role = user.Role.ToString(),
-        //            IsBlocked = user.IsBlocked
-        //        };
-
-        //        usersList.Add(model);
-        //    }
-
-        //    return View(usersList);
+        //    return View(await GetUserTransactionsList(1));
         //}
+
+        //[HttpPost]
+        //public async Task<IActionResult> ListUsersTransactions([FromForm] int currentPageIndex)
+        //{
+        //    return View(await GetUserTransactionsList(currentPageIndex));
+        //}
+
+		//[HttpGet]
+		//public IActionResult ListUsers()
+		//{
+		//    var users = _usersService.GetAll();
+
+		//    if (users == null)
+		//    {
+		//        return NotFound();
+		//    }
+
+		//    List<UserViewModel> usersList = new List<UserViewModel>();
+
+		//    foreach (var user in users)
+		//    {
+		//        var model = new UserViewModel
+		//        {
+		//            Username = user.Username,
+		//            Email = user.Email,
+		//            //Image = user.Image,
+		//            PhoneNumber = user.PhoneNumber,
+		//            Role = user.Role.ToString(),
+		//            IsBlocked = user.IsBlocked
+		//        };
+
+		//        usersList.Add(model);
+		//    }
+
+		//    return View(usersList);
+		//}
 
         [HttpPost]
         public IActionResult SearchTransactionBySender([FromForm] string text)
@@ -522,210 +567,389 @@ namespace Virtual_Wallet.Controllers.MVC
             TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
             transactionQueryParameters.Sender = text;
 
-            var transactions = _transactionService.FilterBy(transactionQueryParameters).Select(x => _modelMapper.Map(x)).ToList();
+			var transactions = _transactionService.FilterBy(transactionQueryParameters).Select(x => _modelMapper.Map(x)).ToList();
 
-            return View(transactions);
-        }
+			return View(transactions);
+		}
 
-        [HttpPost]
-        public IActionResult SearchTransactionByRecipient([FromForm] string text)
-        {
-            TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
-            transactionQueryParameters.Recipient = text;
+		[HttpPost]
+		public IActionResult SearchTransactionByRecipient([FromForm] string text)
+		{
+			TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
+			transactionQueryParameters.Recipient = text;
 
-            var transactions = _transactionService.FilterBy(transactionQueryParameters).Select(x => _modelMapper.Map(x)).ToList();
+			var transactions = _transactionService.FilterBy(transactionQueryParameters).Select(x => _modelMapper.Map(x)).ToList();
 
-            return View(transactions);
-        }
+			return View(transactions);
+		}
 
-        [HttpPost]
-        public IActionResult SearchTransactionByType([FromForm] string text)
-        {
+		[HttpPost]
+		public IActionResult SearchTransactionByType([FromForm] string text)
+		{
 
-            if (text == "-")
+			if (text == "-")
+			{
+				return RedirectToAction("ListTransactions");
+			}
+
+			TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
+			transactionQueryParameters.TransactionType = text;
+
+			var transactions = _transactionService.FilterBy(transactionQueryParameters).Select(x => _modelMapper.Map(x)).ToList();
+
+			return View(transactions);
+		}
+
+		[HttpPost]
+		public IActionResult SortByDate([FromForm] string text)
+		{
+			var transactions = _transactionService.SortByDate(text).Select(x => _modelMapper.Map(x)).ToList();
+
+			return View(transactions);
+		}
+
+		[HttpPost]
+		public IActionResult SortByAmount([FromForm] string text)
+		{
+			var transactions = _transactionService.SortByAmount(text).Select(x => _modelMapper.Map(x)).ToList();
+
+			return View(transactions);
+		}
+
+		[HttpPost]
+		public IActionResult GetDateToDate(DateTime startDate, DateTime endDate)
+		{
+			var transactions = _transactionService.GetTransactionsByDateRange(startDate, endDate).Select(x => _modelMapper.Map(x)).ToList();
+
+			return View(transactions);
+		}
+
+		[HttpPost]
+		public IActionResult SearchByUsername([FromForm] string text)
+		{
+			UserQueryParameters userQueryParameters = new UserQueryParameters();
+			userQueryParameters.Username = text;
+
+			var users = _usersService.FilterBy(userQueryParameters).Select(x => _modelMapper.Map(x)).ToList();
+
+			return View(users);
+		}
+
+		[HttpPost]
+		public IActionResult SearchByEmail([FromForm] string text)
+		{
+			UserQueryParameters userQueryParameters = new UserQueryParameters();
+			userQueryParameters.Email = text;
+
+			var users = _usersService.FilterBy(userQueryParameters).Select(x => _modelMapper.Map(x)).ToList();
+
+			return View(users);
+		}
+
+		[HttpPost]
+		public IActionResult SearchByNumber([FromForm] string text)
+		{
+			UserQueryParameters userQueryParameters = new UserQueryParameters();
+			userQueryParameters.PhoneNumber = text;
+
+			var users = _usersService.FilterBy(userQueryParameters).Select(x => _modelMapper.Map(x)).ToList();
+
+			return View(users);
+		}
+
+		// POST: api/User/{userId}/friends/{friendId}
+		[HttpPost("{userId}/friends/{friendId}")]
+		public ActionResult AddFriend(int userId, int friendId)
+		{
+			try
+			{
+				_usersService.AddFriend(userId, friendId);
+				return NoContent(); // 204 No Content for a successful addition
+			}
+			catch (EntityNotFoundException ex)
+			{
+				return NotFound(new { message = ex.Message }); // 404 Not Found if either user or friend is not found
+			}
+		}
+
+		//// DELETE: api/User/{userId}/friends/{friendId}
+		//[HttpDelete("{userId}/friends/{friendId}")]
+		//public ActionResult RemoveFriend(int userId, int friendId)
+		//{
+		//	try
+		//	{
+		//		_usersService.RemoveFriend(userId, friendId);
+		//		return NoContent(); // 204 No Content for a successful deletion
+		//	}
+		//	catch (EntityNotFoundException ex)
+		//	{
+		//		return NotFound(new { message = ex.Message }); // 404 Not Found if the user or friend is not found
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return StatusCode(500, new { message = ex.Message }); // 500 Internal Server Error for other exceptions
+		//	}
+		//}
+
+		[HttpGet]
+		public IActionResult FriendsList()
+		{
+			FriendsListViewModel friendsListViewModel = new FriendsListViewModel();
+			var username = User.Identity.Name;
+			var user = _usersService.GetByUsername(username);
+			var userId = user.Id;
+			var friends = _usersService.GetFriends(userId);
+			var friendsList = friends.Select(friend => friend.Username).ToList();
+			friendsListViewModel.friends = friendsList;
+			return View(friendsListViewModel);
+		}
+
+		[HttpPost]
+		public IActionResult FriendsList(string input)
+		{
+
+			try
+			{
+				UserQueryParameters userQueryParameters = new UserQueryParameters();
+				userQueryParameters.Username = input;
+				userQueryParameters.PhoneNumber = input;
+				userQueryParameters.Email = input;
+
+				var friend = _usersService.FindRecipient(userQueryParameters);
+				var friendId = friend.Id;
+
+				var username = User.Identity.Name;
+				var user = _usersService.GetByUsername(username);
+				var userId = user.Id;
+
+				_usersService.AddFriend(userId, friendId);
+
+				FriendsListViewModel friendsListViewModel = new FriendsListViewModel();
+				var friends = _usersService.GetFriends(userId);
+				var friendsList = friends.Select(friend => friend.Username).ToList();
+				friendsListViewModel.friends = friendsList;
+				return View(friendsListViewModel); // Render the full view with the friends list
+			}
+			catch (EntityNotFoundException ex)
+			{
+				var username = User.Identity.Name;
+				var user = _usersService.GetByUsername(username);
+				var userId = user.Id;
+				FriendsListViewModel friendsListViewModel = new FriendsListViewModel();
+				var friends = _usersService.GetFriends(userId);
+				var friendsList = friends.Select(friend => friend.Username).ToList();
+				friendsListViewModel.friends = friendsList;
+				ViewData["ErrorMessage"] = ex.Message;
+				return View(friendsListViewModel);
+
+				// Json(new { success = false, message = x.Message });
+			}
+		}
+
+		[HttpPost]
+		public ActionResult RemoveFriend(string friend)
+		{
+			try
+			{
+				var username = User.Identity.Name;
+				var user = _usersService.GetByUsername(username);
+				var userId = user.Id;
+				var friendsUserProfile = _usersService.GetByUsername(friend);
+				var friendId = friendsUserProfile.Id;
+				_usersService.RemoveFriend(userId, friendId);
+				FriendsListViewModel friendsListViewModel = new FriendsListViewModel();
+				var friends = _usersService.GetFriends(userId);
+				var friendsList = friends.Select(friend => friend.Username).ToList();
+				friendsListViewModel.friends = friendsList;
+				return View("FriendsList", friendsListViewModel);
+			}
+			catch (EntityNotFoundException ex)
+			{
+				return NotFound(new { message = ex.Message }); // 404 Not Found if the user or friend is not found
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, new { message = ex.Message }); // 500 Internal Server Error for other exceptions
+			}
+		}
+
+		//// GET: api/User/{userId}/friends
+		//[HttpGet("{userId}/friends")]
+		//public ActionResult<IEnumerable<UserViewModel>> GetFriends(int userId)
+		//{
+		//    try
+		//    {
+		//        var friends = _usersService.GetFriends(userId);
+		//        var friendViewModels = friends.Select(friend => _modelMapper.Map(friend)).ToList(); // Map to view models
+		//        return View(friendViewModels); // Return a view with the list of friends
+		//    }
+		//    catch (EntityNotFoundException ex)
+		//    {
+		//        return NotFound(new { message = ex.Message }); // 404 Not Found if the user is not found
+		//    }
+		//}
+
+
+
+		//[HttpGet("{userId}/friendsPartial")]
+		//public ActionResult GetFriendsPartial(int userId)
+		//{
+		//    try
+		//    {
+		//        var friends = _usersService.GetFriends(userId);
+		//        var friendViewModels = friends.Select(friend => _modelMapper.Map(friend)).ToList(); // Map to view models
+		//        return PartialView("_FriendsListPartial", friendViewModels);
+		//    }
+		//    catch (EntityNotFoundException ex)
+		//    {
+		//        return NotFound(new { message = ex.Message }); // 404 Not Found if the user is not found
+		//    }
+		//}
+
+
+		public IActionResult BlockUser(string username)
+		{
+			var user = _usersService.GetByUsername(username);
+
+			var updatedUser = _usersService.BlockUser(user.Id, user);
+
+			var blockedUser = _modelMapper.Map(user);
+
+			return View("UserDetails", blockedUser);
+		}
+
+		public IActionResult UnblockUser(string username)
+		{
+			var user = _usersService.GetByUsername(username);
+
+			var updatedUser = _usersService.UnblockUser(user.Id, user);
+
+			var blockedUser = _modelMapper.Map(user);
+
+			return View("UserDetails", blockedUser);
+		}
+
+
+		private string CreateToken(User user)
+		{
+			List<Claim> claims = new List<Claim>() //delete some rows for the claims.
             {
-                return RedirectToAction("ListTransactions");
-            }
+				new Claim(ClaimTypes.Name, user.Username),
+				new Claim(ClaimTypes.Role , user.Role.ToString())
 
-            TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
-            transactionQueryParameters.TransactionType = text;
-
-            var transactions = _transactionService.FilterBy(transactionQueryParameters).Select(x => _modelMapper.Map(x)).ToList();
-
-            return View(transactions);
-        }
-
-        [HttpPost]
-        public IActionResult SortByDate([FromForm] string text)
-        {
-            var transactions = _transactionService.SortByDate(text).Select(x => _modelMapper.Map(x)).ToList();
-
-            return View(transactions);
-        }
-
-        [HttpPost]
-        public IActionResult SortByAmount([FromForm] string text)
-        {
-            var transactions = _transactionService.SortByAmount(text).Select(x => _modelMapper.Map(x)).ToList();
-
-            return View(transactions);
-        }
-
-        [HttpPost]
-        public IActionResult GetDateToDate(DateTime startDate, DateTime endDate)
-        {
-            var transactions = _transactionService.GetTransactionsByDateRange(startDate, endDate).Select(x => _modelMapper.Map(x)).ToList();
-
-            return View(transactions);
-        }
-
-        [HttpPost]
-        public IActionResult SearchByUsername([FromForm] string text)
-        {
-            UserQueryParameters userQueryParameters = new UserQueryParameters();
-            userQueryParameters.Username = text;
-
-            var users = _usersService.FilterBy(userQueryParameters).Select(x => _modelMapper.Map(x)).ToList();
-
-            return View(users);
-        }
-
-        [HttpPost]
-        public IActionResult SearchByEmail([FromForm] string text)
-        {
-            UserQueryParameters userQueryParameters = new UserQueryParameters();
-            userQueryParameters.Email = text;
-
-            var users = _usersService.FilterBy(userQueryParameters).Select(x => _modelMapper.Map(x)).ToList();
-
-            return View(users);
-        }
-
-        [HttpPost]
-        public IActionResult SearchByNumber([FromForm] string text)
-        {
-            UserQueryParameters userQueryParameters = new UserQueryParameters();
-            userQueryParameters.PhoneNumber = text;
-
-            var users = _usersService.FilterBy(userQueryParameters).Select(x => _modelMapper.Map(x)).ToList();
-
-            return View(users);
-        }
-
-        public IActionResult BlockUser(string username)
-        {
-            var user = _usersService.GetByUsername(username);
-
-            var updatedUser = _usersService.BlockUser(user.Id, user);
-
-            var blockedUser = _modelMapper.Map(user);
-
-            return View("UserDetails", blockedUser);
-        }
-
-        public IActionResult UnblockUser(string username)
-        {
-            var user = _usersService.GetByUsername(username);
-
-            var updatedUser = _usersService.UnblockUser(user.Id, user);
-
-            var blockedUser = _modelMapper.Map(user);
-
-            return View("UserDetails", blockedUser);
-        }
+			};
 
 
-        private string CreateToken(User user)
-        {
-            List<Claim> claims = new List<Claim>() //delete some rows for the claims.
-            {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role , user.Role.ToString())
+			var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
 
-            };
+			var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
+			var token = new JwtSecurityToken(
+				claims: claims,
+				expires: DateTime.Now.AddDays(1),
+				signingCredentials: creds);
 
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
+			var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+			return jwt;
+		}
+		private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+		{
+			using (var hmac = new HMACSHA512(passwordSalt))
+			{
+				var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+				return computedHash.SequenceEqual(passwordHash);
+			}
+		}
 
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: creds);
+		private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+		{
+			using (var hmac = new HMACSHA512())
+			{
+				passwordSalt = hmac.Key;
+				passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+			}
+		}
 
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+		private async Task<UserPViewModel> GetUserList(int currentPage)
+		{
+			int maxRowsPerPage = 2;
+			UserPViewModel userModel = new UserPViewModel();
 
-            return jwt;
-        }
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512(passwordSalt))
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(passwordHash);
-            }
-        }
+			userModel.UserList = await _usersService.GetAll()
+				.OrderBy(x => x.Id)
+				.Skip((currentPage - 1) * maxRowsPerPage)
+				.Take(maxRowsPerPage)
+				.ToListAsync();
 
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
+			double pageCount = (double)((decimal)_usersService.GetAll().Count() / Convert.ToDecimal(maxRowsPerPage));
 
-        private async Task<UserPViewModel> GetUserList(int currentPage)
-        {
-            int maxRowsPerPage = 2;
-            UserPViewModel userModel = new UserPViewModel();
-
-            userModel.UserList = await _usersService.GetAll()
-                .OrderBy(x => x.Id)
-                .Skip((currentPage - 1) * maxRowsPerPage)
-                .Take(maxRowsPerPage)
-                .ToListAsync();
-
-            double pageCount = (double)((decimal)_usersService.GetAll().Count() / Convert.ToDecimal(maxRowsPerPage));
-
-            userModel.pageCount = (int)Math.Ceiling(pageCount);
-            userModel.currentPageIndex = currentPage;
-            return userModel;
-        }
+			userModel.pageCount = (int)Math.Ceiling(pageCount);
+			userModel.currentPageIndex = currentPage;
+			return userModel;
+		}
 
 
 
-        private async Task<ListTransactionsViewModel> GetTransactionsList(int currentPage)
-        {
-            int maxRowsPerPage = 2;
-            ListTransactionsViewModel transactionModel = new ListTransactionsViewModel();
+		private async Task<ListTransactionsViewModel> GetTransactionsList(int currentPage)
+		{
+			int maxRowsPerPage = 2;
+			ListTransactionsViewModel transactionModel = new ListTransactionsViewModel();
 
-            transactionModel.TransactionsList = await _transactionService.GetAllTransactions()
-                .OrderBy(x => x.Id)
-                .Skip((currentPage - 1) * maxRowsPerPage)
-                .Take(maxRowsPerPage)
-                .ToListAsync();
+			transactionModel.TransactionsList = await _transactionService.GetAllTransactions()
+				.OrderBy(x => x.Id)
+				.Skip((currentPage - 1) * maxRowsPerPage)
+				.Take(maxRowsPerPage)
+				.ToListAsync();
 
-            double pageCount = (double)((decimal)_transactionService.GetAllTransactions().Count() / Convert.ToDecimal(maxRowsPerPage));
+			double pageCount = (double)((decimal)_transactionService.GetAllTransactions().Count() / Convert.ToDecimal(maxRowsPerPage));
 
             transactionModel.pageCount = (int)Math.Ceiling(pageCount);
             transactionModel.currentPageIndex = currentPage;
             return transactionModel;
         }
 
-        private async Task<ListTransactionsViewModel> GetTransactionsList(int currentPage, IQueryable<Transaction> transactions)
+        private async Task<ListUserTransactionsViewModel> GetUserTransactionsList(int currentPage)
         {
-            int maxRowsPerPage = 2;
-            ListTransactionsViewModel transactionModel = new ListTransactionsViewModel();
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
 
-            transactionModel.TransactionsList = await _transactionService.GetAllTransactions()
+            int maxRowsPerPage = 2;
+            ListUserTransactionsViewModel transactionModel = new ListUserTransactionsViewModel();
+
+            //transactionModel.TransactionsList = (List<System.Transactions.Transaction>)await _transactionService.GetTransactionByUserId(user.Id)
+            //    .OrderBy(x => x.Id)
+            //    .Skip((currentPage - 1) * maxRowsPerPage)
+            //    .Take(maxRowsPerPage)
+            //    .ToListAsync();
+            var transactions = await _transactionService.GetTransactionByUserId(user.Id);
+
+            transactionModel.TransactionsList = transactions
                 .OrderBy(x => x.Id)
                 .Skip((currentPage - 1) * maxRowsPerPage)
                 .Take(maxRowsPerPage)
-                .ToListAsync();
+                .ToList();
 
-            double pageCount = (double)((decimal)_transactionService.GetAllTransactions().Count() / Convert.ToDecimal(maxRowsPerPage));
+            int totalTransactionCount = transactions.Count();
+            double pageCount = (double)((decimal)totalTransactionCount / Convert.ToDecimal(maxRowsPerPage));
+
+            transactionModel.pageCount = (int)Math.Ceiling(pageCount);
+            transactionModel.currentPageIndex = currentPage;
+            return transactionModel;
+        }
+
+		private async Task<ListTransactionsViewModel> GetTransactionsList(int currentPage, IQueryable<Transaction> transactions)
+		{
+			int maxRowsPerPage = 2;
+			ListTransactionsViewModel transactionModel = new ListTransactionsViewModel();
+
+			transactionModel.TransactionsList = await _transactionService.GetAllTransactions()
+				.OrderBy(x => x.Id)
+				.Skip((currentPage - 1) * maxRowsPerPage)
+				.Take(maxRowsPerPage)
+				.ToListAsync();
+
+			double pageCount = (double)((decimal)_transactionService.GetAllTransactions().Count() / Convert.ToDecimal(maxRowsPerPage));
 
             transactionModel.pageCount = (int)Math.Ceiling(pageCount);
             transactionModel.currentPageIndex = currentPage;
@@ -733,7 +957,7 @@ namespace Virtual_Wallet.Controllers.MVC
         }
 
         [HttpGet]
-        public IActionResult ConfirmEmail(string username , string token) //може би измисти ДТО за това
+        public IActionResult ConfirmEmail(string username, string token) //може би измисли ДТО за това
         {
             var user = _usersService.GetByUsername(username);
             ViewData["Username"] = username;
@@ -747,13 +971,13 @@ namespace Virtual_Wallet.Controllers.MVC
             user.EmailTokenExpiry = null;
             user.EmailConfirmationToken = null;
 
-            _usersService.Update(user.Id , user);
+            _usersService.Update(user.Id, user);
 
             return View("ConfirmEmail");
         }
 
         [HttpPost]
-        public  async Task<IActionResult> ResendConfirmationEmail(string username)
+        public async Task<IActionResult> ResendConfirmationEmail(string username)
         {
             var user = _usersService.GetByUsername(username);
             if (user == null)
@@ -765,9 +989,144 @@ namespace Virtual_Wallet.Controllers.MVC
 
             TempData["Message"] = "A new confirmation email has been sent to your email address.";
             return RedirectToAction("EmailConfirmationSentAgain");
-            
+
         }
 
-       
+        [HttpPost]
+        public IActionResult SendMoneyConfirmationForm(string text)
+        {
+            var model = new SendMoneyViewModel();
+
+            if (text == "Accept")
+            {
+                if (TempData["SendMoneyModel"] != null ||
+                    TempData["SenderUsername"] != null ||
+                    TempData["RecipientUsername"] != null)
+                {
+                    model = JsonConvert.DeserializeObject<SendMoneyViewModel>((string)TempData["SendMoneyModel"]);
+                    var senderUsername = TempData["SenderUsername"] as string;
+                    var recipientUsername = TempData["RecipientUsername"] as string;
+
+                    var sender = _usersService.GetByUsername(senderUsername);
+                    var recipient = _usersService.GetByUsername(recipientUsername);
+
+                    if (sender == null)
+                    {
+                        ViewData["ErrorMessage"] = "Invalid request.";
+                        return View("SendMoneyConfirmationForm");
+                    }
+
+                    if (recipient == null)
+                    {
+                        ViewData["ErrorMessage"] = "Invalid request.";
+                        return View("SendMoneyConfirmationForm");
+                    }
+
+                    var senderWallet = sender.UserWallets.FirstOrDefault(s => s.Currency == model.Currency);
+                    var recipientWallet = recipient.UserWallets.FirstOrDefault(x => x.Currency == model.Currency);
+
+                    this._walletService.TransferFunds(model.Amount, model.Currency, senderWallet, recipientWallet, sender);
+
+                    return RedirectToAction("TransactionSuccess", "Wallet"); //тук трябва да се редиректва към страницата за успешна трансакция
+                }
+            }
+
+            return RedirectToAction("SendMoney");
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> UserTransactions()
+        {
+            return View(await GetUserTransactionsList(1));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UserTransactions([FromForm] int currentPageIndex)
+        {
+            return View(await GetUserTransactionsList(currentPageIndex));
+        }
+
+        //============= Below are the sorting and filtering methods for user's transaction list ===============================================
+
+
+
+        [HttpPost]
+        public IActionResult UserSearchTransactionBySender([FromForm] string text)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
+            transactionQueryParameters.Sender = text;
+
+            var transactions = _transactionService.UserFilterBy(transactionQueryParameters, user.Id).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult UserSearchTransactionByRecipient([FromForm] string text)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
+            transactionQueryParameters.Recipient = text;
+
+            var transactions = _transactionService.UserFilterBy(transactionQueryParameters, user.Id).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult UserSearchTransactionByType([FromForm] string text)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            if (text == "-")
+            {
+                return RedirectToAction("UserTransactions");
+            }
+
+            TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
+            transactionQueryParameters.TransactionType = text;
+
+            var transactions = _transactionService.UserFilterBy(transactionQueryParameters, user.Id).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult UserSortByDate([FromForm] string text)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            var transactions = _transactionService.UserSortByDate(text, user.Id).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult UserSortByAmount([FromForm] string text)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+            var transactions = _transactionService.UserSortByAmount(text, user.Id).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult UserGetDateToDate(DateTime startDate, DateTime endDate)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+            var transactions = _transactionService.UserGetTransactionsByDateRange(startDate, endDate , user.Id).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
     }
 }

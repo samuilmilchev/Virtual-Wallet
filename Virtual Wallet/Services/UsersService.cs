@@ -30,6 +30,14 @@ namespace Virtual_Wallet.Services
             {
                 throw new DuplicateEntityException($"A user with e-mail: {user.Email} already exists !");
             }
+            if (_userRepository.UserPhoneNumberExists(user.PhoneNumber))
+            {
+                throw new DuplicateEntityException($"A user with phone number: {user.PhoneNumber} already exists !");
+            }
+            if (_userRepository.UserNameExists(user.Username))
+            {
+                throw new DuplicateEntityException($"A user with Name: {user.Username} already exists !");
+            }
 
             User createdUser = _userRepository.Create(user);
             return createdUser;
@@ -66,6 +74,10 @@ namespace Virtual_Wallet.Services
         {
             return _userRepository.GetByUsername(username);
         }
+		public User GetByPhoneNumber(string phoneNumber)
+		{
+			return _userRepository.GetByPhoneNumber(phoneNumber);
+		}
 
         public User GetById(int id)
         {
@@ -117,6 +129,21 @@ namespace Virtual_Wallet.Services
         public User FindRecipient(UserQueryParameters filterParameters)
         {
             return _userRepository.FindRecipient(filterParameters);
+        }
+
+        public void AddFriend(int userId, int friendId)
+        {
+            _userRepository.AddFriend(userId, friendId);
+        }
+
+        public void RemoveFriend(int userId, int friendId)
+        {
+            _userRepository.RemoveFriend(userId, friendId);
+        }
+
+        public List<User> GetFriends(int userId)
+        {
+            return _userRepository.GetFriends(userId);
         }
 
         public string GenerateEmailConfirationToken()

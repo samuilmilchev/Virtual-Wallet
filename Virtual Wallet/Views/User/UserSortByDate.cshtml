@@ -1,0 +1,64 @@
+﻿@model List<TransactionViewModel>
+
+<link href="~/css/responsive.css?v=1.0" rel="stylesheet" />
+
+<link href="~/css/style.css?v=2.0" rel="stylesheet" />
+<link href="~/css/ListSavingWallets.css" rel="stylesheet" />
+
+<br>
+<br>
+@{
+    if (Model.Count() == 0)
+    {
+
+        <h2 style="text-align: center; padding-top : 200px;">There are no transactions for the current search.</h2>
+    }
+}
+@foreach (var transaction in Model)
+{
+    <div class="container" style="margin-left:350px;">
+        <div class="user-container">
+            <div class="user-info">
+                <div class="form-title">
+                    <h1>User Details:</h1>
+                    <hr>
+                </div>
+
+                <div class="form-inputs">
+                    <!-- Start Date -->
+                    <div class="input-box">
+                        <p class="control-label">
+                            <strong>Type:</strong>
+                            <span>@transaction.Type</span>
+                        </p>
+                    </div>
+
+                    <!-- End Date -->
+                    <div class="input-box">
+                        <p class="control-label">
+                            <strong>Amount:</strong>
+                            <span>@transaction.Amount</span>
+                        </p>
+                    </div>
+
+                    <!-- Amount -->
+                    <div class="input-box">
+                        <p class="control-label">
+                            <strong>Wallet Name:</strong>
+                            <span>@transaction.Wallet.WalletName</span>
+                        </p>
+                    </div>
+
+                    <!-- Interest Rate -->
+                    <div class="input-box">
+                        <p class="control-label">
+                            <strong>Time of transaction:</strong>
+                            <span>@transaction.Timestamp.ToString()</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br><br>
+    </div>
+}

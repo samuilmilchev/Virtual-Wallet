@@ -12,7 +12,7 @@ using Virtual_Wallet.Db;
 namespace Virtual_Wallet.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240901205637_Initial")]
+    [Migration("20240903130126_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,6 +23,21 @@ namespace Virtual_Wallet.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("Friends", b =>
+                {
+                    b.Property<int>("FriendId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FriendId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Friends");
+                });
 
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Card", b =>
                 {
@@ -64,7 +79,7 @@ namespace Virtual_Wallet.Migrations
                         {
                             Id = 1,
                             Balance = 100000m,
-                            CardHolder = "Samuil Milchev",
+                            CardHolder = "Justine Fox",
                             CardNumber = "359039739152721",
                             CardType = 0,
                             CheckNumber = "111",
@@ -75,23 +90,23 @@ namespace Virtual_Wallet.Migrations
                         {
                             Id = 2,
                             Balance = 100000m,
-                            CardHolder = "Violin Filev",
+                            CardHolder = "Emma Robertson",
                             CardNumber = "379221059046032",
                             CardType = 0,
                             CheckNumber = "112",
                             ExpirationData = "04/28",
-                            UserId = 1
+                            UserId = 2
                         },
                         new
                         {
                             Id = 3,
                             Balance = 100000m,
-                            CardHolder = "Alexander Georgiev",
+                            CardHolder = "Tom Luis",
                             CardNumber = "345849306009469",
                             CardType = 0,
                             CheckNumber = "121",
                             ExpirationData = "02/28",
-                            UserId = 1
+                            UserId = 3
                         });
                 });
 
@@ -327,7 +342,7 @@ namespace Virtual_Wallet.Migrations
                             Amount = 1000m,
                             Currency = 0,
                             OwnerId = 1,
-                            WalletName = "Violin's wallet"
+                            WalletName = "Justine's wallet"
                         },
                         new
                         {
@@ -335,7 +350,7 @@ namespace Virtual_Wallet.Migrations
                             Amount = 1000m,
                             Currency = 0,
                             OwnerId = 2,
-                            WalletName = "Sami's wallet"
+                            WalletName = "Emma's wallet"
                         },
                         new
                         {
@@ -343,8 +358,23 @@ namespace Virtual_Wallet.Migrations
                             Amount = 1000m,
                             Currency = 0,
                             OwnerId = 3,
-                            WalletName = "Alex's wallet"
+                            WalletName = "Tom's wallet"
                         });
+                });
+
+            modelBuilder.Entity("Friends", b =>
+                {
+                    b.HasOne("Virtual_Wallet.Models.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("FriendId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Virtual_Wallet.Models.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Card", b =>

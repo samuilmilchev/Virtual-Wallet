@@ -8,6 +8,7 @@ namespace Virtual_Wallet.Services.Contracts
         IQueryable<User> GetAll();
         User GetByUsername(string username);
         User GetByEmail(string email);
+        User GetByPhoneNumber (string phoneNumber);
         User GetById(int id);
         bool UserEmailExists(string email);
         User Create(User user);
@@ -21,6 +22,10 @@ namespace Virtual_Wallet.Services.Contracts
         bool UnblockUser(int userId, User user);
         List<User> FilterBy(UserQueryParameters filterParameters);
         User FindRecipient(UserQueryParameters filterParameters);
+        void AddFriend(int userId, int friendId);
+        void RemoveFriend(int userId, int friendId);
+        List<User> GetFriends(int userId);
+
 
         Task SendConfirmationEmailAsync(User user);
     }

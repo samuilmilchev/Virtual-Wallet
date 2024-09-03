@@ -27,8 +27,18 @@
             <p style="margin-bottom: 10px; font-size: 20px; "><strong>Email:</strong> <span id="user-email">@Model.Email</span></p>
             <p style="margin-bottom: 10px; font-size: 20px; "><strong>Phone Number:</strong> <span id="user-phonenumber">@Model.PhoneNumber</span></p>
             <p style="margin-bottom: 10px; font-size: 20px; "><strong>Role:</strong> <span id="user-role">@Model.Role</span></p>
-            <p style="margin-bottom: 10px; font-size: 20px; "><strong>Is Blocked:</strong> <span id="user-isblocked">@Model.IsBlocked</span></p>
-            <p style="margin-bottom: 10px; font-size: 20px; "><strong>Cards Count:</strong> <span id="user-cardscount">@Model.Cards.Count()</span></p>
+            @{
+                if (Model.IsBlocked == false )
+                {
+                    <p style="margin-bottom: 10px; font-size: 20px; "><strong>User Status:</strong> <span id="user-isblocked">Active</span></p>
+                }
+                else
+                {
+                    <p style="margin-bottom: 10px; font-size: 20px; "><strong>User Status:</strong> <span id="user-isblocked">Blocked</span></p>
+                }
+            }
+            <p style="margin-bottom: 10px; font-size: 20px; "><strong>Wallets:</strong> <span id="user-cardscount">@Model.Wallets.Count()</span></p>
+            <p style="margin-bottom: 10px; font-size: 20px; "><strong>Registrated cards:</strong> <span id="user-cardscount">@Model.Cards.Count()</span></p>
 
             <!-- Buttons for Edit, Verify, Block/Unblock Actions -->
             <div class="button-group">

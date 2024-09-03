@@ -45,7 +45,7 @@ namespace Virtual_Wallet.Controllers.MVC
             Card card = new Card();
             
 
-           // card.CardHolder.Username = cardViewModel.CardHolder; //закоментирано за момента тъй като модела Карта няма вече string CardHolder 
+            card.CardHolder = cardViewModel.CardHolder; //закоментирано за момента тъй като модела Карта няма вече string CardHolder 
             card.CardNumber = cardViewModel.CardNumber;             // a е User CardHolder
             card.ExpirationData = cardViewModel.ExpirationDate;
             card.CardType = cardViewModel.CardType;
@@ -81,6 +81,17 @@ namespace Virtual_Wallet.Controllers.MVC
                 byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(saltedCVV));
                 return Convert.ToBase64String(hashBytes);
             }
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            _cardService.Delete(id,user);
+
+            return RedirectToAction("ListCards", "User");
         }
     }
 }

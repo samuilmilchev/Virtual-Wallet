@@ -64,6 +64,30 @@ namespace Virtual_Wallet.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Friends",
+                columns: table => new
+                {
+                    FriendId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Friends", x => new { x.FriendId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_Friends_Users_FriendId",
+                        column: x => x.FriendId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Friends_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SavingWallets",
                 columns: table => new
                 {
@@ -183,9 +207,9 @@ namespace Virtual_Wallet.Migrations
                 columns: new[] { "Id", "Balance", "CardHolder", "CardNumber", "CardType", "CheckNumber", "ExpirationData", "UserId" },
                 values: new object[,]
                 {
-                    { 1, 100000m, "Samuil Milchev", "359039739152721", 0, "111", "10/28", 1 },
-                    { 2, 100000m, "Violin Filev", "379221059046032", 0, "112", "04/28", 1 },
-                    { 3, 100000m, "Alexander Georgiev", "345849306009469", 0, "121", "02/28", 1 }
+                    { 1, 100000m, "Justine Fox", "359039739152721", 0, "111", "10/28", 1 },
+                    { 2, 100000m, "Emma Robertson", "379221059046032", 0, "112", "04/28", 2 },
+                    { 3, 100000m, "Tom Luis", "345849306009469", 0, "121", "02/28", 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -193,14 +217,19 @@ namespace Virtual_Wallet.Migrations
                 columns: new[] { "Id", "Amount", "Currency", "OwnerId", "WalletName" },
                 values: new object[,]
                 {
-                    { 1, 1000m, 0, 1, "Violin's wallet" },
-                    { 2, 1000m, 0, 2, "Sami's wallet" },
-                    { 3, 1000m, 0, 3, "Alex's wallet" }
+                    { 1, 1000m, 0, 1, "Justine's wallet" },
+                    { 2, 1000m, 0, 2, "Emma's wallet" },
+                    { 3, 1000m, 0, 3, "Tom's wallet" }
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cards_UserId",
                 table: "Cards",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Friends_UserId",
+                table: "Friends",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -238,6 +267,9 @@ namespace Virtual_Wallet.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Cards");
+
+            migrationBuilder.DropTable(
+                name: "Friends");
 
             migrationBuilder.DropTable(
                 name: "SavingWallets");
