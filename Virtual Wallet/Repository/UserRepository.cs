@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using System.Xml.Linq;
 using Virtual_Wallet.Db;
 using Virtual_Wallet.DTOs.UserDTOs;
 using Virtual_Wallet.Exceptions;
@@ -236,6 +238,16 @@ namespace Virtual_Wallet.Repository
         public bool UserEmailExists(string email)
         {
             return _context.Users.Any(u => u.Email == email);
+        }
+
+        public bool UserNameExists(string name)
+        {
+            return _context.Users.Any(u => u.Username == name);
+        }
+
+        public bool UserPhoneNumberExists(string phoneNumber)
+        {
+            return _context.Users.Any(u => u.PhoneNumber == phoneNumber);
         }
 
         private static IQueryable<User> FilterByUserName(IQueryable<User> users, string username)

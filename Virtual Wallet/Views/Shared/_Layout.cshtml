@@ -77,14 +77,6 @@
                     <!-- Burger Menu items for authenticated users -->
                     <div class="burger-menu-items">
                     <li class="navbar-item">
-                        <a class="navbar-item-inner" href="/swagger">
-                            <div class="navbar-item-inner-icon-wrapper">
-                                <ion-icon name="code-outline"></ion-icon>
-                            </div>
-                            <span style="font-size:18px;" class="link-text">Developer API</span>
-                        </a>
-                    </li>
-                    <li class="navbar-item">
                         <a class="navbar-item-inner" asp-controller="User" asp-action="UserDetails" asp-route-username="@User.Identity.Name">
                             <div class="navbar-item-inner-icon-wrapper">
                                 <ion-icon name="person-circle-outline"></ion-icon>
@@ -93,22 +85,21 @@
                         </a>
                     </li>
                     <li class="navbar-item">
-                        <a class="navbar-item-inner" asp-controller="Wallet" asp-action="CreateSavingWallet">
+                        <a class="navbar-item-inner" asp-controller="User" asp-action="UserWallets">
                             <div class="navbar-item-inner-icon-wrapper">
                                 <ion-icon name="person-circle-outline"></ion-icon>
                             </div>
-                            <span style="font-size:18px;" class="link-text">Create Saving Wallet</span>
+                            <span style="font-size:18px;" class="link-text">My Wallets</span>
                         </a>
                     </li>
                     <li class="navbar-item">
-                        <a class="navbar-item-inner" asp-controller="User" asp-action="UserSavingWallets">
+                        <a class="navbar-item-inner" asp-controller="User" asp-action="SendMoney">
                             <div class="navbar-item-inner-icon-wrapper">
-                                <ion-icon name="person-circle-outline"></ion-icon>
+                                <ion-icon name="swap-horizontal-outline"></ion-icon>
                             </div>
-                            <span style="font-size:18px;" class="link-text">User SavingWallets</span>
+                            <span style="font-size:18px;" class="link-text">Send Money</span>
                         </a>
                     </li>
-
                     <li class="navbar-item">
                         <a class="navbar-item-inner" asp-controller="Card" asp-action="Register">
                             <div class="navbar-item-inner-icon-wrapper">
@@ -136,11 +127,19 @@
                         </a>
                     </li>
                     <li class="navbar-item">
-                        <a class="navbar-item-inner" asp-controller="User" asp-action="SendMoney">
+                        <a class="navbar-item-inner" asp-controller="User" asp-action="UserSavingWallets">
                             <div class="navbar-item-inner-icon-wrapper">
-                                <ion-icon name="swap-horizontal-outline"></ion-icon>
+                                <ion-icon name="person-circle-outline"></ion-icon>
                             </div>
-                            <span style="font-size:18px;" class="link-text">Send Money</span>
+                            <span style="font-size:18px;" class="link-text">My SavingWallets</span>
+                        </a>
+                    </li>
+                    <li class="navbar-item">
+                        <a class="navbar-item-inner" asp-controller="Wallet" asp-action="CreateSavingWallet">
+                            <div class="navbar-item-inner-icon-wrapper">
+                                <ion-icon name="person-circle-outline"></ion-icon>
+                            </div>
+                            <span style="font-size:18px;" class="link-text">Create Saving Wallet</span>
                         </a>
                     </li>
                     <li class="navbar-item">
@@ -158,6 +157,14 @@
                                 <ion-icon name="swap-horizontal-outline"></ion-icon>
                             </div>
                             <span style="font-size:18px;" class="link-text">ConvertFunds</span>
+                        </a>
+                    </li>
+                    <li class="navbar-item">
+                        <a class="navbar-item-inner" href="/swagger">
+                            <div class="navbar-item-inner-icon-wrapper">
+                                <ion-icon name="code-outline"></ion-icon>
+                            </div>
+                            <span style="font-size:18px;" class="link-text">Developer API</span>
                         </a>
                     </li>
 

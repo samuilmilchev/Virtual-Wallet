@@ -464,6 +464,17 @@ namespace Virtual_Wallet.Controllers.MVC
         }
 
         [HttpGet]
+        public IActionResult UserWallets()
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            var wallets = user.UserWallets.Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(wallets);
+        }
+
+        [HttpGet]
         public IActionResult UserSavingWallets()
         {
             var username = User.Identity.Name;

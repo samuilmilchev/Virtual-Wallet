@@ -1,0 +1,50 @@
+﻿/* Container for user details */
+.form-inputs {
+    margin-bottom: 20px;
+}
+
+/* Input box styling */
+.input-box {
+    margin-bottom: 10px;
+}
+
+/* Images container */
+.images-container {
+    display: flex; /* Align images side by side */
+    gap: 20px; /* Space between images */
+    align-items: center; /* Center images vertically */
+}
+
+/* Image text styling */
+.input-box p {
+    text-align: center; /* Center align text */
+    font-size: 20px; /* Font size for labels */
+    margin-bottom: 10px; /* Margin below text */
+}
+
+/* Image styling */
+.input-box img {
+    width: 300px; /* Width of the image */
+    height: 300px; /* Height of the image */
+    object-fit: cover; /* Maintain aspect ratio and cover the space */
+    border: 2px solid #ddd; /* Optional: border around the images */
+    border-radius: 5px; /* Optional: rounded corners for images */
+}
+
+/* Button styling */
+.input-submit {
+    width: 100px;
+    height: 50px;
+    margin-left: 20px;
+    background-color: #007bff; /* Button background color */
+    color: #fff; /* Button text color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Transition for hover effect */
+}
+
+    /* Button hover effect */
+    .input-submit:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+    }

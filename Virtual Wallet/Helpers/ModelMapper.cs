@@ -78,5 +78,18 @@ namespace Virtual_Wallet.Helpers
 
             return mappedVerification;
         }
+
+        public WalletViewModel Map(Wallet wallet)
+        {
+            WalletViewModel mappedWallet = new WalletViewModel();
+
+            mappedWallet.Amount = wallet.Amount;
+            mappedWallet.WalletName = wallet.WalletName;
+            mappedWallet.Currency = wallet.Currency;
+            mappedWallet.Owner = wallet.Owner;
+
+
+            return mappedWallet;
+        }
     }
 }

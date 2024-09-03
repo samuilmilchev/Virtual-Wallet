@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\css\ListUsers.css" />
     <_ContentIncludedByDefault Remove="wwwroot\css\UserDetails.css" />
     <_ContentIncludedByDefault Remove="wwwroot\images\3d-business-three-credit-card.png" />
   </ItemGroup>

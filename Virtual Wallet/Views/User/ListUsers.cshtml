@@ -2,8 +2,8 @@
 
 <link href="~/css/responsive.css?v=1.0" rel="stylesheet" />
 <link href="~/css/style.css?v=2.0" rel="stylesheet" />
-<link href="~/css/custom-style.css" rel="stylesheet" />
-<link href="~/css/AllUsers.css?v=1.0" rel="stylesheet" />
+<link href="~/css/ListUsers.css" rel="stylesheet" />
+
 
 <br>
 <br>
@@ -17,7 +17,7 @@
     <form asp-controller="User" asp-action="ListUsers" method="post" class="users-form">
         @foreach (var user in Model.UserList)
         {
-            <div style="width:1000px;" class="container user-container">
+            <div style="width:1000px;" class="user-container">
                 <div class="user-info">
                     <div class="form-title">
                         <h1>User Details</h1>
@@ -28,7 +28,7 @@
                         <div class="input-box">
                             <p class="control-label">
                                 <strong style="font-size:20px; color:black;">Username:</strong>
-                                <a asp-controller="User" asp-action="UserDetails" asp-route-username="@user.Username" style="font-size:25px; color:black;" class="control-label">@user.Username</a>
+                                <a asp-controller="User" asp-action="UserDetails" asp-route-username="@user.Username" class="control-label" style="font-size:25px; color:black;">@user.Username</a>
                             </p>
                         </div>
 
@@ -52,11 +52,9 @@
                     <img src="@user.Image" alt="User Image" class="image-style" />
                 </div>
             </div>
-            <br>
-            <br>
         }
-
-        <ul class="pagination" style="color:black; font-size:20px;">
+        <br>
+        <ul class="pagination">
             @for (int i = 1; i <= Model.pageCount; i++)
             {
                 <li class="page-item">
@@ -76,28 +74,40 @@
 
     <!-- Search forms section next to user details -->
     <div class="search-forms">
+        <h2 style="text-align:center;">Search users:</h2>
         <form asp-controller="User" asp-action="SearchByUsername" method="post" class="form-group">
             <div class="search-container">
+                <label>Search by username:</label>
                 <input type="text" name="text" class="input-field" placeholder="Username" />
+                <br>
                 <button type="submit" class="input-submit">Search</button>
             </div>
         </form>
 
         <form asp-controller="User" asp-action="SearchByEmail" method="post" class="form-group">
             <div class="search-container">
+                <label>Search by email:</label>
                 <input type="text" name="text" class="input-field" placeholder="Email" />
+                <br>
                 <button type="submit" class="input-submit">Search</button>
             </div>
         </form>
 
         <form asp-controller="User" asp-action="SearchByNumber" method="post" class="form-group">
             <div class="search-container">
+                <label>Search by PhoneNumber:</label>
                 <input type="text" name="text" class="input-field" placeholder="PhoneNumber" />
+                <br>
                 <button type="submit" class="input-submit">Search</button>
             </div>
         </form>
     </div>
 </div>
+<br>
+<br>
+<br>
+<br>
+
 
 <script type="text/javascript">
     function PagerClick(index) {
