@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using System.Xml.Linq;
 using Virtual_Wallet.Db;
 using Virtual_Wallet.DTOs.UserDTOs;
 using Virtual_Wallet.Exceptions;
@@ -135,9 +137,70 @@ namespace Virtual_Wallet.Repository
 
         public User GetById(int id)
         {
-            User user = this.GetUsers().FirstOrDefault(u => u.Id == id);
+            User user = this.GetUsers().Include(x => x.Cards).Include(u => u.UserWallets).Include(x => x.SavingWallets).AsNoTracking().FirstOrDefault(u => u.Id == id);
 
             return user ?? throw new EntityNotFoundException($"User with id={id} doesn't exist.");
+        }
+
+        public bool UploadPhotoVerification(string selfie, string idPhoto, User user)
+        {
+            VerificationApply newApply = new VerificationApply();
+
+            newApply.Selfie = selfie;
+            newApply.IdPhoto = idPhoto;
+            newApply.User = user;
+
+            //if (_context.VerificationsApplies.Contains(newApply))
+            //{
+            //    return false;
+            //}
+
+            foreach (var apply in _context.VerificationsApplies)
+            {
+                if (apply.User.Username == user.Username)
+                {
+                    return false;
+                }
+            }
+
+            _context.VerificationsApplies.Add(newApply);
+
+            _context.SaveChanges();
+
+            return true;
+        }
+
+        public List<VerificationApply> GetAllVereficationApplies()
+        {
+            return _context.VerificationsApplies.Include(x => x.User).ToList();
+        }
+
+        public void UpdateUserVerification(User user, string text)
+        {
+            if (text == "Accept")
+            {
+                user.AdminVerified = true;
+            }
+            else
+            {
+                user.AdminVerified = false;
+            }
+
+            RemoveApply(user);
+            _context.SaveChanges();
+        }
+
+        public void RemoveApply(User user)
+        {
+
+            foreach (var apply in _context.VerificationsApplies)
+            {
+                if (apply.User.Username == user.Username)
+                {
+                    _context.VerificationsApplies.Remove(apply);
+                    break;
+                }
+            }
         }
 
         public void AddUserCard(Card card, User user)
@@ -175,6 +238,16 @@ namespace Virtual_Wallet.Repository
         public bool UserEmailExists(string email)
         {
             return _context.Users.Any(u => u.Email == email);
+        }
+
+        public bool UserNameExists(string name)
+        {
+            return _context.Users.Any(u => u.Username == name);
+        }
+
+        public bool UserPhoneNumberExists(string phoneNumber)
+        {
+            return _context.Users.Any(u => u.PhoneNumber == phoneNumber);
         }
 
         private static IQueryable<User> FilterByUserName(IQueryable<User> users, string username)

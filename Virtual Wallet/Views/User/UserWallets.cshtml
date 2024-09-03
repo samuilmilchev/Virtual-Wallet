@@ -1,0 +1,71 @@
+﻿@model List<WalletViewModel>
+
+<link href="~/css/responsive.css?v=1.0" rel="stylesheet" />
+<link href="~/css/style.css?v=2.0" rel="stylesheet" />
+<link href="~/css/UserWallets.css" rel="stylesheet" />
+
+<h1 style="text-align:center;">My wallets</h1>
+<br><br>
+
+<div class="user-container-wrapper">
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        <div class="user-container wallet-container" id="wallet-@i" style="display: @(i == 0 ? "block" : "none")">
+            <div class="user-info">
+                <div class="form-title">
+                    <h1>Wallet Details:</h1>
+                    <hr>
+                </div>
+
+                <div class="form-inputs">
+                    <div class="input-box">
+                        <p class="control-label">
+                            <strong>Wallet name:</strong>
+                            <span>@Model[i].WalletName</span>
+                        </p>
+                    </div>
+
+                    <div class="input-box">
+                        <p class="control-label">
+                            <strong>Balance: </strong>
+                            <span style="font-size:30px;"> @Model[i].Amount</span>
+                            <span> @Model[i].Currency</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="wallet-navigation">
+        <button class="btn" id="prevBtn">Previous Wallet</button>
+        <button class="btn" id="nextBtn">Next Wallet</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let currentIndex = 0;
+        const wallets = document.querySelectorAll('.wallet-container');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function showWallet(index) {
+            wallets.forEach((wallet, i) => {
+                wallet.style.display = i === index ? 'block' : 'none';
+            });
+        }
+
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + wallets.length) % wallets.length;
+            showWallet(currentIndex);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % wallets.length;
+            showWallet(currentIndex);
+        });
+
+        // Initialize with the first wallet visible
+        showWallet(currentIndex);
+    </script>
+}

@@ -1,0 +1,43 @@
+﻿@model VerifyUserViewModel
+
+
+<link href="~/css/responsive.css?v=1.0" rel="stylesheet" />
+
+<link href="~/css/style.css?v=2.0" rel="stylesheet" />
+<link href="~/css/SavingWallet.css?v=2.0" rel="stylesheet" />
+
+<br>
+<br>
+<br>
+
+<div style="width: 1000px; margin-bottom:350px;" class="form-container">
+    <form asp-action="ConvertFunds" method="post" enctype="multipart/form-data">
+        <div class="form-title">
+            <h2>Convert currency</h2>
+            <hr>
+            <p style="font-size:20px;">
+                Complete your account verification and start using <strong>NIMBLE</strong>.<br>
+                To verify you should send two pictures.<br>
+                1. Selfie of yourself.<br>
+                2. Photo of your Id.<br>
+                We will review the sended pictures and send you email when verified.<br>
+            </p>
+        </div>
+        <hr>
+
+        <div class="form-group">
+            <label asp-for="Selfie" style="color:black;">Upload selfie:</label>
+            <input asp-for="Selfie" type="file" placeholder="Image">
+            <span asp-validation-for="Selfie" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="IdPhoto" style="color:black;">Upload Id Photo:</label>
+            <input asp-for="IdPhoto" type="file" placeholder="Image">
+            <span asp-validation-for="IdPhoto" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn-submit">Send Photos</button>
+    </form>
+    <br>
+</div>

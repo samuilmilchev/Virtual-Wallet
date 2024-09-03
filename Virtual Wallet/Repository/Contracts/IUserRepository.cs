@@ -15,8 +15,13 @@ namespace Virtual_Wallet.Repository.Contracts
         bool BlockUser(int userId, User user);
         bool UnblockUser(int userId, User user);
         User GetById(int id);
+        bool UploadPhotoVerification(string selfie, string idPhoto, User user);
+        List<VerificationApply> GetAllVereficationApplies();
+        void UpdateUserVerification(User user, string text);
         void AddUserCard(Card card, User user);
         bool UserEmailExists(string email);
+        bool UserNameExists(string name);
+        bool UserPhoneNumberExists(string password);
         List<User> FilterBy(UserQueryParameters filterParameters);
         User FindRecipient(UserQueryParameters recipientDTO);
         void AddFriend(int userId, int friendId);

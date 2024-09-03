@@ -1,0 +1,139 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
+/* General Styles */
+
+body {
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    background-image: url('../images/25549.jpg');
+    backdrop-filter: blur(2px);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+
+/* Container for the Form */
+.container-sendmoney {
+    max-width: 600px; /* Limit the width of the container */
+    margin: 40px auto; /* Center the container and add top margin */
+    margin-top: 200px;
+    padding: 20px;
+    background-color: white; /* White background for the form */
+    justify-content: center;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+}
+
+/* Form Title */
+.form-title h2 {
+    padding-left: 20px;
+    color: black;
+    font-size: 28px;
+    margin-bottom: 10px;
+    text-align:center;
+}
+
+.form-title hr {
+    border: none;
+    border-top: 2px solid #333; /* Darker line for contrast */
+    width: 50%; /* Shorter line for a more balanced look */
+    margin: 0 auto; /* Center the line */
+}
+
+/* Input and Labels */
+.input-box,
+.form-group {
+    margin-bottom: 20px; /* Space between form elements */
+    text-align: left; /* Left align labels */
+}
+
+.form-label {
+    display: block; /* Ensure labels are on a new line */
+    font-size: 18px; /* Uniform font size */
+    margin-bottom: 5px; /* Small space below label */
+    color: #333; /* Consistent text color */
+}
+
+.input-field,
+.form-control {
+    width: 100%; /* Full width input fields */
+    padding: 10px; /* Padding for better usability */
+    font-size: 16px; /* Slightly smaller text for input */
+    color: #333; /* Text color for input */
+    border: 1px solid #ccc; /* Subtle border */
+    border-radius: 4px; /* Rounded corners */
+    margin-top: 5px; /* Space between input and label */
+    box-sizing: border-box; /* Include padding in width */
+}
+
+/* Validation Error Styling */
+span[asp-validation-for] {
+    color: red; /* Red text for error messages */
+    font-size: 14px; /* Slightly smaller for emphasis */
+    display: block; /* Block level for better layout */
+    margin-top: 5px; /* Space between error and input */
+}
+
+/* Submit Button */
+.input-submit {
+    width: 100%; /* Full width button */
+    padding: 12px;
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 18px;
+    cursor: pointer; /* Pointer cursor for interactivity */
+    margin-top: 20px; /* Space above button */
+    transition: background-color 0.3s; /* Smooth color transition */
+}
+
+    .input-submit:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+    }
+
+/* Alert for Error Message */
+.alert.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 4px;
+}
+
+/* Disabled State for Blocked or Unverified Users */
+.blocked-message {
+    color: red;
+    font-size: 16px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 90%; /* Full width on small screens */
+        padding: 15px; /* Smaller padding */
+    }
+
+    .form-title h2 {
+        font-size: 24px; /* Smaller font size for titles */
+    }
+
+    .input-field,
+    .form-control {
+        font-size: 14px; /* Smaller text for inputs */
+    }
+
+    .input-submit {
+        font-size: 16px; /* Smaller button text */
+        padding: 10px; /* Less padding on smaller screens */
+    }
+
+    .alert.alert-danger {
+        font-size: 14px; /* Smaller font size for alert */
+    }
+}

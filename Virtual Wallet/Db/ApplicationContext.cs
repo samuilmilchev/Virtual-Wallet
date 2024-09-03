@@ -15,6 +15,8 @@ namespace Virtual_Wallet.Db
         public DbSet<Card> Cards { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<VerificationApply> VerificationsApplies { get; set; }
+        public DbSet<SavingWallet> SavingWallets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -51,18 +53,18 @@ namespace Virtual_Wallet.Db
 
 			var users = new List<User>
             {
-            new User { Id = 1, Email = "samuil@example.com", Username = "Samuil", /*Password = ""*/ PhoneNumber = "0845965847", IsAdmin = true, IsBlocked = false, Role = UserRole.User},
-            new User { Id = 2, Email = "violin@example.com", Username = "Violin", /*Password = ""*/PhoneNumber = "0865214587", IsAdmin = true, IsBlocked = false, Role = UserRole.User},
-            new User { Id = 3, Email = "alex@example.com", Username = "Alex", /*Password = ""*/ PhoneNumber = "0826541254", IsAdmin = true, IsBlocked = false, Role = UserRole.User},
+            new User { Id = 1, Email = "justine@example.com", Username = "Justine", /*Password = ""*/ PhoneNumber = "0845965847", IsAdmin = true, IsBlocked = false, Role = UserRole.User, Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724940094/fjakan10q4evdkpsyeig.webp"},
+            new User { Id = 2, Email = "emma@example.com", Username = "Emma", /*Password = ""*/PhoneNumber = "0865214587", IsAdmin = true, IsBlocked = false, Role = UserRole.User, Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939101/uicxqeiqdcet5qdh7tmx.jpg"},
+            new User { Id = 3, Email = "tom@example.com", Username = "Tom", /*Password = ""*/ PhoneNumber = "0826541254", IsAdmin = true, IsBlocked = false, Role = UserRole.User, Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939737/ixyjharblcfamv60ezlz.webp"},
             };
 
             modelBuilder.Entity<User>().HasData(users);
 
             var cards = new List<Card>
             {
-                new Card {Id = 1, CardHolder = "Samuil Milchev", CardNumber = "359039739152721", CheckNumber = "111", ExpirationData = "10/28", UserId = 1},
-                new Card {Id = 2, CardHolder = "Violin Filev", CardNumber = "379221059046032", CheckNumber = "112", ExpirationData = "04/28", UserId = 1},
-                new Card {Id = 3, CardHolder = "Alexander Georgiev", CardNumber = "345849306009469", CheckNumber = "121", ExpirationData = "02/28", UserId = 1}
+                new Card {Id = 1, CardHolder = "Justine Fox", CardNumber = "359039739152721", CheckNumber = "111", ExpirationData = "10/28", UserId = 1},
+                new Card {Id = 2, CardHolder = "Emma Robertson", CardNumber = "379221059046032", CheckNumber = "112", ExpirationData = "04/28", UserId = 2},
+                new Card {Id = 3, CardHolder = "Tom Luis", CardNumber = "345849306009469", CheckNumber = "121", ExpirationData = "02/28", UserId = 3}
             };
 
             modelBuilder.Entity<Card>().HasData(cards);
@@ -73,7 +75,7 @@ namespace Virtual_Wallet.Db
                 {
                     Id = 1,
                     OwnerId = 1,
-                    WalletName = "Violin's wallet",
+                    WalletName = "Justine's wallet",
                     Amount = 1000m,
                     Currency = Currency.BGN
                 },
@@ -81,7 +83,7 @@ namespace Virtual_Wallet.Db
                 {
                     Id = 2,
                     OwnerId = 2,
-                    WalletName = "Sami's wallet",
+                    WalletName = "Emma's wallet",
                     Amount = 1000m,
                     Currency = Currency.BGN
                 },
@@ -89,7 +91,7 @@ namespace Virtual_Wallet.Db
                 {
                     Id = 3,
                     OwnerId = 3,
-                    WalletName = "Alex's wallet",
+                    WalletName = "Tom's wallet",
                     Amount = 1000m,
                     Currency = Currency.BGN
                 }
@@ -103,7 +105,7 @@ namespace Virtual_Wallet.Db
 
             // Transaction entity configuration
             modelBuilder.Entity<Transaction>()
-                .HasKey(t => t.Id); // Ensure Id is the primary key
+				.HasKey(t => t.Id); // Ensure Id is the primary key
 
             modelBuilder.Entity<Transaction>()
                 .Property(t => t.Timestamp)

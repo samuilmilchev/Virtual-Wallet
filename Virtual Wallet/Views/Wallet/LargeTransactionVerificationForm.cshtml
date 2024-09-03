@@ -1,0 +1,39 @@
+﻿
+<link href="~/css/responsive.css?v=1.0" rel="stylesheet" />
+
+<link href="~/css/style.css?v=2.0" rel="stylesheet" />
+<link href="~/css/ListSavingWallets.css" rel="stylesheet" />
+
+<div class="container" style="margin-left:350px; margin-bottom:450px;">
+    <div style="margin-top:200px;" class="user-container">
+        <div class="user-info">
+            <div class="form-title">
+                <h1>Large Transaction Verification</h1>
+                <br>
+                <p style="font-size:20px;">A verification code has been sent to your e-mail address.</p>
+                <p style="font-size:20px;">Please type in the code in the input field and press submit to complete the transaction.</p>
+            </div>
+
+            <div style="margin-left:200px;" class="form-inputs">
+                <form asp-action="VerifyTransaction" method="post">
+                    <input style="font-size:15px;" type="text" name="transactionToken" class="form-control" placeholder="Enter verification code" />
+
+                    <input type="hidden" name="Amount" value="@TempData["Amount"]" />
+                    <input type="hidden" name="Currency" value="@TempData["Currency"]" />
+                    @* <input type="hidden" name="SenderWalletId" value="@TempData["SenderWalletId"]" />
+                    <input type="hidden" name="RecipientWalletId" value="@TempData["RecipientWalletId"]" /> *@
+                    <input type="hidden" name="SenderUsername" value="@TempData["SenderUsername"]" />
+                    <input type="hidden" name="RecipientUsername" value="@TempData["RecipientUsername"]" />
+
+                    <button type="submit" style="font-size:18px; background-color:#007bff; cursor: pointer; border-radius: 4px; border:none; padding:5px;" class="btn btn-primary">
+                        Verify Transaction
+                    </button>
+                </form>
+                @{
+                    TempData.Keep();
+                }
+            </div>
+        </div>
+    </div>
+    <br><br>
+</div>

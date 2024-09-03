@@ -1,9 +1,18 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Anek+Devanagari:wdth,wght@114,100..800&family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300..700&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
 * {
-    font-family: "Lato", sans-serif;
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
 }
+
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
 body {
-    font-family: "Poppins", sans-serif;
     color: #0c0c0c;
     background-color: #ffffff;
     overflow-x: hidden;
@@ -11,8 +20,8 @@ body {
 
 .custom-paragraph {
     position: relative;
-    top: 160px;
-    left: 100px;
+    top: -80px;
+    left: 850px;
     font-size: 40px;
     color: white;
     text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7);
@@ -508,7 +517,7 @@ a:focus {
             }
 
 .about_section {
-    background-color: #23286b;
+    background-color: #38385c;
     color: #ffffff;
 }
 
@@ -524,6 +533,8 @@ a:focus {
 
     .about_section .img-box img {
         max-width: 100%;
+        -webkit-animation: upDown 5s infinite;
+        animation: upDown 5s infinite;
     }
 
     .about_section .detail-box h3 {
@@ -627,7 +638,7 @@ a:focus {
 /*team section */
 .team_section {
     text-align: center;
-    background-color: #23286b;
+    background-color: #38385c;
     color: #ffffff;
 }
 
@@ -650,7 +661,7 @@ a:focus {
             transition: all .1s;
             margin-top: 45px;
             background: -webkit-gradient(linear, left top, left bottom, from(#002759), to(#002b64));
-            background: linear-gradient(to bottom, #eeeeee, #002b64);
+            background: linear-gradient(to bottom, #eeeeee, #aad1fa);
         }
 
             .team_section .team_container .box .img-box {
@@ -677,7 +688,7 @@ a:focus {
             }
 
                 .team_section .team_container .box .detail-box h5 {
-                    color: #a1c3fc;
+                    color: black;
                     font-weight: 600;
                     position: relative;
                 }
@@ -800,7 +811,7 @@ a:focus {
 
 /* client section end */
 .info_section {
-    background-color: #23286b;
+    background-color: #38385c;
     color: #ffffff;
     padding: 45px 0 15px 0;
 }

@@ -25,5 +25,9 @@ namespace Virtual_Wallet.Models.ViewModels
         public bool IsBlocked { get; set; }
         public string? Image { get; set; } //въпрос към Сами: Защо са две: Image и UploadImage
         public IFormFile? UploadImage { get; set; }
+        //public string? Selfie { get; set; }
+        //public string? IdPhoto { get; set; }
+        public bool AdminVerified { get; set; }
+        public bool IsAdmin { get; set; }
     }
 }

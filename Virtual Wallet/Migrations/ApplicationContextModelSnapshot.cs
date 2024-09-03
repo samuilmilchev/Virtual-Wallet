@@ -77,7 +77,7 @@ namespace Virtual_Wallet.Migrations
                         {
                             Id = 1,
                             Balance = 100000m,
-                            CardHolder = "Samuil Milchev",
+                            CardHolder = "Justine Fox",
                             CardNumber = "359039739152721",
                             CardType = 0,
                             CheckNumber = "111",
@@ -88,24 +88,54 @@ namespace Virtual_Wallet.Migrations
                         {
                             Id = 2,
                             Balance = 100000m,
-                            CardHolder = "Violin Filev",
+                            CardHolder = "Emma Robertson",
                             CardNumber = "379221059046032",
                             CardType = 0,
                             CheckNumber = "112",
                             ExpirationData = "04/28",
-                            UserId = 1
+                            UserId = 2
                         },
                         new
                         {
                             Id = 3,
                             Balance = 100000m,
-                            CardHolder = "Alexander Georgiev",
+                            CardHolder = "Tom Luis",
                             CardNumber = "345849306009469",
                             CardType = 0,
                             CheckNumber = "121",
                             ExpirationData = "02/28",
-                            UserId = 1
+                            UserId = 3
                         });
+                });
+
+            modelBuilder.Entity("Virtual_Wallet.Models.Entities.SavingWallet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("InterestRate")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("SavingWallets");
                 });
 
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Transaction", b =>
@@ -156,7 +186,19 @@ namespace Virtual_Wallet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<bool>("AdminVerified")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmailConfirmationToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EmailTokenExpiry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IdPhoto")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
@@ -166,6 +208,9 @@ namespace Virtual_Wallet.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsBlocked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEmailVerified")
                         .HasColumnType("bit");
 
                     b.Property<byte[]>("PasswordHash")
@@ -180,6 +225,15 @@ namespace Virtual_Wallet.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
+                    b.Property<string>("Selfie")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("TransactionTokenExpiry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TransactionVerificationToken")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
@@ -191,33 +245,66 @@ namespace Virtual_Wallet.Migrations
                         new
                         {
                             Id = 1,
-                            Email = "samuil@example.com",
+                            AdminVerified = false,
+                            Email = "justine@example.com",
+                            Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724940094/fjakan10q4evdkpsyeig.webp",
                             IsAdmin = true,
                             IsBlocked = false,
+                            IsEmailVerified = false,
                             PhoneNumber = "0845965847",
                             Role = 1,
-                            Username = "Samuil"
+                            Username = "Justine"
                         },
                         new
                         {
                             Id = 2,
-                            Email = "violin@example.com",
+                            AdminVerified = false,
+                            Email = "emma@example.com",
+                            Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939101/uicxqeiqdcet5qdh7tmx.jpg",
                             IsAdmin = true,
                             IsBlocked = false,
+                            IsEmailVerified = false,
                             PhoneNumber = "0865214587",
                             Role = 1,
-                            Username = "Violin"
+                            Username = "Emma"
                         },
                         new
                         {
                             Id = 3,
-                            Email = "alex@example.com",
+                            AdminVerified = false,
+                            Email = "tom@example.com",
+                            Image = "http://res.cloudinary.com/didrr2x3x/image/upload/v1724939737/ixyjharblcfamv60ezlz.webp",
                             IsAdmin = true,
                             IsBlocked = false,
+                            IsEmailVerified = false,
                             PhoneNumber = "0826541254",
                             Role = 1,
-                            Username = "Alex"
+                            Username = "Tom"
                         });
+                });
+
+            modelBuilder.Entity("Virtual_Wallet.Models.Entities.VerificationApply", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("IdPhoto")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Selfie")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("VerificationsApplies");
                 });
 
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Wallet", b =>
@@ -253,7 +340,7 @@ namespace Virtual_Wallet.Migrations
                             Amount = 1000m,
                             Currency = 0,
                             OwnerId = 1,
-                            WalletName = "Violin's wallet"
+                            WalletName = "Justine's wallet"
                         },
                         new
                         {
@@ -261,7 +348,7 @@ namespace Virtual_Wallet.Migrations
                             Amount = 1000m,
                             Currency = 0,
                             OwnerId = 2,
-                            WalletName = "Sami's wallet"
+                            WalletName = "Emma's wallet"
                         },
                         new
                         {
@@ -269,7 +356,7 @@ namespace Virtual_Wallet.Migrations
                             Amount = 1000m,
                             Currency = 0,
                             OwnerId = 3,
-                            WalletName = "Alex's wallet"
+                            WalletName = "Tom's wallet"
                         });
                 });
 
@@ -299,6 +386,17 @@ namespace Virtual_Wallet.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Virtual_Wallet.Models.Entities.SavingWallet", b =>
+                {
+                    b.HasOne("Virtual_Wallet.Models.Entities.User", "Owner")
+                        .WithMany("SavingWallets")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+                });
+
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Transaction", b =>
                 {
                     b.HasOne("Virtual_Wallet.Models.Entities.User", "Recipient")
@@ -322,6 +420,15 @@ namespace Virtual_Wallet.Migrations
                     b.Navigation("Wallet");
                 });
 
+            modelBuilder.Entity("Virtual_Wallet.Models.Entities.VerificationApply", b =>
+                {
+                    b.HasOne("Virtual_Wallet.Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Wallet", b =>
                 {
                     b.HasOne("Virtual_Wallet.Models.Entities.User", "Owner")
@@ -336,6 +443,8 @@ namespace Virtual_Wallet.Migrations
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.User", b =>
                 {
                     b.Navigation("Cards");
+
+                    b.Navigation("SavingWallets");
 
                     b.Navigation("UserWallets");
                 });

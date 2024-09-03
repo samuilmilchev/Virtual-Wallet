@@ -11,10 +11,12 @@ namespace Virtual_Wallet.Services
     public class UsersService : IUsersService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IEmailService _emailService;
 
-        public UsersService(IUserRepository userRepository)
+        public UsersService(IUserRepository userRepository, IEmailService emailService)
         {
             _userRepository = userRepository;
+            _emailService = emailService;
         }
 
         public bool BlockUser(int userId, User user)
@@ -27,6 +29,14 @@ namespace Virtual_Wallet.Services
             if (_userRepository.UserEmailExists(user.Email))
             {
                 throw new DuplicateEntityException($"A user with e-mail: {user.Email} already exists !");
+            }
+            if (_userRepository.UserPhoneNumberExists(user.PhoneNumber))
+            {
+                throw new DuplicateEntityException($"A user with phone number: {user.PhoneNumber} already exists !");
+            }
+            if (_userRepository.UserNameExists(user.Username))
+            {
+                throw new DuplicateEntityException($"A user with Name: {user.Username} already exists !");
             }
 
             User createdUser = _userRepository.Create(user);
@@ -69,7 +79,12 @@ namespace Virtual_Wallet.Services
 			return _userRepository.GetByPhoneNumber(phoneNumber);
 		}
 
-		public bool UnblockUser(int userId, User user)
+        public User GetById(int id)
+        {
+            return _userRepository.GetById(id);
+        }
+
+        public bool UnblockUser(int userId, User user)
         {
             return _userRepository.UnblockUser(userId, user);
         }
@@ -85,6 +100,21 @@ namespace Virtual_Wallet.Services
 
             User updatedUser = _userRepository.Update(id, userUpdate);
             return updatedUser;
+        }
+
+        public bool UploadPhotoVerification(string selfie, string idPhoto, User user)
+        {
+            return _userRepository.UploadPhotoVerification(selfie, idPhoto, user);
+        }
+
+        public List<VerificationApply> GetAllVereficationApplies()
+        {
+            return _userRepository.GetAllVereficationApplies();
+        }
+
+        public void UpdateUserVerification(User user, string text)
+        {
+            _userRepository.UpdateUserVerification(user, text);
         }
 
         public void AddUserCard(Card card, User user)
@@ -114,6 +144,24 @@ namespace Virtual_Wallet.Services
         public List<User> GetFriends(int userId)
         {
             return _userRepository.GetFriends(userId);
+        }
+
+        public string GenerateEmailConfirationToken()
+        {
+            return Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+        }
+
+        public async Task SendConfirmationEmailAsync(User user)
+        {
+            var token = GenerateEmailConfirationToken();
+            user.EmailConfirmationToken = token;
+            user.EmailTokenExpiry = DateTime.Now.AddHours(1); //до един час е валиден токена
+            
+            _userRepository.Update(user.Id , user);
+
+            var confirmationLink = $"http://localhost:5000/User/ConfirmEmail?username={user.Username}&token={token}";
+            await _emailService.SendAsync(user.Email, "Confirm your email", $"Please confirm your email by clicking this link:<a href = '{confirmationLink}'>Confrim Email</a>");
+
         }
     }
 }

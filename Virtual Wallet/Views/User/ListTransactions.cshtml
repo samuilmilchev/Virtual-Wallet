@@ -1,98 +1,148 @@
 ﻿@model ListTransactionsViewModel
 
-<form asp-controller="User" asp-action="ListTransactions" method="post">
+<link href="~/css/responsive.css?v=1.0" rel="stylesheet" />
 
-    <div>
+<link href="~/css/style.css?v=2.0" rel="stylesheet" />
+<link href="~/css/custom-style.css?v=1.0" rel="stylesheet" />
+<link href="~/css/AllUsers.css?v=2.0" rel="stylesheet" />
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
+<br>
+<br>
+<h2 style="text-align:center;" >All transactions:</h2>
+
+<!-- Flex container to group user details and search forms side by side -->
+<div class="user-container-wrapper">
+    <form asp-controller="User" asp-action="ListTransactions" method="post">
         @foreach (var transaction in Model.TransactionsList)
         {
-            <div class="container">
-                <div class="form-title">
-                    <h1>Transaction Details</h1>
-                    <hr>
+            <div style="width:600px;" class="container user-container">
+                <div class="user-info">
+                    <div class="form-title">
+                        <h1>Transaction Details</h1>
+                        <hr>
+                    </div>
+
+                    <div class="form-inputs">
+                        <div class="input-box">
+                            <p class="control-label">
+                                <strong style="font-size:20px; color:black;">Type:</strong> <span style="font-size:18px; color:black;" id="user-username">@transaction.Type</span>
+                            </p>
+                        </div>
+
+                        <div class="input-box">
+                            <p class="control-label">
+                                <strong style="font-size:20px; color:black;">Amount:</strong> <span style="font-size:18px; color:black;" id="user-lastname">@transaction.Amount</span>
+                            </p>
+                        </div>
+
+                        <div class="input-box">
+                            <p class="control-label">
+                                <strong style="font-size:20px; color:black;">Wallet Name:</strong> <span style="font-size:18px; color:black;" id="user-phonenumber">@transaction.Wallet.WalletName</span>
+                            </p>
+                        </div>
+                        <div class="input-box">
+                            <p class="control-label">
+                                <strong style="font-size:20px; color:black;">Time of transaction: </strong> <span style="font-size:18px; color:black;" id="user-phonenumber">@transaction.Timestamp.ToString()</span>
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-inputs">
-                    <div class="input-box">
-                        <p style="text-align: left; font-size: 20px;">
-                            <strong>Type:</strong> <span id="user-username">@transaction.Type</span>
-                        </p>
-                    </div>
-                    <br />
-                    <div class="input-box">
-                        <p style="text-align: left; font-size: 20px;">
-                            <strong>Amount:</strong> <span id="user-lastname">@transaction.Amount</span>
-                        </p>
-                    </div>
-                    <br />
-                    <div class="input-box">
-                        <p style="text-align: left; font-size: 20px;">
-                            <strong>Wallet Name:</strong> <span id="user-phonenumber">@transaction.Wallet.WalletName</span>
-                        </p>
-                    </div>
-                    <br />
-                    <div class="input-box">
-                        <p style="text-align: left; font-size: 20px;">
-                            <strong>Time of transaction: </strong> <span id="user-phonenumber">@transaction.Timestamp.ToString()</span>
-                        </p>
-                    </div>
-                </div>
             </div>
+            <br>
+            <br>
         }
 
+        <ul class="pagination">
+            @for (int i = 1; i <= Model.pageCount; i++)
+            {
+                <li class="page-item">
+                    @if (i != Model.currentPageIndex)
+                    {
+                        <a class="page-link" href="javascript:PagerClick(@(i))">@i</a>
+                    }
+                    else
+                    {
+                        <a class="page-link active">@i</a>
+                    }
+                </li>
+            }
+        </ul>
+        <input type="hidden" id="hfCurrentPageIndex" name="currentPageIndex" value="1" />
+    </form>
+
+    <!-- Search forms section next to user details -->
+    <div style="width: 800px;" class="search-forms">
+        <h2 style="text-align:center;" >Search/Order transactions:</h2>
+        <form asp-controller="User" asp-action="SearchTransactionBySender" method="post" class="form-group">
+            <div class="search-container">
+                <label>Search by sender:</label>
+                <input type="text" name="text" class="input-field" placeholder="Sender" />
+                <button type="submit" class="input-submit">Search</button>
+            </div>
+        </form>
+
+        <form asp-controller="User" asp-action="SearchTransactionByRecipient" method="post" class="form-group">
+            <div class="search-container">
+                <label>Search by recipient:</label>
+                <input type="text" name="text" class="input-field" placeholder="Recipient" />
+                <button type="submit" class="input-submit">Search</button>
+            </div>
+        </form>
+
+        <form asp-controller="User" asp-action="SearchTransactionByType" method="post" class="form-group">
+            <div class="search-container">
+                <label>Search by Type:</label>
+                <select id="transferType" name="text" class="form-control">
+                    <option value="-">-</option>
+                    <option value="Add">Add</option>
+                    <option value="Withdraw">Withdraw</option>
+                </select>
+                <button type="submit" class="input-submit">Search</button>
+            </div>
+        </form>
+
+        <form asp-controller="User" asp-action="SortByDate" method="post" class="form-group">
+            <div class="search-container">
+                <label>Sort by date:</label>
+                <select id="transferType" name="text" class="form-control">
+                    <option value="Oldest">Oldest</option>
+                    <option value="Newest">Newest</option>
+                </select>
+                <button type="submit" class="input-submit">Search</button>
+            </div>
+        </form>
+
+        <form asp-controller="User" asp-action="SortByAmount" method="post" class="form-group">
+            <div class="search-container">
+                <label>Sort by amount:</label>
+                <select id="transferType" name="text" class="form-control">
+                    <option value="High">High</option>
+                    <option value="Low">Low</option>
+                </select>
+                <button type="submit" class="input-submit">Search</button>
+            </div>
+        </form>
+
+        <div class="search-container">
+            <label>Serch by date:</label>
+            @using (Html.BeginForm("GetDateToDate", "User", FormMethod.Post))
+            {
+                <label for="startDate">From:</label>
+                <input type="text" id="startDate" name="startDate" />
+                <br>
+                <br>
+                <label for="endDate">To:  &nbsp; &nbsp; </label>
+                <input type="text" id="endDate" name="endDate" />
+                <br>
+                <br>
+
+                <button type="submit" class="input-submit">Search</button>
+            }
+        </div>
     </div>
-    <ul class="pagination">
-        @for (int i = 1; i <= Model.pageCount; i++)
-        {
-            <li class="page-item">
-                @if (i != Model.currentPageIndex)
-                {
-                    <a class="page-link" href="javascript:PagerClick(@(i))">@i</a>
-                }
-                else
-                {
-                    <a class="page-link active">@i</a>
-                }
-            </li>
-        }
-    </ul>
-    <input type="hidden" id="hfCurrentPageIndex" name="currentPageIndex" value="1" />
-</form>
-
-<div class="input-box" style="position: center-right;">
-    <form asp-controller="User" asp-action="SearchTransactionBySender" method="post">
-        <input type="text" name="text" style="width:200px; height:30px; background:#fff; border-radius: 30px;" class="input-field" placeholder="Sender" />
-        <button type="submit" style="width:100; height:30px; border-radius: 30px; background: #fff" class="input-submit">Search</button>
-    </form>
-
-    <form asp-controller="User" asp-action="SearchTransactionByRecipient" method="post">
-        <input type="text" name="text" style="width:200px; height:30px; background:#fff; border-radius: 30px;" class="input-field" placeholder="Recipient" />
-        <button type="submit" style="width:100; height:30px; border-radius: 30px; background: #fff" class="input-submit">Search</button>
-    </form>
-
-    <form asp-controller="User" asp-action="SearchTransactionByType" method="post">
-        <select id="transferType" name="text" class="form-control">
-            <option value="-">-</option>
-            <option value="Add">Add</option>
-            <option value="Withdraw">Withdraw</option>
-        </select>
-        <button type="submit" style="width:100; height:30px; border-radius: 30px; background: #fff" class="input-submit">Search</button>
-    </form>
-
-    <form asp-controller="User" asp-action="SortByDate" method="post">
-        <select id="transferType" name="text" class="form-control">
-            <option value="Oldest">Oldest</option>
-            <option value="Newest">Newest</option>
-        </select>
-        <button type="submit" style="width:100; height:30px; border-radius: 30px; background: #fff" class="input-submit">Search</button>
-    </form>
-
-    <form asp-controller="User" asp-action="SortByAmount" method="post">
-        <select id="transferType" name="text" class="form-control">
-            <option value="High">High</option>
-            <option value="Low">Low</option>
-        </select>
-        <button type="submit" style="width:100; height:30px; border-radius: 30px; background: #fff" class="input-submit">Search</button>
-    </form>
 </div>
 
 <script type="text/javascript">
@@ -102,20 +152,8 @@
     }
 </script>
 
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-
-@using (Html.BeginForm("GetDateToDate", "User", FormMethod.Post))
-{
-    <label for="startDate">From:</label>
-    <input type="text" id="startDate" name="startDate" />
-
-    <label for="endDate">To:</label>
-    <input type="text" id="endDate" name="endDate" />
-
-    <button type="submit">Submit</button>
-}
 
 <script>
     $(function () {

@@ -10,5 +10,7 @@ namespace Virtual_Wallet.Helpers.Contracts
         UserViewModel Map(User user);
         User MapUserViewModel(UserViewModel urd);
         TransactionViewModel Map(Transaction transaction);
+        VerificationViewModel Map(VerificationApply verificationApply);
+        WalletViewModel Map(Wallet wallet);
     }
 }

@@ -1,38 +1,60 @@
 ﻿@model List<TransactionViewModel>
 
+<link href="~/css/responsive.css?v=1.0" rel="stylesheet" />
+
+<link href="~/css/style.css?v=2.0" rel="stylesheet" />
+<link href="~/css/ListSavingWallets.css" rel="stylesheet" />
+
+<br>
+<br>
+<br>
+<br>
 
 @foreach (var transaction in Model)
 {
-    <div class="container">
-        <div class="form-title">
-            <h1>Transaction Details</h1>
-            <hr>
-        </div>
+    <div class="container" style="margin-left:350px;">
+        <div class="user-container">
+            <div class="user-info">
+                <div class="form-title">
+                    <h1>User Details:</h1>
+                    <hr>
+                </div>
 
-        <div class="form-inputs">
-            <div class="input-box">
-                <p style="text-align: left; font-size: 20px;">
-                    <strong>Type:</strong> <span id="user-username">@transaction.Type</span>
-                </p>
-            </div>
-            <br />
-            <div class="input-box">
-                <p style="text-align: left; font-size: 20px;">
-                    <strong>Amount:</strong> <span id="user-lastname">@transaction.Amount</span>
-                </p>
-            </div>
-            <br />
-            <div class="input-box">
-                <p style="text-align: left; font-size: 20px;">
-                    <strong>Wallet Name:</strong> <span id="user-phonenumber">@transaction.Wallet.WalletName</span>
-                </p>
-            </div>
-            <br />
-            <div class="input-box">
-                <p style="text-align: left; font-size: 20px;">
-                    <strong>Time of transaction: </strong> <span id="user-phonenumber">@transaction.Timestamp.ToString()</span>
-                </p>
+                <div class="form-inputs">
+                    <!-- Start Date -->
+                    <div class="input-box">
+                        <p class="control-label">
+                            <strong>Type:</strong>
+                            <span>@transaction.Type</span>
+                        </p>
+                    </div>
+
+                    <!-- End Date -->
+                    <div class="input-box">
+                        <p class="control-label">
+                            <strong>Amount:</strong>
+                            <span>@transaction.Amount</span>
+                        </p>
+                    </div>
+
+                    <!-- Amount -->
+                    <div class="input-box">
+                        <p class="control-label">
+                            <strong>Wallet Name:</strong>
+                            <span>@transaction.Wallet.WalletName</span>
+                        </p>
+                    </div>
+
+                    <!-- Interest Rate -->
+                    <div class="input-box">
+                        <p class="control-label">
+                            <strong>Time of transaction:</strong>
+                            <span>@transaction.Timestamp.ToString()</span>
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
+        <br><br>
     </div>
 }

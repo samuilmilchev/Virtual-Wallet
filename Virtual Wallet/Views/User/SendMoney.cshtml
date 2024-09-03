@@ -1,27 +1,33 @@
 ﻿@model SendMoneyViewModel
 
-@if (ViewData["Message"] != null)
-{
-    <div class="alert alert-success">@ViewData["Message"]</div>
-}
+<link href="~/css/responsive.css?v=1.0" rel="stylesheet" />
+<link href="~/css/style.css?v=2.0" rel="stylesheet" />
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link href="~/css/SavingWallet.css" rel="stylesheet" />
 
-<div class="container">
-    <br><br><br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div class="form-container">
     <form asp-action="SendMoney" method="post" enctype="multipart/form-data">
-        <div style="text-align: center;" class="form-title">
-            <h2 style="padding-left: 20px; color:black;">Send Money</h2>
+        <div class="form-title">
+            <h2>Send Money</h2>
             <hr>
         </div>
 
-        <div class="input-box">
-            <label asp-for="RecipienTokens" style="font-size: 20px;" class="form-label"></label>
-            <input asp-for="RecipienTokens" style="color:black;" class="input-field" />
+        <div class="form-group">
+            <label asp-for="RecipienTokens" style="color:black;" class="form-label">Recepien</label>
+            <input asp-for="RecipienTokens" class="input-field" placeholder="Username/ PhoneNumber/ Email" />
             <span asp-validation-for="RecipienTokens"></span>
         </div>
 
-        <!-- Dropdown for selecting currency -->
         <div class="form-group">
-            <label asp-for="Currency" style="font-size: 20px;" class="form-label">Select Currency</label>
+            <label asp-for="Currency" style="color:black;" class="form-label">Select Currency</label>
             <select asp-for="Currency" class="form-control">
                 @foreach (var wallet in Model.CurrentUser.UserWallets)
                 {
@@ -31,17 +37,38 @@
             <span asp-validation-for="Currency"></span>
         </div>
 
-        <div class="input-box">
-            <label asp-for="Amount" style="font-size: 20px;" class="form-label"></label>
-            <input asp-for="Amount" style="color:black;" class="input-field" />
+        <div class="form-group">
+            <label asp-for="Amount" style="color:black;" class="form-label"></label>
+            <input asp-for="Amount" class="input-field" />
             <span asp-validation-for="Amount"></span>
         </div>
 
-        <button type="submit" style="font-size: 20px; color:black;" class="input-submit">Save</button>
+
+        @{
+            if (Model.CurrentUser.IsBlocked == true || Model.CurrentUser.AdminVerified == false)
+            {
+                <p class="blocked-message">You are blocked or not verified by admin and you are not allowed to send money to other users.</p>
+            }
+            else
+            {
+                <button type="submit" class="btn-submit">SEND</button>
+            }
+        }
 
         @if (ViewData["ErrorMessage"] != null)
         {
             <div class="alert alert-danger">@ViewData["ErrorMessage"]</div>
         }
     </form>
+    <br>
+    <br>
 </div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>

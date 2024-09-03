@@ -36,6 +36,8 @@ namespace Virtual_Wallet.Helpers
             newUser.PhoneNumber = user.PhoneNumber;
             newUser.IsBlocked = user.IsBlocked;
             newUser.Cards = user.Cards;
+            newUser.AdminVerified = user.AdminVerified;
+            newUser.IsAdmin = user.IsAdmin;
 
             return newUser;
         }
@@ -64,6 +66,30 @@ namespace Virtual_Wallet.Helpers
             mappedTransaction.Type = transaction.Type;
 
             return mappedTransaction;
+        }
+
+        public VerificationViewModel Map(VerificationApply verificationApply)
+        {
+            VerificationViewModel mappedVerification = new VerificationViewModel();
+
+            mappedVerification.Selfie = verificationApply.Selfie;
+            mappedVerification.IdPhoto = verificationApply.IdPhoto;
+            mappedVerification.User = this.Map(verificationApply.User);
+
+            return mappedVerification;
+        }
+
+        public WalletViewModel Map(Wallet wallet)
+        {
+            WalletViewModel mappedWallet = new WalletViewModel();
+
+            mappedWallet.Amount = wallet.Amount;
+            mappedWallet.WalletName = wallet.WalletName;
+            mappedWallet.Currency = wallet.Currency;
+            mappedWallet.Owner = wallet.Owner;
+
+
+            return mappedWallet;
         }
     }
 }
