@@ -43,7 +43,6 @@ namespace Virtual_Wallet.Repository
 
         public User GetByEmail(string email)
         {
-            
             User user = this.GetUsers().Include(y => y.Friends).Include(x => x.Cards).Include(u=>u.UserWallets).FirstOrDefault(x => x.Email == email);
             if (user == null)
             {
@@ -54,7 +53,7 @@ namespace Virtual_Wallet.Repository
         public User GetByUsername(string username)
         {
             
-            User user = this.GetUsers().Include(y => y.Friends).Include(x => x.Cards).Include(u => u.UserWallets).FirstOrDefault(x => x.Username == username);
+            User user = this.GetUsers().Include(y => y.Friends).Include(x => x.Cards).Include(u => u.UserWallets).Include(x => x.SavingWallets).FirstOrDefault(x => x.Username == username);
             if (user == null)
             {
                 throw new EntityNotFoundException($"User with username {username} does not exist!");
