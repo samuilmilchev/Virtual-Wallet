@@ -64,7 +64,6 @@ namespace Virtual_Wallet.Migrations
                 });
 
             migrationBuilder.CreateTable(
-<<<<<<<< HEAD:Virtual Wallet/Migrations/20240902214346_Initial.cs
                 name: "Friends",
                 columns: table => new
                 {
@@ -86,7 +85,9 @@ namespace Virtual_Wallet.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-========
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SavingWallets",
                 columns: table => new
                 {
@@ -127,7 +128,6 @@ namespace Virtual_Wallet.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id");
->>>>>>>> master:Virtual Wallet/Migrations/20240902105711_Initial.cs
                 });
 
             migrationBuilder.CreateTable(
@@ -228,15 +228,14 @@ namespace Virtual_Wallet.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-<<<<<<<< HEAD:Virtual Wallet/Migrations/20240902214346_Initial.cs
                 name: "IX_Friends_UserId",
                 table: "Friends",
                 column: "UserId");
-========
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SavingWallets_OwnerId",
                 table: "SavingWallets",
                 column: "OwnerId");
->>>>>>>> master:Virtual Wallet/Migrations/20240902105711_Initial.cs
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_RecipientId",
@@ -270,11 +269,10 @@ namespace Virtual_Wallet.Migrations
                 name: "Cards");
 
             migrationBuilder.DropTable(
-<<<<<<<< HEAD:Virtual Wallet/Migrations/20240902214346_Initial.cs
                 name: "Friends");
-========
+
+            migrationBuilder.DropTable(
                 name: "SavingWallets");
->>>>>>>> master:Virtual Wallet/Migrations/20240902105711_Initial.cs
 
             migrationBuilder.DropTable(
                 name: "Transactions");

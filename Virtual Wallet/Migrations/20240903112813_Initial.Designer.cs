@@ -12,11 +12,7 @@ using Virtual_Wallet.Db;
 namespace Virtual_Wallet.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-<<<<<<<< HEAD:Virtual Wallet/Migrations/20240902214346_Initial.Designer.cs
-    [Migration("20240902214346_Initial")]
-========
-    [Migration("20240902105711_Initial")]
->>>>>>>> master:Virtual Wallet/Migrations/20240902105711_Initial.Designer.cs
+    [Migration("20240903112813_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

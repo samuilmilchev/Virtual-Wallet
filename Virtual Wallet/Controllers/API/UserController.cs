@@ -1,5 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
 using Virtual_Wallet.DTOs.TransactionDTOs;
 using Virtual_Wallet.DTOs.UserDTOs;
 using Virtual_Wallet.Helpers.Contracts;
@@ -250,7 +255,7 @@ namespace Virtual_Wallet.Controllers.API
         }
 
         [HttpPost("send-money")]
-        public IActionResult SendMoney([FromBody] SendMoneyViewModel sendMoney)
+        public async Task<IActionResult> SendMoney([FromBody] SendMoneyViewModel sendMoney)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -375,9 +380,9 @@ namespace Virtual_Wallet.Controllers.API
         }
 
         [HttpPost("get-date-to-date")]
-        public IActionResult GetDateToDate([FromBody] DateRangeDTO dateRange)
+        public IActionResult GetDateToDate([FromBody] DateTime startDate, DateTime endDate)
         {
-            var transactions = _transactionService.GetTransactionsByDateRange(dateRange.StartDate, dateRange.EndDate)
+            var transactions = _transactionService.GetTransactionsByDateRange(startDate, endDate)
                 .Select(x => _modelMapper.Map(x))
                 .ToList();
 
@@ -437,9 +442,86 @@ namespace Virtual_Wallet.Controllers.API
             if (user == null)
                 return NotFound("User not found");
 
-            _usersService.Delete(user.Id);
+            _usersService.Delete(user.Id, user);
 
             return Ok(new { message = "User deleted successfully" });
         }
-    }
+		private string CreateToken(User user)
+		{
+			List<Claim> claims = new List<Claim>() //delete some rows for the claims.
+            {
+				new Claim(ClaimTypes.Name, user.Username),
+				new Claim(ClaimTypes.Role , user.Role.ToString())
+
+			};
+
+
+			var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
+
+			var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+			var token = new JwtSecurityToken(
+				claims: claims,
+				expires: DateTime.Now.AddDays(1),
+				signingCredentials: creds);
+
+			var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+			return jwt;
+		}
+		private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+		{
+			using (var hmac = new HMACSHA512(passwordSalt))
+			{
+				var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+				return computedHash.SequenceEqual(passwordHash);
+			}
+		}
+
+		private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+		{
+			using (var hmac = new HMACSHA512())
+			{
+				passwordSalt = hmac.Key;
+				passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+			}
+		}
+		private async Task<UserPViewModel> GetUserList(int currentPage)
+		{
+			int maxRowsPerPage = 2;
+			UserPViewModel userModel = new UserPViewModel();
+
+			userModel.UserList = await _usersService.GetAll()
+				.OrderBy(x => x.Id)
+				.Skip((currentPage - 1) * maxRowsPerPage)
+				.Take(maxRowsPerPage)
+				.ToListAsync();
+
+			double pageCount = (double)((decimal)_usersService.GetAll().Count() / Convert.ToDecimal(maxRowsPerPage));
+
+			userModel.pageCount = (int)Math.Ceiling(pageCount);
+			userModel.currentPageIndex = currentPage;
+			return userModel;
+		}
+
+
+
+		private async Task<ListTransactionsViewModel> GetTransactionsList(int currentPage)
+		{
+			int maxRowsPerPage = 2;
+			ListTransactionsViewModel transactionModel = new ListTransactionsViewModel();
+
+			transactionModel.TransactionsList = await _transactionService.GetAllTransactions()
+				.OrderBy(x => x.Id)
+				.Skip((currentPage - 1) * maxRowsPerPage)
+				.Take(maxRowsPerPage)
+				.ToListAsync();
+
+			double pageCount = (double)((decimal)_transactionService.GetAllTransactions().Count() / Convert.ToDecimal(maxRowsPerPage));
+
+			transactionModel.pageCount = (int)Math.Ceiling(pageCount);
+			transactionModel.currentPageIndex = currentPage;
+			return transactionModel;
+		}
+	}
 }
