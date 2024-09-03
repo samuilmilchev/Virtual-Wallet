@@ -7,7 +7,7 @@ using Virtual_Wallet.Services.Contracts;
 
 namespace Virtual_Wallet.Controllers.API
 {
-    public class RegisterCardController : Controller
+    public class APIRegisterCardController : Controller
     {
         [Route("api/card")]
         [ApiController]

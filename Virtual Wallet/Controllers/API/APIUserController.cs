@@ -16,7 +16,7 @@ namespace Virtual_Wallet.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class APIUserController : ControllerBase
     {
         private readonly IUsersService _usersService;
         private readonly IConfiguration _configuration;
@@ -26,7 +26,7 @@ namespace Virtual_Wallet.Controllers.API
         private readonly ITransactionService _transactionService;
         private readonly IEmailService _emailService;
 
-        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService, ITransactionService transactionService, IPhotoService photoService, IEmailService emailService)
+        public APIUserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService, ITransactionService transactionService, IPhotoService photoService, IEmailService emailService)
         {
             _usersService = usersService;
             _configuration = configuration;
