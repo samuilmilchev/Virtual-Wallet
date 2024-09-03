@@ -21,6 +21,18 @@ namespace Virtual_Wallet.Controllers.API
             _usersService = usersService;
         }
 
+        /// <summary>
+        /// Transfers funds from the user's card to a wallet or from the wallet to a card, depending on the transferType query parameter.
+        /// </summary>
+        /// <param name="model">TransferRequestDTO .</param>
+
+        /// Sample request:
+        ///
+        ///     {
+        ///         "amount": 100.0,
+        ///         "currency": "USD"
+        ///     }
+        /// </remarks>
         [HttpPost("transferFunds")]
         public IActionResult TransferToCard([FromBody] TransferRequestDTO transferRequest, [FromQuery] string transferType)
         {
@@ -60,7 +72,7 @@ namespace Virtual_Wallet.Controllers.API
         //    var sender = this._usersService.GetByUsername(senderUsername);
         //    var sendersCard = this._cardService.GetByCardHoler(senderUsername);
 
-           
+
 
         //    return StatusCode(StatusCodes.Status200OK, transferRequest);     //подлежи на промяна след като изясним логиката по виртуалния портфейл
         //}
