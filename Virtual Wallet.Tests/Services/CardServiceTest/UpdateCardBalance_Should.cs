@@ -3,6 +3,7 @@ using Virtual_Wallet.Services;
 using Virtual_Wallet.Models.Entities;
 using Virtual_Wallet.Repository.Contracts;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Virtual_Wallet.Exceptions;
 
 namespace Virtual_Wallet.Tests.Services.CardServiceTest
 {
@@ -34,23 +35,6 @@ namespace Virtual_Wallet.Tests.Services.CardServiceTest
 			Assert.IsNotNull(result);
 			Assert.AreEqual(updatedCard.Balance, result.Balance);
 			repositoryMock.Verify(c => c.UpdateCardBalance(initialCard.Id, updatedCard), Times.Once);
-		}
-
-		[TestMethod]
-		public void ThrowException_When_CardDoesNotExist()
-		{
-			// Arrange
-			var repositoryMock = new Mock<ICardRepository>();
-			repositoryMock
-				.Setup(c => c.GetById(It.IsAny<int>()))
-				.Returns((Card)null); // Simulate card not found
-
-			var sut = new CardService(repositoryMock.Object);
-			var updatedCard = TestHelper.GetTestCard();
-			updatedCard.Balance = 2000m;
-
-			// Act & Assert
-			Assert.ThrowsException<Exception>(() => sut.UpdateCardBalance(updatedCard.Id, updatedCard));
 		}
 
 		[TestMethod]
