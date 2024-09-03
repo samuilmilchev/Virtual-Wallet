@@ -494,17 +494,17 @@ namespace Virtual_Wallet.Controllers.MVC
         }
 
 
-        [HttpGet]
-        public async Task<IActionResult> ListUsers()
-        {
-            return View(await GetUserList(1));
-        }
+        //[HttpGet]
+        //public async Task<IActionResult> ListTransactions()
+        //{
+        //    return View(await GetUserTransactionsList(1));
+        //}
 
-        [HttpPost]
-        public async Task<IActionResult> ListUsers([FromForm] int currentPageIndex)
-        {
-            return View(await GetUserList(currentPageIndex));
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> ListUsersTransactions([FromForm] int currentPageIndex)
+        //{
+        //    return View(await GetUserTransactionsList(currentPageIndex));
+        //}
 
         //[HttpGet]
         //public IActionResult ListUsers()
@@ -734,6 +734,35 @@ namespace Virtual_Wallet.Controllers.MVC
             return transactionModel;
         }
 
+        private async Task<ListUserTransactionsViewModel> GetUserTransactionsList(int currentPage)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            int maxRowsPerPage = 2;
+            ListUserTransactionsViewModel transactionModel = new ListUserTransactionsViewModel();
+
+            //transactionModel.TransactionsList = (List<System.Transactions.Transaction>)await _transactionService.GetTransactionByUserId(user.Id)
+            //    .OrderBy(x => x.Id)
+            //    .Skip((currentPage - 1) * maxRowsPerPage)
+            //    .Take(maxRowsPerPage)
+            //    .ToListAsync();
+            var transactions = await _transactionService.GetTransactionByUserId(user.Id);
+
+            transactionModel.TransactionsList = transactions
+                .OrderBy(x => x.Id)
+                .Skip((currentPage - 1) * maxRowsPerPage)
+                .Take(maxRowsPerPage)
+                .ToList();
+
+            int totalTransactionCount = transactions.Count();
+            double pageCount = (double)((decimal)totalTransactionCount / Convert.ToDecimal(maxRowsPerPage));
+
+            transactionModel.pageCount = (int)Math.Ceiling(pageCount);
+            transactionModel.currentPageIndex = currentPage;
+            return transactionModel;
+        }
+
         private async Task<ListTransactionsViewModel> GetTransactionsList(int currentPage, IQueryable<Transaction> transactions)
         {
             int maxRowsPerPage = 2;
@@ -831,5 +860,98 @@ namespace Virtual_Wallet.Controllers.MVC
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> UserTransactions()
+        {
+            return View(await GetUserTransactionsList(1));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UserTransactions([FromForm] int currentPageIndex)
+        {
+            return View(await GetUserTransactionsList(currentPageIndex));
+        }
+
+        //============= Below are the sorting and filtering methods for user's transaction list ===============================================
+
+
+
+        [HttpPost]
+        public IActionResult UserSearchTransactionBySender([FromForm] string text)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
+            transactionQueryParameters.Sender = text;
+
+            var transactions = _transactionService.UserFilterBy(transactionQueryParameters, user.Id).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult UserSearchTransactionByRecipient([FromForm] string text)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
+            transactionQueryParameters.Recipient = text;
+
+            var transactions = _transactionService.UserFilterBy(transactionQueryParameters, user.Id).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult UserSearchTransactionByType([FromForm] string text)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            if (text == "-")
+            {
+                return RedirectToAction("UserTransactions");
+            }
+
+            TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
+            transactionQueryParameters.TransactionType = text;
+
+            var transactions = _transactionService.UserFilterBy(transactionQueryParameters, user.Id).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult UserSortByDate([FromForm] string text)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            var transactions = _transactionService.UserSortByDate(text, user.Id).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult UserSortByAmount([FromForm] string text)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+            var transactions = _transactionService.UserSortByAmount(text, user.Id).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult UserGetDateToDate(DateTime startDate, DateTime endDate)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+            var transactions = _transactionService.UserGetTransactionsByDateRange(startDate, endDate , user.Id).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
     }
 }
