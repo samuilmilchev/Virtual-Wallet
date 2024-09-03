@@ -30,6 +30,14 @@ namespace Virtual_Wallet.Services
             {
                 throw new DuplicateEntityException($"A user with e-mail: {user.Email} already exists !");
             }
+            if (_userRepository.UserPhoneNumberExists(user.PhoneNumber))
+            {
+                throw new DuplicateEntityException($"A user with phone number: {user.PhoneNumber} already exists !");
+            }
+            if (_userRepository.UserNameExists(user.Username))
+            {
+                throw new DuplicateEntityException($"A user with Name: {user.Username} already exists !");
+            }
 
             User createdUser = _userRepository.Create(user);
             return createdUser;
