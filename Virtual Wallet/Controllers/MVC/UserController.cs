@@ -260,6 +260,8 @@ namespace Virtual_Wallet.Controllers.MVC
             {
                 _usersService.UpdateUserVerification(user, verificationValue);
 
+				_emailService.SendAsync(user.Email, "Successfully verified", "You have been successfully verified by admin.");
+
                 return RedirectToAction("UserDetails", new { username = user.Username });
             }
             else
