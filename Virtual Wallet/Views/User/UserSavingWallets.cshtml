@@ -8,59 +8,53 @@
 <br>
 
 @{
-    if (Model == null)
+
+    foreach (var wallet in Model)
     {
-        <p style="text-align:center; font-size:20px; padding-bottom: 500px; padding-top:300px;">You do not have any saving wallets</p>
-    }
-    else
-    {
-        foreach (var wallet in Model)
-        {
-            <div class="container">
-                <div class="user-container">
-                    <div class="user-info">
-                        <div class="form-title">
-                            <h1>Saving Wallet details:</h1>
-                            <hr>
+        <div class="container">
+            <div class="user-container">
+                <div class="user-info">
+                    <div class="form-title">
+                        <h1>Saving Wallet details:</h1>
+                        <hr>
+                    </div>
+
+                    <div class="form-inputs">
+                        <!-- Start Date -->
+                        <div class="input-box">
+                            <p class="control-label">
+                                <strong>Start Date:</strong>
+                                <span>@wallet.StartDate</span>
+                            </p>
                         </div>
 
-                        <div class="form-inputs">
-                            <!-- Start Date -->
-                            <div class="input-box">
-                                <p class="control-label">
-                                    <strong>Start Date:</strong>
-                                    <span>@wallet.StartDate</span>
-                                </p>
-                            </div>
+                        <!-- End Date -->
+                        <div class="input-box">
+                            <p class="control-label">
+                                <strong>End Date:</strong>
+                                <span>@wallet.EndDate</span>
+                            </p>
+                        </div>
 
-                            <!-- End Date -->
-                            <div class="input-box">
-                                <p class="control-label">
-                                    <strong>End Date:</strong>
-                                    <span>@wallet.EndDate</span>
-                                </p>
-                            </div>
+                        <!-- Amount -->
+                        <div class="input-box">
+                            <p class="control-label">
+                                <strong>Amount:</strong>
+                                <span>@wallet.Amount</span>
+                            </p>
+                        </div>
 
-                            <!-- Amount -->
-                            <div class="input-box">
-                                <p class="control-label">
-                                    <strong>Amount:</strong>
-                                    <span>@wallet.Amount</span>
-                                </p>
-                            </div>
-
-                            <!-- Interest Rate -->
-                            <div class="input-box">
-                                <p class="control-label">
-                                    <strong>Interest:</strong>
-                                    <span>@wallet.InterestRate</span>
-                                </p>
-                            </div>
+                        <!-- Interest Rate -->
+                        <div class="input-box">
+                            <p class="control-label">
+                                <strong>Interest:</strong>
+                                <span>@wallet.InterestRate</span>
+                            </p>
                         </div>
                     </div>
                 </div>
-                <br><br>
             </div>
-        }
+            <br><br>
+        </div>
     }
 }

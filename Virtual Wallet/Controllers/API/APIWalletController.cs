@@ -22,6 +22,24 @@ namespace Virtual_Wallet.Controllers.API
             _usersService = usersService;
         }
 
+        /// <summary>
+        /// Converts funds from one currency to another for the authenticated user.
+        /// </summary>
+        /// <param name="model">The conversion details including amount, from currency, and to currency.</param>
+        /// <returns>Returns a success message if the conversion is successful.</returns>
+        /// <response code="200">Funds converted successfully</response>
+        /// <response code="400">Invalid model state</response>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /api/APIWallet/convert-funds
+        ///     {
+        ///        "amount": 100,
+        ///        "fromCurrency": "USD",
+        ///        "toCurrency": "EUR"
+        ///     }
+        ///
+        /// </remarks>
         [HttpPost("convert-funds")]
         public IActionResult ConvertFunds([FromBody] ConvertFundsViewModel model)
         {
@@ -41,6 +59,23 @@ namespace Virtual_Wallet.Controllers.API
             return BadRequest(ModelState);
         }
 
+        /// <summary>
+        /// Creates a saving wallet for the authenticated user.
+        /// </summary>
+        /// <param name="model">The saving wallet details.</param>
+        /// <returns>Returns the created saving wallet model.</returns>
+        /// <response code="200">Saving wallet created successfully</response>
+        /// <response code="404">User not found</response>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /api/APIWallet/create-saving-wallet
+        ///     {
+        ///        "amount": 1000,
+        ///        "interestRate": 0.05
+        ///     }
+        ///
+        /// </remarks>
         [HttpPost("create-saving-wallet")]
         public IActionResult CreateSavingWallet([FromBody] SavingWalletViewModel model)
         {
@@ -66,6 +101,23 @@ namespace Virtual_Wallet.Controllers.API
             return Ok(model);
         }
 
+        /// <summary>
+        /// Reviews and creates a saving wallet based on user acceptance.
+        /// </summary>
+        /// <param name="request">The request to review saving wallet creation.</param>
+        /// <returns>Returns a success message if the wallet is created.</returns>
+        /// <response code="200">Saving wallet created successfully</response>
+        /// <response code="400">Saving wallet creation rejected</response>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /api/APIWallet/review-saving-wallet
+        ///     {
+        ///        "text": "Accept",
+        ///        "model": { "amount": 1000, "interestRate": 0.05 }
+        ///     }
+        ///
+        /// </remarks>
         [HttpPost("review-saving-wallet")]
         public IActionResult ReviewSavingWallet([FromBody] ReviewSavingWalletRequest request)
         {
@@ -82,6 +134,17 @@ namespace Virtual_Wallet.Controllers.API
             return BadRequest("Saving wallet creation rejected.");
         }
 
+        /// <summary>
+        /// Indicates a successful transaction.
+        /// </summary>
+        /// <returns>Returns a success message.</returns>
+        /// <response code="200">Transaction successful</response>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /api/APIWallet/transaction-success
+        ///
+        /// </remarks>
         [HttpGet("transaction-success")]
         public IActionResult TransactionSuccess()
         {
@@ -95,6 +158,26 @@ namespace Virtual_Wallet.Controllers.API
             return Ok(new { message = "Large transaction verification form displayed" });
         }
 
+        /// <summary>
+        /// Verifies a transaction based on the provided transaction token.
+        /// </summary>
+        /// <param name="request">The transaction verification details.</param>
+        /// <returns>Returns a success message if the transaction is verified.</returns>
+        /// <response code="200">Transaction verified and completed successfully</response>
+        /// <response code="400">Invalid or expired verification code</response>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /api/APIWallet/verify-transaction
+        ///     {
+        ///        "transactionToken": "abc123",
+        ///        "senderUsername": "senderUser",
+        ///        "recipientUsername": "recipientUser",
+        ///        "currency": "USD",
+        ///        "amount": 500
+        ///     }
+        ///
+        /// </remarks>
         [HttpPost("verify-transaction")]
         public IActionResult VerifyTransaction([FromBody] VerifyTransactionRequest request)
         {

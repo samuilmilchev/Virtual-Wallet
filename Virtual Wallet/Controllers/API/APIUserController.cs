@@ -37,6 +37,28 @@ namespace Virtual_Wallet.Controllers.API
             _emailService = emailService;
         }
 
+        /// <summary>
+        /// Registers a new user.
+        /// </summary>
+        /// <param name="model">Combined user DTO containing user and wallet details.</param>
+        /// <returns>Returns a success message and user details upon successful registration.</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /api/apiuser/register
+        ///     {
+        ///         "register": {
+        ///             "username": "john_doe",
+        ///             "email": "john.doe@example.com",
+        ///             "password": "SecurePassword123",
+        ///             "phoneNumber": "123456789",
+        ///             "image": "base64EncodedImage"
+        ///         },
+        ///         "wallet": {
+        ///             "walletName": "John's Wallet"
+        ///         }
+        ///     }
+        /// </remarks>
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] CombinedUserDTO model)
         {
@@ -97,6 +119,23 @@ namespace Virtual_Wallet.Controllers.API
 
 
         }
+
+        /// <summary>
+        /// Logs in a user.
+        /// </summary>
+        /// <param name="model">Combined user DTO containing login details.</param>
+        /// <returns>Returns a success message and JWT token upon successful login.</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /api/apiuser/login
+        ///     {
+        ///         "login": {
+        ///             "username": "john_doe",
+        ///             "password": "SecurePassword123"
+        ///         }
+        ///     }
+        /// </remarks>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] CombinedUserDTO model)
         {
@@ -121,6 +160,16 @@ namespace Virtual_Wallet.Controllers.API
             return Ok(new { message = "Login successful", token });
         }
 
+
+        /// <summary>
+        /// Logs out a user by deleting the JWT token.
+        /// </summary>
+        /// <returns>Returns a success message upon logout.</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /api/apiuser/logout
+        /// </remarks>
         [HttpPost("logout")]
         public IActionResult Logout()
         {
@@ -150,6 +199,20 @@ namespace Virtual_Wallet.Controllers.API
             return Ok(model);
         }
 
+        /// <summary>
+        /// Uploads photos for user verification.
+        /// </summary>
+        /// <param name="model">VerifyUserViewModel containing selfie and ID photo.</param>
+        /// <returns>Returns a success message upon successful upload of photos.</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /api/apiuser/upload-photos-verification
+        ///     {
+        ///         "selfie": "base64EncodedImage",
+        ///         "idPhoto": "base64EncodedImage"
+        ///     }
+        /// </remarks>
         [HttpPost("upload-photos-verification")]
         public async Task<IActionResult> UploadPhotosVerification([FromBody] VerifyUserViewModel model)
         {
@@ -180,6 +243,20 @@ namespace Virtual_Wallet.Controllers.API
             return Ok(verifications);
         }
 
+        /// <summary>
+        /// Uploads photos for user verification.
+        /// </summary>
+        /// <param name="model">VerifyUserViewModel containing selfie and ID photo.</param>
+        /// <returns>Returns a success message upon successful upload of photos.</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /api/apiuser/upload-photos-verification
+        ///     {
+        ///         "selfie": "base64EncodedImage",
+        ///         "idPhoto": "base64EncodedImage"
+        ///     }
+        /// </remarks>
         [HttpPost("verify-users")]
         public IActionResult VerifyUsers([FromBody] string text)
         {
