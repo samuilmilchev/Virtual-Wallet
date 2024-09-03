@@ -3,43 +3,77 @@
 <link href="~/css/responsive.css?v=1.0" rel="stylesheet" />
 
 <link href="~/css/style.css?v=2.0" rel="stylesheet" />
+<link href="~/css/AllUsers.css?v=3.0" rel="stylesheet" />
 
-<br>
-<br>
-<h2>Verefication applies:</h2>
-<hr>
-@{
-    foreach (var apply in Model)
-    {
 
-        <h1>User Details</h1>
-        <hr>
-
-        <div class="form-inputs">
-            <div class="input-box">
-                <p style="text-align: left; font-size: 20px;"><strong>Username:</strong> <span id="user-username">@apply.User.Username</span></p>
-            </div>
-            <br>
-            <div class="input-box" style="display: flex;">
-                <p style="text-align: right; font-size: 20px;"><strong>User selfie:</strong></p>
-                <img src="@apply.Selfie" alt="User Image" style="width: 300px; height: 300px; " />
-            </div>
-            <br>
-            <div class="input-box" style="display: flex;">
-                <p style="text-align: left; font-size: 20px;"><strong>User IdPhoto:</strong></p>
-                <img src="@apply.IdPhoto" alt="User Image" style="width: 300px; height: 300px; " />
-            </div>
-            <br>
-        </div>
-
-        <form asp-action="VerifyUsers" asp-controller="User" method="post">
-            <button type="submit" name="text" value="Accept,@apply.User.Username" style="width: 80px; height: 50px; margin-left: 20px;" class="input-submit">
-                Accept Verification
-            </button>
-
-            <button type="submit" name="text" value="Decline,@apply.User.Username" style="width: 80px; height: 50px; margin-left: 20px;" class="input-submit">
-                Decline Verification
-            </button>
-        </form>
+<style>
+    body{
+        margin: 0; /* Remove default margin to ensure the image covers the entire page */
+        padding: 0; /* Remove default padding */
+        background-image: url('../images/modern_tech_background_with_low_poly_design_1905.jpg');
+        background-size: cover; /* Ensure the image covers the entire viewport */
+        backdrop-filter: blur(2px);
+        background-position: center; /* Center the image */
+        background-repeat: no-repeat; /* Prevent the image from repeating */
+        background-attachment: fixed; /* Keep the image fixed during scrolling (optional) */
     }
-}
+</style>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<h2 style="text-align:center;">Verification applies:</h2>
+<br>
+<br>
+<!-- Wrapper for the user details and search forms -->
+<div class="user-container-wrapper">
+    <!-- User details container -->
+    <div class="user-container">
+        @{
+            foreach (var apply in Model)
+            {
+                <h1 style="text-align:center;">User Details</h1>
+                <hr>
+
+                <div style="text-align:center;" class="user-info">
+                    <p style="font-size: 20px;">
+                        <strong>Username:</strong> <span id="user-username">@apply.User.Username</span>
+                    </p>
+                </div>
+
+                <!-- Images container -->
+                <div class="images-container" style="display: flex; gap: 20px; align-items: center; margin-left: 170px;">
+                    <!-- User selfie -->
+                        <div class="input-box">
+                            <p style="text-align: center; font-size: 20px;"><strong>User selfie:</strong></p>
+                            <img src="@apply.Selfie" alt="User Selfie" style="width: 300px; height: 300px; object-fit: cover; border: 2px solid #ddd; border-radius: 5px;" />
+                        </div>
+                        <!-- User IdPhoto -->
+                        <div class="input-box">
+                            <p style="text-align: center; font-size: 20px;"><strong>User IdPhoto:</strong></p>
+                            <img src="@apply.IdPhoto" alt="User ID Photo" style="width: 300px; height: 300px; object-fit: cover; border: 2px solid #ddd; border-radius: 5px;" />
+                        </div>
+                </div>
+
+                <!-- Verification buttons -->
+                <form asp-action="VerifyUsers" asp-controller="User" method="post" style="margin-top: 20px; text-align:center;">
+                    <button type="submit" name="text" value="Accept,@apply.User.Username" style="margin-right: 10px;" class="input-submit">
+                        Accept Verification
+                    </button>
+                    <button type="submit" name="text" value="Decline,@apply.User.Username" class="input-submit">
+                        Decline Verification
+                    </button>
+                </form>
+            }
+        }
+    </div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
