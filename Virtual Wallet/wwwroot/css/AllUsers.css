@@ -4,56 +4,37 @@
     flex-wrap: nowrap; /* Prevent wrapping */
     gap: 20px; /* Space between user details and search forms */
     justify-content: center; /* Center the entire content */
+    align-items: flex-start; /* Align items to the top */
 }
 
 /* Container for user details */
 .user-container {
     flex: 1 1 600px; /* Allows the container to grow and shrink */
-    display: flex;
-    align-items: flex-start; /* Align items to the top */
-    gap: 20px; /* Space between user info and image */
     max-width: 1000px; /* Prevent the container from exceeding this width */
     padding: 20px;
+    padding-bottom: 5px;
     background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin: 20px; /* Ensures it is centered */
+    margin-right: 20px; /* Ensures it is centered */
 }
 
 /* User information styling */
 .user-info {
-    flex: 1;
     margin-right: 20px; /* Adds space between info and image */
-}
-
-/* User image styling */
-.user-image {
-    flex-shrink: 0; /* Prevents the image from shrinking */
-}
-
-.image-style {
-    width: 200px;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 8px;
 }
 
 /* Search forms container styling */
 .search-forms {
     display: flex;
     flex-direction: column; /* Stack forms vertically */
-    gap: 10px; /* Space between each search form */
+    gap: 15px; /* Space between each search form */
     flex: 0 1 300px; /* Fixed width for forms container */
     align-self: flex-start; /* Align search forms to the top */
     margin-top: 20px; /* Adds space above search forms */
-}
-
-/* Adjust search forms layout on larger screens */
-@media screen and (min-width: 768px) {
-    .search-forms {
-        flex-direction: column; /* Stack forms vertically on larger screens */
-        gap: 15px; /* Space between search forms */
-    }
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Styling search form fields */
@@ -61,8 +42,42 @@
     display: flex;
     align-items: center;
     gap: 10px; /* Space between input and button */
+    margin-bottom: 10px; /* Space between each search row */
+    padding: 10px;
 }
 
+    .search-container input[type="text"],
+    .search-container select {
+        width: 200px; /* Fixed width for input and select fields */
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        transition: border-color 0.3s;
+    }
+
+        .search-container input[type="text"]:focus,
+        .search-container select:focus {
+            border-color: #007bff; /* Change border color on focus */
+            outline: none;
+        }
+
+.input-submit {
+    padding: 8px 16px;
+    font-size: 14px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .input-submit:hover {
+        background-color: #0056b3; /* Darker shade on hover */
+    }
+
+/* Pagination styles */
 .pagination {
     display: flex;
     list-style: none;
@@ -86,3 +101,15 @@
     .page-link:hover {
         background-color: #e9ecef;
     }
+
+/* Labels and inputs for date range */
+.search-container label {
+    margin-right: 5px;
+    font-size: 14px;
+    color: #333;
+}
+
+.search-container input[type="text"] {
+    margin-right: 10px;
+    width: calc(100% - 110px); /* Adjust width to align with labels */
+}

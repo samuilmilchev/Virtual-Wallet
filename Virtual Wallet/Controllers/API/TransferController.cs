@@ -48,9 +48,9 @@ namespace Virtual_Wallet.Controllers.API
             {
                 return BadRequest("Invalid transfer type.");
             }
-            
 
-            return StatusCode(StatusCodes.Status200OK , transferRequest);     //подлежи на промяна след като изясним логиката по виртуалния портфейл
+
+            return RedirectToAction("TransactionSuccess", "Wallet"); //подлежи на промяна след като изясним логиката по виртуалния портфейл
         }
 
         //[HttpPost("transferToWallet")]

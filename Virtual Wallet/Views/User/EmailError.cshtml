@@ -1,6 +1,29 @@
-﻿<h1>Email Confirmation Failed</h1>
-<p>It looks like this email confirmation link is invalid or has expired. Please request a new one.</p>
-<form asp-action="ResendConfirmationEmail" method="post">
-    <input type="hidden" name="username" value="@ViewData["Username"]" />
-    <button type="submit" class="btn btn-primary">Resend Confirmation Email</button>
-</form>
+﻿
+<link href="~/css/responsive.css?v=1.0" rel="stylesheet" />
+<link href="~/css/style.css?v=2.0" rel="stylesheet" />
+<link href="~/css/UserDetails.css" rel="stylesheet">
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<div class="user-container-wrapper">
+    <div class="user-container">
+        <div class="user-image">
+            <h1>Email Confirmation Failed</h1>
+            <p>It looks like this email confirmation link is invalid or has expired. Please request a new one.</p>
+        </div>
+
+        <div class="user-info">
+            <div class="button-group">
+                <form asp-action="ResendConfirmationEmail" method="post">
+                    <input type="hidden" name="username" value="@ViewData["Username"]" />
+                    <button type="submit" class="btn">Resend Confirmation Email</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

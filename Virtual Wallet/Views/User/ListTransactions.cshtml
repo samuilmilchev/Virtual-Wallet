@@ -3,22 +3,21 @@
 <link href="~/css/responsive.css?v=1.0" rel="stylesheet" />
 
 <link href="~/css/style.css?v=2.0" rel="stylesheet" />
-<link href="~/css/custom-style.css" rel="stylesheet" />
-<link href="~/css/AllUsers.css?v=1.0" rel="stylesheet" />
+<link href="~/css/custom-style.css?v=1.0" rel="stylesheet" />
+<link href="~/css/AllUsers.css?v=2.0" rel="stylesheet" />
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 
 <br>
 <br>
-<h2>All transactions:</h2>
-<hr>
+<h2 style="text-align:center;" >All transactions:</h2>
 
 <!-- Flex container to group user details and search forms side by side -->
 <div class="user-container-wrapper">
     <form asp-controller="User" asp-action="ListTransactions" method="post">
         @foreach (var transaction in Model.TransactionsList)
         {
-            <div style="width:1000px;" class="container user-container">
+            <div style="width:600px;" class="container user-container">
                 <div class="user-info">
                     <div class="form-title">
                         <h1>Transaction Details</h1>
@@ -28,24 +27,24 @@
                     <div class="form-inputs">
                         <div class="input-box">
                             <p class="control-label">
-                                <strong style="font-size:20px; color:black;">Type:</strong> <span style="font-size:15px; color:black;" id="user-username">@transaction.Type</span>
+                                <strong style="font-size:20px; color:black;">Type:</strong> <span style="font-size:18px; color:black;" id="user-username">@transaction.Type</span>
                             </p>
                         </div>
 
                         <div class="input-box">
                             <p class="control-label">
-                                <strong style="font-size:20px; color:black;">Amount:</strong> <span style="font-size:15px; color:black;" id="user-lastname">@transaction.Amount</span>
+                                <strong style="font-size:20px; color:black;">Amount:</strong> <span style="font-size:18px; color:black;" id="user-lastname">@transaction.Amount</span>
                             </p>
                         </div>
 
                         <div class="input-box">
                             <p class="control-label">
-                                <strong style="font-size:20px; color:black;">Wallet Name:</strong> <span style="font-size:15px; color:black;" id="user-phonenumber">@transaction.Wallet.WalletName</span>
+                                <strong style="font-size:20px; color:black;">Wallet Name:</strong> <span style="font-size:18px; color:black;" id="user-phonenumber">@transaction.Wallet.WalletName</span>
                             </p>
                         </div>
                         <div class="input-box">
                             <p class="control-label">
-                                <strong style="font-size:20px; color:black;">Time of transaction: </strong> <span style="font-size:15px; color:black;" id="user-phonenumber">@transaction.Timestamp.ToString()</span>
+                                <strong style="font-size:20px; color:black;">Time of transaction: </strong> <span style="font-size:18px; color:black;" id="user-phonenumber">@transaction.Timestamp.ToString()</span>
                             </p>
                         </div>
                     </div>
@@ -75,9 +74,11 @@
     </form>
 
     <!-- Search forms section next to user details -->
-    <div class="search-forms">
+    <div style="width: 800px;" class="search-forms">
+        <h2 style="text-align:center;" >Search/Order transactions:</h2>
         <form asp-controller="User" asp-action="SearchTransactionBySender" method="post" class="form-group">
             <div class="search-container">
+                <label>Search by sender:</label>
                 <input type="text" name="text" class="input-field" placeholder="Sender" />
                 <button type="submit" class="input-submit">Search</button>
             </div>
@@ -85,6 +86,7 @@
 
         <form asp-controller="User" asp-action="SearchTransactionByRecipient" method="post" class="form-group">
             <div class="search-container">
+                <label>Search by recipient:</label>
                 <input type="text" name="text" class="input-field" placeholder="Recipient" />
                 <button type="submit" class="input-submit">Search</button>
             </div>
@@ -92,6 +94,7 @@
 
         <form asp-controller="User" asp-action="SearchTransactionByType" method="post" class="form-group">
             <div class="search-container">
+                <label>Search by Type:</label>
                 <select id="transferType" name="text" class="form-control">
                     <option value="-">-</option>
                     <option value="Add">Add</option>
@@ -103,6 +106,7 @@
 
         <form asp-controller="User" asp-action="SortByDate" method="post" class="form-group">
             <div class="search-container">
+                <label>Sort by date:</label>
                 <select id="transferType" name="text" class="form-control">
                     <option value="Oldest">Oldest</option>
                     <option value="Newest">Newest</option>
@@ -113,6 +117,7 @@
 
         <form asp-controller="User" asp-action="SortByAmount" method="post" class="form-group">
             <div class="search-container">
+                <label>Sort by amount:</label>
                 <select id="transferType" name="text" class="form-control">
                     <option value="High">High</option>
                     <option value="Low">Low</option>
@@ -122,13 +127,17 @@
         </form>
 
         <div class="search-container">
+            <label>Serch by date:</label>
             @using (Html.BeginForm("GetDateToDate", "User", FormMethod.Post))
             {
                 <label for="startDate">From:</label>
                 <input type="text" id="startDate" name="startDate" />
                 <br>
-                <label for="endDate">To:</label>
+                <br>
+                <label for="endDate">To:  &nbsp; &nbsp; </label>
                 <input type="text" id="endDate" name="endDate" />
+                <br>
+                <br>
 
                 <button type="submit" class="input-submit">Search</button>
             }
