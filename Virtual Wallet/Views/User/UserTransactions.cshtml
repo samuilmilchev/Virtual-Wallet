@@ -11,7 +11,6 @@
 <br>
 <br>
 <h2 style="text-align: center;">Your transactions:</h2>
-<hr>
 
 <!-- Flex container to group user details and search forms side by side -->
 <div class="user-container-wrapper">
@@ -106,6 +105,7 @@
         
         <form asp-controller="User" asp-action="UserSearchTransactionByRecipient" method="post" class="form-group">
             <div class="search-container">
+                <label>Search by recipient:</label>
                 <input type="text" name="text" class="input-field" placeholder="Recipient" />
                 <button type="submit" class="input-submit">Search</button>
             </div>
@@ -113,6 +113,7 @@
 
         <form asp-controller="User" asp-action="UserSearchTransactionByType" method="post" class="form-group">
             <div class="search-container">
+                <label>Search by Type:</label>
                 <select id="transferType" name="text" class="form-control">
                     <option value="-">-</option>
                     <option value="Add">Add</option>
@@ -124,6 +125,7 @@
 
         <form asp-controller="User" asp-action="UserSortByDate" method="post" class="form-group">
             <div class="search-container">
+                <label>Sort by date:</label>
                 <select id="transferType" name="text" class="form-control">
                     <option value="Oldest">Oldest</option>
                     <option value="Newest">Newest</option>
@@ -134,6 +136,7 @@
 
         <form asp-controller="User" asp-action="UserSortByAmount" method="post" class="form-group">
             <div class="search-container">
+                <label>Sort by amount:</label>
                 <select id="transferType" name="text" class="form-control">
                     <option value="High">High</option>
                     <option value="Low">Low</option>
@@ -143,14 +146,17 @@
         </form>
         @{}
         <div class="search-container">
+            <label>Serch by date:</label>
             @using (Html.BeginForm("UserGetDateToDate", "User", FormMethod.Post))
             {
                 <label for="startDate">From:</label>
                 <input type="text" id="startDate" name="startDate" />
                 <br>
-                <label for="endDate">To:</label>
+                <br>
+                <label for="endDate">To: &nbsp; &nbsp;</label>
                 <input type="text" id="endDate" name="endDate" />
-
+                <br>
+                <br>
                 <button type="submit" class="input-submit">Search</button>
             }
         </div>

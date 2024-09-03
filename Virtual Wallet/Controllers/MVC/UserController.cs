@@ -197,7 +197,9 @@ namespace Virtual_Wallet.Controllers.MVC
                 Role = user.Role.ToString(),
                 IsBlocked = user.IsBlocked,
                 Cards = user.Cards,
-                AdminVerified = user.AdminVerified
+                AdminVerified = user.AdminVerified,
+				Wallets = user.UserWallets
+				
             };
             return View(model);
         }

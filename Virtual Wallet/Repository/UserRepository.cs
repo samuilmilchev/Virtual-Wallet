@@ -137,7 +137,14 @@ namespace Virtual_Wallet.Repository
 
         public User GetById(int id)
         {
-            User user = this.GetUsers().Include(x => x.Cards).Include(u => u.UserWallets).Include(x => x.SavingWallets).AsNoTracking().FirstOrDefault(u => u.Id == id);
+            User user = this.GetUsers().Include(x => x.Cards).Include(u => u.UserWallets).Include(x => x.SavingWallets).Include(x => x.Friends).AsNoTracking().FirstOrDefault(u => u.Id == id);
+
+            return user ?? throw new EntityNotFoundException($"User with id={id} doesn't exist.");
+        }
+
+        public User GetUserById(int id)
+        {
+            User user = this.GetUsers().Include(x => x.Cards).Include(u => u.UserWallets).Include(x => x.SavingWallets).Include(x => x.Friends).FirstOrDefault(u => u.Id == id);
 
             return user ?? throw new EntityNotFoundException($"User with id={id} doesn't exist.");
         }
@@ -377,8 +384,8 @@ namespace Virtual_Wallet.Repository
 
         public void AddFriend(int userId, int friendId)
         {
-            var user = GetById(userId);
-            var friend = GetById(friendId);
+            var user = GetUserById(userId);
+            var friend = GetUserById(friendId);
 
             if (user == null || friend == null)
             {
@@ -391,8 +398,8 @@ namespace Virtual_Wallet.Repository
 
         public void RemoveFriend(int userId, int friendId)
         {
-            var user = GetById(userId);
-            var friend = GetById(friendId);
+            var user = GetUserById(userId);
+            var friend = GetUserById(friendId);
 
             if (user == null || friend == null)
             {
@@ -405,7 +412,7 @@ namespace Virtual_Wallet.Repository
 
         public List<User> GetFriends(int userId)
         {
-            var user = GetById(userId);
+            var user = GetUserById(userId);
             if (user == null)
             {
                 throw new EntityNotFoundException($"User with id={userId} doesn't exist.");
