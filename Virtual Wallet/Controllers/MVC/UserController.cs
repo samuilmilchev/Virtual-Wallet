@@ -197,7 +197,9 @@ namespace Virtual_Wallet.Controllers.MVC
                 Role = user.Role.ToString(),
                 IsBlocked = user.IsBlocked,
                 Cards = user.Cards,
-                AdminVerified = user.AdminVerified
+                AdminVerified = user.AdminVerified,
+				Wallets = user.UserWallets
+				
             };
             return View(model);
         }
@@ -257,6 +259,8 @@ namespace Virtual_Wallet.Controllers.MVC
             if (verificationValue == "Accept")
             {
                 _usersService.UpdateUserVerification(user, verificationValue);
+
+				_emailService.SendAsync(user.Email, "Successfully verified", "You have been successfully verified by admin.");
 
                 return RedirectToAction("UserDetails", new { username = user.Username });
             }
