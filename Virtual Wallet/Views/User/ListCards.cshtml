@@ -1,0 +1,71 @@
+﻿@model List<Card>
+
+<link href="~/css/ListSavingWallets.css" rel="stylesheet" />
+<br>
+<br>
+<br>
+<h1 style="text-align:center;">Your Registrated Cards</h1>
+<br>
+
+@{
+    foreach (var card in Model)
+    {
+        <div class="container">
+            <div class="user-container">
+                <div class="user-info">
+                    <div class="form-title">
+                        <h1>Card details:</h1>
+                        <hr>
+                    </div>
+                    <!-- Holder -->
+                    <div class="input-box">
+                        <p class="control-label">
+                            <strong>Holder:</strong>
+                            <span>@card.CardHolder</span>
+                        </p>
+                    </div>
+
+                    <!-- Number -->
+                    <div class="input-box">
+                        <p class="control-label">
+                            <strong>Card Number:</strong>
+                            <span>@card.CardNumber</span>
+                        </p>
+                    </div>
+
+                    <!-- Type -->
+                    <div class="input-box">
+                        <p class="control-label">
+                            <strong>Type:</strong>
+                            <span>@card.CardType.ToString()</span>
+                        </p>
+                    </div>
+
+                    <!-- Balance -->
+                    <div class="input-box">
+                        <p class="control-label">
+                            <strong>Balance:</strong>
+                            <span>@card.Balance</span>
+                        </p>
+                    </div>
+
+                    <form asp-action="Delete" asp-controller="Card" method="post" onsubmit="return confirmDelete();">
+                        <input type="hidden" name="id" value="@card.Id" />
+                        <button type="submit" class="btn-submit">Delete</button>
+                    </form>
+                </div>
+            </div>
+
+
+        </div>
+        <br>
+        <br>
+
+    }
+
+    <script>
+        function confirmDelete() {
+            return confirm("Are you sure you want to delete this card?");
+        }
+    </script>
+}

@@ -32,7 +32,12 @@ namespace Virtual_Wallet.Services
 			await _transactionRepository.Create(transaction);
 		}
 
-		public async Task<Transaction> GetTransactionById(int id)
+        public async Task<IEnumerable<Transaction>> GetTransactionByUserId(int userId) //нужен метод за достъпване на трансакции на всеки юзер
+        {
+            return await _transactionRepository.GetByUserId(userId);
+        }
+
+        public async Task<Transaction> GetTransactionById(int id)
 		{
 			return await _transactionRepository.GetById(id);
 		}
@@ -69,6 +74,27 @@ namespace Virtual_Wallet.Services
         public IQueryable<Transaction> SortByAmount(string text)
         {
             return _transactionRepository.SortByAmount(text);
+        }
+
+        //=============================================================================================================================
+
+        public IQueryable<Transaction> UserGetTransactionsByDateRange(DateTime startDate, DateTime endDate , int userId)
+        {
+            return _transactionRepository.UserGetByDateRange(startDate, endDate, userId);
+        }
+
+        public List<Transaction> UserFilterBy(TransactionQueryParameters transactionQueryParameters, int userId)
+        {
+            return _transactionRepository.UserFilterBy(transactionQueryParameters,userId);
+        }
+
+        public List<Transaction> UserSortByDate(string text, int userId)
+        {
+            return _transactionRepository.UserSortByDate(text, userId);
+        }
+        public IQueryable<Transaction> UserSortByAmount(string text, int userId)
+        {
+            return _transactionRepository.UserSortByAmount(text, userId);
         }
     }
 }

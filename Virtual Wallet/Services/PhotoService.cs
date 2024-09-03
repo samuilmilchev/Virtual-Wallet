@@ -21,6 +21,10 @@ namespace Virtual_Wallet.Services
         }
         public async Task<ImageUploadResult> UploadImageAsync(IFormFile file)
         {
+            if (file == null)
+            {
+                throw new ArgumentNullException("You have not uploaded a picture!"); //трябва да го сложим в try-catch блок
+            }
             var uploadResult = new ImageUploadResult();
             if (file.Length > 0)
             {

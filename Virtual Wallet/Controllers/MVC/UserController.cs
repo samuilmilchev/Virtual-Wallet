@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using NuGet.Configuration;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -27,7 +29,7 @@ namespace Virtual_Wallet.Controllers.MVC
         private readonly ITransactionService _transactionService;
         private readonly IEmailService _emailService;
 
-        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService, ITransactionService transactionService, IPhotoService photoService , IEmailService emailService)
+        public UserController(IUsersService usersService, IConfiguration configuration, IModelMapper modelMapper, IWalletService walletService, ITransactionService transactionService, IPhotoService photoService, IEmailService emailService)
         {
             _usersService = usersService;
             _configuration = configuration;
@@ -211,18 +213,28 @@ namespace Virtual_Wallet.Controllers.MVC
         [HttpPost]
         public async Task<IActionResult> UploadPhotosVerification(VerifyUserViewModel model)
         {
-            var username = User.Identity.Name;
-            var user = _usersService.GetByUsername(username);
+            try
+            {
+                var username = User.Identity.Name;
+                var user = _usersService.GetByUsername(username);
 
-            var selfieResult = await _photoService.UploadImageAsync(model.Selfie);
-            user.Selfie = selfieResult.Url.ToString();
+                var selfieResult = await _photoService.UploadImageAsync(model.Selfie);
+                user.Selfie = selfieResult.Url.ToString();
 
-            var idPhotoResult = await _photoService.UploadImageAsync(model.IdPhoto);
-            user.IdPhoto = idPhotoResult.Url.ToString();
+                var idPhotoResult = await _photoService.UploadImageAsync(model.IdPhoto);
+                user.IdPhoto = idPhotoResult.Url.ToString();
 
-            _usersService.UploadPhotoVerification(selfieResult.Url.ToString(), idPhotoResult.Url.ToString(), user);
+                _usersService.UploadPhotoVerification(selfieResult.Url.ToString(), idPhotoResult.Url.ToString(), user);
 
-            return RedirectToAction("UserDetails", new { username = user.Username });
+                return RedirectToAction("UserDetails", new { username = user.Username });
+            }
+            catch (ArgumentNullException x)
+
+            {
+                ViewData["ErrorMessage"] = x.Message;
+                return View();
+            }
+
         }
 
         [HttpGet]
@@ -421,12 +433,22 @@ namespace Virtual_Wallet.Controllers.MVC
                     return RedirectToAction("LargeTransactionVerificationForm", "Wallet");
                 }
 
-                
 
-                this._walletService.TransferFunds(sendMoney.Amount, sendMoney.Currency, wallet, createdWallet, user);
 
-                return RedirectToAction("TransactionSuccess", "Wallet");
+                //this._walletService.TransferFunds(sendMoney.Amount, sendMoney.Currency, wallet, createdWallet, user);
+
+                JsonSerializerSettings settings = new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                };
+                TempData["SendMoneyModel"] = JsonConvert.SerializeObject(sendMoney, settings);
+                TempData["SenderUsername"] = user.Username;
+                TempData["RecipientUsername"] = recipient.Username;
+
+                return View("SendMoneyConfirmationForm", sendMoney); //препраща към форма за преглед на детайлите на трансакцията
+
             }
+
             catch (EntityNotFoundException x)
             {
                 var username = User.Identity.Name;
@@ -462,6 +484,15 @@ namespace Virtual_Wallet.Controllers.MVC
         }
 
         [HttpGet]
+        public IActionResult ListCards()
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            return View(user.Cards);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> ListTransactions()
         {
             return View(await GetTransactionsList(1));
@@ -474,17 +505,17 @@ namespace Virtual_Wallet.Controllers.MVC
         }
 
 
-        [HttpGet]
-        public async Task<IActionResult> ListUsers()
-        {
-            return View(await GetUserList(1));
-        }
+        //[HttpGet]
+        //public async Task<IActionResult> ListTransactions()
+        //{
+        //    return View(await GetUserTransactionsList(1));
+        //}
 
-        [HttpPost]
-        public async Task<IActionResult> ListUsers([FromForm] int currentPageIndex)
-        {
-            return View(await GetUserList(currentPageIndex));
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> ListUsersTransactions([FromForm] int currentPageIndex)
+        //{
+        //    return View(await GetUserTransactionsList(currentPageIndex));
+        //}
 
         //[HttpGet]
         //public IActionResult ListUsers()
@@ -714,6 +745,35 @@ namespace Virtual_Wallet.Controllers.MVC
             return transactionModel;
         }
 
+        private async Task<ListUserTransactionsViewModel> GetUserTransactionsList(int currentPage)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            int maxRowsPerPage = 2;
+            ListUserTransactionsViewModel transactionModel = new ListUserTransactionsViewModel();
+
+            //transactionModel.TransactionsList = (List<System.Transactions.Transaction>)await _transactionService.GetTransactionByUserId(user.Id)
+            //    .OrderBy(x => x.Id)
+            //    .Skip((currentPage - 1) * maxRowsPerPage)
+            //    .Take(maxRowsPerPage)
+            //    .ToListAsync();
+            var transactions = await _transactionService.GetTransactionByUserId(user.Id);
+
+            transactionModel.TransactionsList = transactions
+                .OrderBy(x => x.Id)
+                .Skip((currentPage - 1) * maxRowsPerPage)
+                .Take(maxRowsPerPage)
+                .ToList();
+
+            int totalTransactionCount = transactions.Count();
+            double pageCount = (double)((decimal)totalTransactionCount / Convert.ToDecimal(maxRowsPerPage));
+
+            transactionModel.pageCount = (int)Math.Ceiling(pageCount);
+            transactionModel.currentPageIndex = currentPage;
+            return transactionModel;
+        }
+
         private async Task<ListTransactionsViewModel> GetTransactionsList(int currentPage, IQueryable<Transaction> transactions)
         {
             int maxRowsPerPage = 2;
@@ -733,7 +793,7 @@ namespace Virtual_Wallet.Controllers.MVC
         }
 
         [HttpGet]
-        public IActionResult ConfirmEmail(string username , string token) //може би измисти ДТО за това
+        public IActionResult ConfirmEmail(string username, string token) //може би измисли ДТО за това
         {
             var user = _usersService.GetByUsername(username);
             ViewData["Username"] = username;
@@ -747,13 +807,13 @@ namespace Virtual_Wallet.Controllers.MVC
             user.EmailTokenExpiry = null;
             user.EmailConfirmationToken = null;
 
-            _usersService.Update(user.Id , user);
+            _usersService.Update(user.Id, user);
 
             return View("ConfirmEmail");
         }
 
         [HttpPost]
-        public  async Task<IActionResult> ResendConfirmationEmail(string username)
+        public async Task<IActionResult> ResendConfirmationEmail(string username)
         {
             var user = _usersService.GetByUsername(username);
             if (user == null)
@@ -765,9 +825,144 @@ namespace Virtual_Wallet.Controllers.MVC
 
             TempData["Message"] = "A new confirmation email has been sent to your email address.";
             return RedirectToAction("EmailConfirmationSentAgain");
-            
+
         }
 
-       
+        [HttpPost]
+        public IActionResult SendMoneyConfirmationForm(string text)
+        {
+            var model = new SendMoneyViewModel();
+
+            if (text == "Accept")
+            {
+                if (TempData["SendMoneyModel"] != null ||
+                    TempData["SenderUsername"] != null ||
+                    TempData["RecipientUsername"] != null)
+                {
+                    model = JsonConvert.DeserializeObject<SendMoneyViewModel>((string)TempData["SendMoneyModel"]);
+                    var senderUsername = TempData["SenderUsername"] as string;
+                    var recipientUsername = TempData["RecipientUsername"] as string;
+
+                    var sender = _usersService.GetByUsername(senderUsername);
+                    var recipient = _usersService.GetByUsername(recipientUsername);
+
+                    if (sender == null)
+                    {
+                        ViewData["ErrorMessage"] = "Invalid request.";
+                        return View("SendMoneyConfirmationForm");
+                    }
+
+                    if (recipient == null)
+                    {
+                        ViewData["ErrorMessage"] = "Invalid request.";
+                        return View("SendMoneyConfirmationForm");
+                    }
+
+                    var senderWallet = sender.UserWallets.FirstOrDefault(s => s.Currency == model.Currency);
+                    var recipientWallet = recipient.UserWallets.FirstOrDefault(x => x.Currency == model.Currency);
+
+                    this._walletService.TransferFunds(model.Amount, model.Currency, senderWallet, recipientWallet, sender);
+
+                    return RedirectToAction("TransactionSuccess", "Wallet"); //тук трябва да се редиректва към страницата за успешна трансакция
+                }
+            }
+
+            return RedirectToAction("SendMoney");
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> UserTransactions()
+        {
+            return View(await GetUserTransactionsList(1));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UserTransactions([FromForm] int currentPageIndex)
+        {
+            return View(await GetUserTransactionsList(currentPageIndex));
+        }
+
+        //============= Below are the sorting and filtering methods for user's transaction list ===============================================
+
+
+
+        [HttpPost]
+        public IActionResult UserSearchTransactionBySender([FromForm] string text)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
+            transactionQueryParameters.Sender = text;
+
+            var transactions = _transactionService.UserFilterBy(transactionQueryParameters, user.Id).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult UserSearchTransactionByRecipient([FromForm] string text)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
+            transactionQueryParameters.Recipient = text;
+
+            var transactions = _transactionService.UserFilterBy(transactionQueryParameters, user.Id).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult UserSearchTransactionByType([FromForm] string text)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            if (text == "-")
+            {
+                return RedirectToAction("UserTransactions");
+            }
+
+            TransactionQueryParameters transactionQueryParameters = new TransactionQueryParameters();
+            transactionQueryParameters.TransactionType = text;
+
+            var transactions = _transactionService.UserFilterBy(transactionQueryParameters, user.Id).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult UserSortByDate([FromForm] string text)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+
+            var transactions = _transactionService.UserSortByDate(text, user.Id).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult UserSortByAmount([FromForm] string text)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+            var transactions = _transactionService.UserSortByAmount(text, user.Id).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public IActionResult UserGetDateToDate(DateTime startDate, DateTime endDate)
+        {
+            var username = User.Identity.Name;
+            var user = _usersService.GetByUsername(username);
+            var transactions = _transactionService.UserGetTransactionsByDateRange(startDate, endDate , user.Id).Select(x => _modelMapper.Map(x)).ToList();
+
+            return View(transactions);
+        }
     }
 }
