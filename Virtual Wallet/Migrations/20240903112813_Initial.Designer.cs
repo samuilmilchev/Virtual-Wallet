@@ -12,7 +12,7 @@ using Virtual_Wallet.Db;
 namespace Virtual_Wallet.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240902105711_Initial")]
+    [Migration("20240903112813_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,6 +23,21 @@ namespace Virtual_Wallet.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("Friends", b =>
+                {
+                    b.Property<int>("FriendId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FriendId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Friends");
+                });
 
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Card", b =>
                 {
@@ -345,6 +360,21 @@ namespace Virtual_Wallet.Migrations
                             OwnerId = 3,
                             WalletName = "Tom's wallet"
                         });
+                });
+
+            modelBuilder.Entity("Friends", b =>
+                {
+                    b.HasOne("Virtual_Wallet.Models.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("FriendId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Virtual_Wallet.Models.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Virtual_Wallet.Models.Entities.Card", b =>

@@ -1,0 +1,41 @@
+﻿@model FriendsListViewModel
+
+<!-- Friends List Modal -->
+<div class="container">
+	<br><br><br>
+	<form asp-action="FriendsList" method="post" enctype="multipart/form-data">
+		<div style="text-align: center;" class="form-title">
+			<h2 style="padding-left: 20px; color:black;">Friend List</h2>
+			<hr>
+		</div>
+
+		<h2>Add Friend</h2>
+		<div>
+			<label asp-for="input"></label>
+			<input asp-for="input" class="form-control" />
+			<span asp-validation-for="input" class="text-danger"></span>
+		</div>
+		<div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</div>
+
+	</form>
+	<h2>Friends List</h2>
+	@foreach (var friend in Model.friends)
+	{
+		<ul>
+			<li>
+				@friend
+				<form asp-action="RemoveFriend" method="post" style="display:inline;">
+					<input type="hidden" name="friend" value="@friend" />
+					<button type="submit" class="btn btn-danger">Delete</button>
+				</form>
+			</li>
+
+		</ul>
+	}
+	@if (ViewData["ErrorMessage"] != null)
+	{
+		<div class="alert alert-danger">@ViewData["ErrorMessage"]</div>
+	}
+</div>

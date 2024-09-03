@@ -44,7 +44,7 @@ namespace Virtual_Wallet.Repository
         public User GetByEmail(string email)
         {
             
-            User user = this.GetUsers().Include(x => x.Cards).Include(u=>u.UserWallets).FirstOrDefault(x => x.Email == email);
+            User user = this.GetUsers().Include(y => y.Friends).Include(x => x.Cards).Include(u=>u.UserWallets).FirstOrDefault(x => x.Email == email);
             if (user == null)
             {
                 throw new EntityNotFoundException($"User with e-mail: {email} does not exist!");
@@ -54,7 +54,7 @@ namespace Virtual_Wallet.Repository
         public User GetByUsername(string username)
         {
             
-            User user = this.GetUsers().Include(x => x.Cards).Include(u => u.UserWallets).Include(x => x.SavingWallets).FirstOrDefault(x => x.Username == username);
+            User user = this.GetUsers().Include(y => y.Friends).Include(x => x.Cards).Include(u => u.UserWallets).FirstOrDefault(x => x.Username == username);
             if (user == null)
             {
                 throw new EntityNotFoundException($"User with username {username} does not exist!");
@@ -65,7 +65,7 @@ namespace Virtual_Wallet.Repository
         public User GetByPhoneNumber(string phoneNumber)
         {
            
-            User user = this.GetUsers().Include(x => x.Cards).Include(u => u.UserWallets).FirstOrDefault(x => x.PhoneNumber == phoneNumber);
+            User user = this.GetUsers().Include(y => y.Friends).Include(x => x.Cards).Include(u => u.UserWallets).FirstOrDefault(x => x.PhoneNumber == phoneNumber);
             if (user == null)
             {
                 throw new EntityNotFoundException($"User with phone number {phoneNumber} does not exist!");
@@ -373,6 +373,45 @@ namespace Virtual_Wallet.Repository
         private bool IsPhoneNumber(string input)
         {
             return input.All(char.IsDigit); // assuming phone numbers are numeric
+        }
+
+        public void AddFriend(int userId, int friendId)
+        {
+            var user = GetById(userId);
+            var friend = GetById(friendId);
+
+            if (user == null || friend == null)
+            {
+                throw new EntityNotFoundException("User or friend not found.");
+            }
+
+            user.Friends.Add(friend);
+            _context.SaveChanges();
+        }
+
+        public void RemoveFriend(int userId, int friendId)
+        {
+            var user = GetById(userId);
+            var friend = GetById(friendId);
+
+            if (user == null || friend == null)
+            {
+                throw new EntityNotFoundException("User or friend not found.");
+            }
+
+            user.Friends.Remove(friend);
+            _context.SaveChanges();
+        }
+
+        public List<User> GetFriends(int userId)
+        {
+            var user = GetById(userId);
+            if (user == null)
+            {
+                throw new EntityNotFoundException($"User with id={userId} doesn't exist.");
+            }
+
+            return user.Friends.ToList();
         }
     }
 }
