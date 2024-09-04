@@ -1025,7 +1025,22 @@ namespace Virtual_Wallet.Controllers.MVC
                     var senderWallet = sender.UserWallets.FirstOrDefault(s => s.Currency == model.Currency);
                     var recipientWallet = recipient.UserWallets.FirstOrDefault(x => x.Currency == model.Currency);
 
-                    this._walletService.TransferFunds(model.Amount, model.Currency, senderWallet, recipientWallet, sender);
+					if (recipientWallet == null)
+					{
+						Wallet newWallet = new Wallet();
+                        newWallet.Currency = model.Currency;
+						newWallet.OwnerId = recipient.Id;
+						newWallet.Amount = 0;
+						newWallet.WalletName = $"{model.Currency.ToString()} wallet";
+
+						recipient.UserWallets.Add(newWallet);
+
+                        this._walletService.TransferFunds(model.Amount, model.Currency, senderWallet, newWallet, sender);
+                    }
+					else
+					{
+                        this._walletService.TransferFunds(model.Amount, model.Currency, senderWallet, recipientWallet, sender);
+                    }
 
                     return RedirectToAction("TransactionSuccess", "Wallet"); //тук трябва да се редиректва към страницата за успешна трансакция
                 }
